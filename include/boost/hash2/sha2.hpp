@@ -196,21 +196,42 @@ struct sha2_256_base : public sha2_base<std::uint32_t, sha2_256_base, 64>
         return ( x & y ) ^ ( x & z ) ^ ( y & z );
     }
 
+    BOOST_CXX14_CONSTEXPR static std::uint32_t W( std::uint32_t w[], int t )
+    {
+        return w[ t ] = ( sigma1( w[ t - 2 ] ) + w[ t - 7] + sigma0( w[ t - 15 ] ) + w[ t - 16 ] );
+    }
+
+    BOOST_FORCEINLINE BOOST_CXX14_CONSTEXPR static void R1( std::uint32_t a, std::uint32_t b, std::uint32_t c, std::uint32_t& d,
+                                                             std::uint32_t e, std::uint32_t f, std::uint32_t g, std::uint32_t& h,
+                                                             unsigned char const block[ 64 ], std::uint32_t const* K, std::uint32_t w[], int t )
+    {
+        w[ t ] = detail::read32be( block + t * 4);
+        std::uint32_t T1 = h + Sigma1( e ) + Ch( e, f, g ) + K[ t ] + w[ t ];
+        std::uint32_t T2 = Sigma0( a ) + Maj( a, b, c );
+
+        d += T1;
+        h = T1 + T2;
+    }
+
+    BOOST_FORCEINLINE BOOST_CXX14_CONSTEXPR static void R2( std::uint32_t a, std::uint32_t b, std::uint32_t c, std::uint32_t& d,
+                                                            std::uint32_t e, std::uint32_t f, std::uint32_t g, std::uint32_t& h,
+                                                            unsigned char const block[ 64 ], std::uint32_t const* K, std::uint32_t w[], int t )
+    {
+        (void)block;
+
+        std::uint32_t T1 = h + Sigma1( e ) + Ch( e, f, g ) + K[ t ] + W( w, t );
+        std::uint32_t T2 = Sigma0( a ) + Maj( a, b, c );
+
+        d += T1;
+        h = T1 + T2;
+    }
+
+
     BOOST_CXX14_CONSTEXPR static void transform( unsigned char const block[ 64 ], std::uint32_t state[ 8 ] )
     {
         auto K = sha2_256_constants<>::K;
 
-        std::uint32_t W[ 64 ] = {};
-
-        for( int t = 0; t < 16; ++t )
-        {
-            W[ t ] = detail::read32be( block + t * 4 );
-        }
-
-        for( int t = 16; t < 64; ++t )
-        {
-            W[ t ] = ( sigma1( W[ t - 2 ] ) + W[ t - 7] + sigma0( W[ t - 15 ] ) + W[ t - 16 ] );
-        }
+        std::uint32_t w[ 64 ] = {};
 
         std::uint32_t a = state[ 0 ];
         std::uint32_t b = state[ 1 ];
@@ -221,20 +242,77 @@ struct sha2_256_base : public sha2_base<std::uint32_t, sha2_256_base, 64>
         std::uint32_t g = state[ 6 ];
         std::uint32_t h = state[ 7 ];
 
-        for( int t = 0; t < 64; ++t )
-        {
-            std::uint32_t T1 = h + Sigma1( e ) + Ch( e, f, g ) + K[ t ] + W[ t ];
-            std::uint32_t T2 = Sigma0( a ) + Maj( a, b, c );
+        R1( a, b, c, d, e, f, g, h, block, K, w, 0 );
+        R1( h, a, b, c, d, e, f, g, block, K, w, 1 );
+        R1( g, h, a, b, c, d, e, f, block, K, w, 2 );
+        R1( f, g, h, a, b, c, d, e, block, K, w, 3 );
+        R1( e, f, g, h, a, b, c, d, block, K, w, 4 );
+        R1( d, e, f, g, h, a, b, c, block, K, w, 5 );
+        R1( c, d, e, f, g, h, a, b, block, K, w, 6 );
+        R1( b, c, d, e, f, g, h, a, block, K, w, 7 );
 
-            h = g;
-            g = f;
-            f = e;
-            e = (d + T1);
-            d = c;
-            c = b;
-            b = a;
-            a = (T1 + T2);
-        }
+        R1( a, b, c, d, e, f, g, h, block, K, w, 8 );
+        R1( h, a, b, c, d, e, f, g, block, K, w, 9 );
+        R1( g, h, a, b, c, d, e, f, block, K, w, 10 );
+        R1( f, g, h, a, b, c, d, e, block, K, w, 11 );
+        R1( e, f, g, h, a, b, c, d, block, K, w, 12 );
+        R1( d, e, f, g, h, a, b, c, block, K, w, 13 );
+        R1( c, d, e, f, g, h, a, b, block, K, w, 14 );
+        R1( b, c, d, e, f, g, h, a, block, K, w, 15 );
+
+        R2( a, b, c, d, e, f, g, h, block, K, w, 16 );
+        R2( h, a, b, c, d, e, f, g, block, K, w, 17 );
+        R2( g, h, a, b, c, d, e, f, block, K, w, 18 );
+        R2( f, g, h, a, b, c, d, e, block, K, w, 19 );
+        R2( e, f, g, h, a, b, c, d, block, K, w, 20 );
+        R2( d, e, f, g, h, a, b, c, block, K, w, 21 );
+        R2( c, d, e, f, g, h, a, b, block, K, w, 22 );
+        R2( b, c, d, e, f, g, h, a, block, K, w, 23 );
+
+        R2( a, b, c, d, e, f, g, h, block, K, w, 24 );
+        R2( h, a, b, c, d, e, f, g, block, K, w, 25 );
+        R2( g, h, a, b, c, d, e, f, block, K, w, 26 );
+        R2( f, g, h, a, b, c, d, e, block, K, w, 27 );
+        R2( e, f, g, h, a, b, c, d, block, K, w, 28 );
+        R2( d, e, f, g, h, a, b, c, block, K, w, 29 );
+        R2( c, d, e, f, g, h, a, b, block, K, w, 30 );
+        R2( b, c, d, e, f, g, h, a, block, K, w, 31 );
+
+        R2( a, b, c, d, e, f, g, h, block, K, w, 32 );
+        R2( h, a, b, c, d, e, f, g, block, K, w, 33 );
+        R2( g, h, a, b, c, d, e, f, block, K, w, 34 );
+        R2( f, g, h, a, b, c, d, e, block, K, w, 35 );
+        R2( e, f, g, h, a, b, c, d, block, K, w, 36 );
+        R2( d, e, f, g, h, a, b, c, block, K, w, 37 );
+        R2( c, d, e, f, g, h, a, b, block, K, w, 38 );
+        R2( b, c, d, e, f, g, h, a, block, K, w, 39 );
+
+        R2( a, b, c, d, e, f, g, h, block, K, w, 40 );
+        R2( h, a, b, c, d, e, f, g, block, K, w, 41 );
+        R2( g, h, a, b, c, d, e, f, block, K, w, 42 );
+        R2( f, g, h, a, b, c, d, e, block, K, w, 43 );
+        R2( e, f, g, h, a, b, c, d, block, K, w, 44 );
+        R2( d, e, f, g, h, a, b, c, block, K, w, 45 );
+        R2( c, d, e, f, g, h, a, b, block, K, w, 46 );
+        R2( b, c, d, e, f, g, h, a, block, K, w, 47 );
+
+        R2( a, b, c, d, e, f, g, h, block, K, w, 48 );
+        R2( h, a, b, c, d, e, f, g, block, K, w, 49 );
+        R2( g, h, a, b, c, d, e, f, block, K, w, 50 );
+        R2( f, g, h, a, b, c, d, e, block, K, w, 51 );
+        R2( e, f, g, h, a, b, c, d, block, K, w, 52 );
+        R2( d, e, f, g, h, a, b, c, block, K, w, 53 );
+        R2( c, d, e, f, g, h, a, b, block, K, w, 54 );
+        R2( b, c, d, e, f, g, h, a, block, K, w, 55 );
+
+        R2( a, b, c, d, e, f, g, h, block, K, w, 56 );
+        R2( h, a, b, c, d, e, f, g, block, K, w, 57 );
+        R2( g, h, a, b, c, d, e, f, block, K, w, 58 );
+        R2( f, g, h, a, b, c, d, e, block, K, w, 59 );
+        R2( e, f, g, h, a, b, c, d, block, K, w, 60 );
+        R2( d, e, f, g, h, a, b, c, block, K, w, 61 );
+        R2( c, d, e, f, g, h, a, b, block, K, w, 62 );
+        R2( b, c, d, e, f, g, h, a, block, K, w, 63 );
 
         state[0] += a;
         state[1] += b;
