@@ -8,6 +8,7 @@
 #include <boost/hash2/md5.hpp>
 #include <boost/hash2/sha1.hpp>
 #include <boost/hash2/sha2.hpp>
+#include <boost/hash2/sha3.hpp>
 #include <boost/hash2/ripemd.hpp>
 #include <boost/hash2/digest.hpp>
 #include <boost/core/lightweight_test.hpp>
@@ -448,6 +449,12 @@ int main()
     test<boost::hash2::sha2_384>();
     test<boost::hash2::sha2_512_224>();
     test<boost::hash2::sha2_512_256>();
+    test<boost::hash2::sha3_256>();
+    test<boost::hash2::sha3_224>();
+    test<boost::hash2::sha3_512>();
+    test<boost::hash2::sha3_384>();
+    test<boost::hash2::shake_128>();
+    test<boost::hash2::shake_256>();
     test<boost::hash2::ripemd_160>();
     test<boost::hash2::ripemd_128>();
 
@@ -459,6 +466,10 @@ int main()
     test<boost::hash2::hmac_sha2_384>( true );
     test<boost::hash2::hmac_sha2_512_224>( true );
     test<boost::hash2::hmac_sha2_512_256>( true );
+    test<boost::hash2::hmac_sha3_256>( true );
+    test<boost::hash2::hmac_sha3_224>( true );
+    test<boost::hash2::hmac_sha3_512>( true );
+    test<boost::hash2::hmac_sha3_384>( true );
     test<boost::hash2::hmac_ripemd_160>( true );
     test<boost::hash2::hmac_ripemd_128>( true );
 
