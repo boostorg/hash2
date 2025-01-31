@@ -52,9 +52,43 @@ BOOST_FORCEINLINE BOOST_HASH2_SHA3_CONSTEXPR void xor_lane( std::uint64_t state[
     state[ 5 * y + x ] ^= v;
 }
 
-BOOST_FORCEINLINE BOOST_HASH2_SHA3_CONSTEXPR void keccak_permute( std::uint64_t state[ 25 ] )
+template<class = void>
+struct keccak_constants
 {
-    std::uint8_t lfsr_reg = 0x01;
+    // calculate these using Figure 2.4 in the Keccak reference with % 64 applied
+    constexpr static int const rho_offsets[ 25 ] =
+    {
+        0, 1, 62, 28, 27,
+        36, 44, 6, 55, 20,
+        3, 10, 43, 25, 39,
+        41, 45, 15, 21, 8,
+        18, 2, 61, 56, 14,
+    };
+
+    // the actual ordering is the reverse of this list
+    // but to keep the code simple, we use the fact that this operation is linear to apply it
+    // in a different order so the indexing math is easier/more simple
+    // otherwise, we run into a case where it's essentially touching the `0 - 1` index of the
+    // array
+    constexpr static int const pi_step[ 24 ] =
+        { 1, 6, 9, 22, 14, 20, 2, 12, 13, 19, 23, 15, 4, 24, 21, 8, 16, 5, 3, 18, 17, 11, 7, 10 };
+
+
+    constexpr static std::uint64_t const iota_rc[ 24 ] =
+    {
+        0x0000000000000001, 0x0000000000008082, 0x800000000000808a,
+        0x8000000080008000, 0x000000000000808b, 0x0000000080000001,
+        0x8000000080008081, 0x8000000000008009, 0x000000000000008a,
+        0x0000000000000088, 0x0000000080008009, 0x000000008000000a,
+        0x000000008000808b, 0x800000000000008b, 0x8000000000008089,
+        0x8000000000008003, 0x8000000000008002, 0x8000000000000080,
+        0x000000000000800a, 0x800000008000000a, 0x8000000080008081,
+        0x8000000000008080, 0x0000000080000001, 0x8000000080008008,
+    };
+};
+
+inline BOOST_HASH2_SHA3_CONSTEXPR void keccak_permute( std::uint64_t state[ 25 ] )
+{
     auto const num_rounds = 24;
     for( int i = 0; i < num_rounds; ++i )
     {
@@ -83,23 +117,8 @@ BOOST_FORCEINLINE BOOST_HASH2_SHA3_CONSTEXPR void keccak_permute( std::uint64_t 
         {
             // rho and pi fused
 
-            // calculate these using Figure 2.4 in the Keccak reference with % 64 applied
-            int const rho_offsets[ 25 ] =
-            {
-                0, 1, 62, 28, 27,
-                36, 44, 6, 55, 20,
-                3, 10, 43, 25, 39,
-                41, 45, 15, 21, 8,
-                18, 2, 61, 56, 14,
-            };
-
-            // the actual ordering is the reverse of this list
-            // but to keep the code simple, we use the fact that this operation is linear to apply it
-            // in a different order so the indexing math is easier/more simple
-            // otherwise, we run into a case where it's essentially touching the `0 - 1` index of the
-            // array
-            int const pi_step[ 24 ] =
-                { 1, 6, 9, 22, 14, 20, 2, 12, 13, 19, 23, 15, 4, 24, 21, 8, 16, 5, 3, 18, 17, 11, 7, 10 };
+            auto rho_offsets = keccak_constants<>::rho_offsets;
+            auto pi_step = keccak_constants<>::pi_step;
 
             auto lane = detail::rotl( state[ 1 ], rho_offsets[ 1 ] );
             for( int t = 0; t < 23; ++t )
@@ -112,32 +131,25 @@ BOOST_FORCEINLINE BOOST_HASH2_SHA3_CONSTEXPR void keccak_permute( std::uint64_t 
         {
             // chi
 
-            std::uint64_t plane[ 5 ] = {};
-            for( int y = 0; y < 5; ++y )
-            {
-                for( int x = 0; x < 5; ++x )
-                {
-                    plane[ x ] = read_lane( state, x, y );
-                }
+            std::size_t const size_max = -1;
 
-                for( int x = 0; x < 5; ++x )
+            for( int y = 0; y < 25; y += 5 )
+            {
+                auto C1 = state[ y ];
+                auto C2 = state[ y + 1 ];
+                for( int x = 0; x < 3; ++x )
                 {
-                    auto v = plane[ x ] ^ ( ( ~plane[ ( x + 1 ) % 5 ] ) & plane[ ( x + 2 ) % 5 ] );
-                    write_lane( state, x, y, v );
+                    state[ y + x ] ^= ( state[ y + ( x + 1 ) ] ^ size_max ) & state[ y + ( x + 2 ) ];
                 }
+                state[ y + 3 ] ^= ( ~state[ y + 4 ] ) & C1;
+                state[ y + 4 ] ^= ( ~C1 ) & C2;
             }
         }
 
         {
             // iota
-            for( int j = 0; j < 7; ++j )
-            {
-                unsigned pos = ( 1 << j ) - 1;
-                if( lfsr( lfsr_reg ) )
-                {
-                    xor_lane( state, 0 ,0, ( std::uint64_t{1} << pos ));
-                }
-            }
+            auto iota_rc = keccak_constants<>::iota_rc;
+            state[ 0 ] ^= iota_rc[ i ];
         }
     }
 }
