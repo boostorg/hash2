@@ -31,7 +31,7 @@ struct keccak_base
 private:
     static_assert( C + R == 1600, "Capacity and rate must sum to 1600" );
 
-    unsigned char state_[ 200 ] = {};
+    std::uint64_t state_[ 25 ] = {};
     std::size_t m_ = 0;
 
 public:
@@ -48,6 +48,8 @@ public:
     {
         auto const block_len = R / 8;
 
+        auto* state = reinterpret_cast<unsigned char*>( state_ );
+
         if( m_ > 0 )
         {
             std::size_t k = block_len - m_;
@@ -59,7 +61,7 @@ public:
 
             for( std::size_t i = 0; i < k; ++i )
             {
-                state_[ m_ + i ] ^= p[ i ];
+                state[ m_ + i ] ^= p[ i ];
             }
 
             p += k;
@@ -78,7 +80,7 @@ public:
         {
             for( int i = 0; i < block_len; ++i )
             {
-                state_[ i ] ^= p[ i ];
+                state[ i ] ^= p[ i ];
             }
             keccak_permute( state_ );
 
@@ -92,7 +94,7 @@ public:
         {
             for( std::size_t i = 0; i < n; ++i )
             {
-                state_[ i ] ^= p[ i ];
+                state[ i ] ^= p[ i ];
             }
             m_ = n;
         }
@@ -104,11 +106,12 @@ public:
     {
         result_type digest;
 
-        state_[ m_ ] ^= PaddingDelim;
-        state_[ R / 8 - 1 ] ^= 0x80;
+        auto* state = reinterpret_cast<unsigned char*>( state_ );
+        state[ m_ ] ^= PaddingDelim;
+        state[ R / 8 - 1 ] ^= 0x80;
 
         keccak_permute( state_ );
-        detail::memcpy( digest.data(), state_, digest.size() );
+        detail::memcpy( digest.data(), state, digest.size() );
 
         return digest;
     }

@@ -26,14 +26,14 @@ namespace hash2
 namespace detail
 {
 
-BOOST_FORCEINLINE BOOST_HASH2_SHA3_CONSTEXPR std::uint64_t read_lane( unsigned char state[ 200 ], int x, int y )
+BOOST_FORCEINLINE BOOST_HASH2_SHA3_CONSTEXPR std::uint64_t read_lane( std::uint64_t state[ 25 ], int x, int y )
 {
-    return detail::read64le( &state[ 8 * (5 * y + x) ] );
+    return state[ 5 * y + x ];
 }
 
-BOOST_FORCEINLINE BOOST_HASH2_SHA3_CONSTEXPR void write_lane( unsigned char state[ 200 ], int x, int y, std::uint64_t lane )
+BOOST_FORCEINLINE BOOST_HASH2_SHA3_CONSTEXPR void write_lane( std::uint64_t state[ 25 ], int x, int y, std::uint64_t lane )
 {
-    detail::write64le( &state[ 8 * ( 5 * y + x )], lane );
+    state[ 5 * y + x ] = lane;
 }
 
 BOOST_FORCEINLINE BOOST_HASH2_SHA3_CONSTEXPR int lfsr(std::uint8_t& lfsr)
@@ -47,13 +47,12 @@ BOOST_FORCEINLINE BOOST_HASH2_SHA3_CONSTEXPR int lfsr(std::uint8_t& lfsr)
     return result;
 }
 
-BOOST_FORCEINLINE BOOST_HASH2_SHA3_CONSTEXPR void xor_lane( unsigned char state[ 200 ], int x, int y, std::uint64_t v )
+BOOST_FORCEINLINE BOOST_HASH2_SHA3_CONSTEXPR void xor_lane( std::uint64_t state[ 25 ], int x, int y, std::uint64_t v )
 {
-    auto p = &state[ 8 * ( 5 * y + x ) ];
-    detail::write64le(p, detail::read64le(p) ^ v);
+    state[ 5 * y + x ] ^= v;
 }
 
-BOOST_FORCEINLINE BOOST_HASH2_SHA3_CONSTEXPR void keccak_permute( unsigned char state[ 200 ] )
+BOOST_FORCEINLINE BOOST_HASH2_SHA3_CONSTEXPR void keccak_permute( std::uint64_t state[ 25 ] )
 {
     std::uint8_t lfsr_reg = 0x01;
     auto const num_rounds = 24;
@@ -62,20 +61,21 @@ BOOST_FORCEINLINE BOOST_HASH2_SHA3_CONSTEXPR void keccak_permute( unsigned char 
         {
             // theta
 
-            std::uint64_t C[5] = {};
+            std::uint64_t C1[ 5 ] = {};
+            std::uint64_t C2[ 5 ] = {};
 
             for( int x = 0; x < 5; ++x )
             {
-                C[ x ] = read_lane( state, x, 0 ) ^ read_lane( state, x, 1 ) ^ read_lane( state, x, 2 ) ^ read_lane( state, x, 3 ) ^ read_lane( state, x, 4 );
+                C1[ x ] = state[ x ] ^ state[ x + 5 ] ^ state[ x + 10 ] ^ state[ x + 15 ] ^ state[ x + 20 ];
+                C2[ x ] = detail::rotl( C1[ x ], 1 );
             }
 
             for( int x = 0; x < 5; ++x )
             {
                 // in proper modulo math, (x - 1) % 5 is isomorphic to (x + 4 ) % 5
-                std::uint64_t D = C[ ( x + 4) % 5 ] ^ detail::rotl( C[ ( x + 1 ) % 5 ], 1 );
                 for( int y = 0; y < 5; ++y )
                 {
-                    xor_lane( state, x, y, D );
+                    state[ 5 * y + x ] ^= C1[ ( x + 4 ) % 5] ^ C2[ ( x + 1 ) % 5 ];
                 }
             }
         }
@@ -83,44 +83,30 @@ BOOST_FORCEINLINE BOOST_HASH2_SHA3_CONSTEXPR void keccak_permute( unsigned char 
         {
             // rho and pi fused
 
-            /*
-                The NIST publication might have a typo in its description of pi, which
-                would yield incorrect offsets. The description claims:
-                A'[x, y, z] = A[(x + 3y)%5,x,z]
-
-                But the reference code and the Keccak reference use the correct rotation
-                matrix in both functions, i.e.
-
-                rho:
-                |x| = |0 1| |x|
-                |y|   |2 3| |y|
-
-                expanded: x = 0 * x + 1 * y, y = 2 * x + 3 * y
-
-                pi:
-                |X| = |0 1| |x|
-                |Y|   |2 3| |y|
-
-                this expands to the same as above which makes the following assignment correct
-            */
-
-            int x = 1;
-            int y = 0;
-
-            std::uint64_t lane = read_lane( state, x, y );
-            for( int t = 0; t < 24; ++t )
+            // calculate these using Figure 2.4 in the Keccak reference with % 64 applied
+            int const rho_offsets[ 25 ] =
             {
-                auto rot = ( ( t + 1 ) * ( t + 2 ) / 2 ) % 64;
+                0, 1, 62, 28, 27,
+                36, 44, 6, 55, 20,
+                3, 10, 43, 25, 39,
+                41, 45, 15, 21, 8,
+                18, 2, 61, 56, 14,
+            };
 
-                auto X = y;
-                auto Y = ( 2 * x + 3 * y ) % 5;
-                x = X;
-                y = Y;
+            // the actual ordering is the reverse of this list
+            // but to keep the code simple, we use the fact that this operation is linear to apply it
+            // in a different order so the indexing math is easier/more simple
+            // otherwise, we run into a case where it's essentially touching the `0 - 1` index of the
+            // array
+            int const pi_step[ 24 ] =
+                { 1, 6, 9, 22, 14, 20, 2, 12, 13, 19, 23, 15, 4, 24, 21, 8, 16, 5, 3, 18, 17, 11, 7, 10 };
 
-                auto temp = read_lane( state, x, y );
-                write_lane( state, x, y, detail::rotl( lane, rot ) );
-                lane = temp;
+            auto lane = detail::rotl( state[ 1 ], rho_offsets[ 1 ] );
+            for( int t = 0; t < 23; ++t )
+            {
+                state[ pi_step[ t ] ] = detail::rotl( state[ pi_step[ t + 1 ] ], rho_offsets[ pi_step[ t + 1 ] ] );
             }
+            state[ pi_step[ 23 ] ] = lane;
         }
 
         {
