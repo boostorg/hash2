@@ -87,6 +87,26 @@ struct keccak_constants
     };
 };
 
+// copy-paste from Boost.Unordered's prime_fmod approach
+#if defined(BOOST_NO_CXX17_INLINE_VARIABLES)
+
+// https://en.cppreference.com/w/cpp/language/static#Constant_static_members
+// If a const non-inline (since C++17) static data member or a constexpr
+// static data member (since C++11)(until C++17) is odr-used, a definition
+// at namespace scope is still required, but it cannot have an
+// initializer.
+
+template<class T>
+constexpr int const keccak_constants<T>::rho_offsets[ 25 ];
+
+template<class T>
+constexpr int const keccak_constants<T>::pi_step[ 24 ];
+
+template<class T>
+constexpr std::uint64_t const keccak_constants<T>::iota_rc[ 24 ];
+
+#endif
+
 inline BOOST_HASH2_SHA3_CONSTEXPR void keccak_permute( std::uint64_t state[ 25 ] )
 {
     auto const num_rounds = 24;
