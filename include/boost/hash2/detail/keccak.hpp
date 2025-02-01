@@ -56,11 +56,11 @@ inline BOOST_HASH2_SHA3_CONSTEXPR void keccak_round( std::uint64_t (&state)[ 25 
             C2[ x ] = detail::rotl( C1[ x ], 1 );
         }
 
-        for( int x = 0; x < 5; ++x )
+        for( int y = 0; y < 5; ++y )
         {
-            // in proper modulo math, (x - 1) % 5 is isomorphic to (x + 4 ) % 5
-            for( int y = 0; y < 5; ++y )
+            for( int x = 0; x < 5; ++x )
             {
+                // in proper modulo math, (x - 1) % 5 is isomorphic to (x + 4 ) % 5
                 state[ 5 * y + x ] ^= C1[ ( x + 4 ) % 5] ^ C2[ ( x + 1 ) % 5 ];
             }
         }
@@ -88,19 +88,22 @@ inline BOOST_HASH2_SHA3_CONSTEXPR void keccak_round( std::uint64_t (&state)[ 25 
             { 1, 6, 9, 22, 14, 20, 2, 12, 13, 19, 23, 15, 4, 24, 21, 8, 16, 5, 3, 18, 17, 11, 7, 10 };
 
         auto lane = detail::rotl( state[ 1 ], rho_offsets[ 1 ] );
+
         for( int t = 0; t < 23; ++t )
         {
             state[ pi_step[ t ] ] = detail::rotl( state[ pi_step[ t + 1 ] ], rho_offsets[ pi_step[ t + 1 ] ] );
         }
+
         state[ pi_step[ 23 ] ] = lane;
     }
 
     {
         // chi
 
-        std::uint64_t plane[ 5 ] = {};
         for( int y = 0; y < 5; ++y )
         {
+            std::uint64_t plane[ 5 ] = {};
+
             for( int x = 0; x < 5; ++x )
             {
                 plane[ x ] = read_lane( state, x, y );
