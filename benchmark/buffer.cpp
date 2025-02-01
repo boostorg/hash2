@@ -55,17 +55,12 @@ void test( int N, int M )
     test_<md5_128>( data, N, M );
     test_<sha1_160>( data, N, M );
     test_<sha2_256>( data, N, M );
-    test_<sha2_224>( data, N, M );
     test_<sha2_512>( data, N, M );
-    test_<sha2_384>( data, N, M );
-    test_<sha2_512_224>( data, N, M );
-    test_<sha2_512_256>( data, N, M );
     test_<ripemd_160>( data, N, M );
     test_<ripemd_128>( data, N, M );
     test_<sha3_256>( data, N, M );
     test_<sha3_512>( data, N, M );
     test_<shake_128>( data, N, M );
-    test_<shake_256>( data, N, M );
 
     puts( "--" );
 }
