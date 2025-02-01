@@ -27,19 +27,11 @@ namespace hash2
 namespace detail
 {
 
-BOOST_FORCEINLINE BOOST_HASH2_SHA3_CONSTEXPR std::uint64_t read_lane( std::uint64_t state[ 25 ], int x, int y )
+BOOST_FORCEINLINE BOOST_HASH2_SHA3_CONSTEXPR void rho_and_pi_round( std::uint64_t (&state)[ 25 ], std::uint64_t& lane, int rot, int x, int y )
 {
-    return state[ 5 * y + x ];
-}
-
-BOOST_FORCEINLINE BOOST_HASH2_SHA3_CONSTEXPR void write_lane( std::uint64_t state[ 25 ], int x, int y, std::uint64_t lane )
-{
-    state[ 5 * y + x ] = lane;
-}
-
-BOOST_FORCEINLINE BOOST_HASH2_SHA3_CONSTEXPR void xor_lane( std::uint64_t state[ 25 ], int x, int y, std::uint64_t v )
-{
-    state[ 5 * y + x ] ^= v;
+    std::uint64_t temp = state[ 5 * y + x ];
+    state[ 5 * y + x ] = detail::rotl( lane, rot );
+    lane = temp;
 }
 
 inline BOOST_HASH2_SHA3_CONSTEXPR void keccak_round( std::uint64_t (&state)[ 25 ] )
@@ -87,32 +79,32 @@ inline BOOST_HASH2_SHA3_CONSTEXPR void keccak_round( std::uint64_t (&state)[ 25 
     {
         // rho and pi fused
 
-        // calculate these using Figure 2.4 in the Keccak reference with % 64 applied
-        int const rho_offsets[ 25 ] =
-        {
-            0, 1, 62, 28, 27,
-            36, 44, 6, 55, 20,
-            3, 10, 43, 25, 39,
-            41, 45, 15, 21, 8,
-            18, 2, 61, 56, 14,
-        };
+        std::uint64_t lane = state[ 1 ];
 
-        // the actual ordering is the reverse of this list
-        // but to keep the code simple, we use the fact that this operation is linear to apply it
-        // in a different order so the indexing math is easier/more simple
-        // otherwise, we run into a case where it's essentially touching the `0 - 1` index of the
-        // array
-        int const pi_step[ 24 ] =
-            { 1, 6, 9, 22, 14, 20, 2, 12, 13, 19, 23, 15, 4, 24, 21, 8, 16, 5, 3, 18, 17, 11, 7, 10 };
-
-        auto lane = detail::rotl( state[ 1 ], rho_offsets[ 1 ] );
-
-        for( int t = 0; t < 23; ++t )
-        {
-            state[ pi_step[ t ] ] = detail::rotl( state[ pi_step[ t + 1 ] ], rho_offsets[ pi_step[ t + 1 ] ] );
-        }
-
-        state[ pi_step[ 23 ] ] = lane;
+        rho_and_pi_round( state, lane,  1, 0, 2 );
+        rho_and_pi_round( state, lane,  3, 2, 1 );
+        rho_and_pi_round( state, lane,  6, 1, 2 );
+        rho_and_pi_round( state, lane, 10, 2, 3 );
+        rho_and_pi_round( state, lane, 15, 3, 3 );
+        rho_and_pi_round( state, lane, 21, 3, 0 );
+        rho_and_pi_round( state, lane, 28, 0, 1 );
+        rho_and_pi_round( state, lane, 36, 1, 3 );
+        rho_and_pi_round( state, lane, 45, 3, 1 );
+        rho_and_pi_round( state, lane, 55, 1, 4 );
+        rho_and_pi_round( state, lane,  2, 4, 4 );
+        rho_and_pi_round( state, lane, 14, 4, 0 );
+        rho_and_pi_round( state, lane, 27, 0, 3 );
+        rho_and_pi_round( state, lane, 41, 3, 4 );
+        rho_and_pi_round( state, lane, 56, 4, 3 );
+        rho_and_pi_round( state, lane,  8, 3, 2 );
+        rho_and_pi_round( state, lane, 25, 2, 2 );
+        rho_and_pi_round( state, lane, 43, 2, 0 );
+        rho_and_pi_round( state, lane, 62, 0, 4 );
+        rho_and_pi_round( state, lane, 18, 4, 2 );
+        rho_and_pi_round( state, lane, 39, 2, 4 );
+        rho_and_pi_round( state, lane, 61, 4, 1 );
+        rho_and_pi_round( state, lane, 20, 1, 1 );
+        rho_and_pi_round( state, lane, 44, 1, 0 );
     }
 
     {
