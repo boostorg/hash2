@@ -135,9 +135,9 @@ run sha2_cx_2.cpp ;
 
 run detail_keccak.cpp ;
 run sha3.cpp ;
-# run hmac_sha3.cpp ;
-# run sha3_cx.cpp ;
-# run sha3_cx_2.cpp ;
+run hmac_sha3.cpp ;
+run sha3_cx.cpp ;
+run sha3_cx_2.cpp ;
 
 run ripemd.cpp ;
 run hmac_ripemd.cpp ;
