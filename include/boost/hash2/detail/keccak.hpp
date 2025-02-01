@@ -120,18 +120,22 @@ inline BOOST_HASH2_SHA3_CONSTEXPR void keccak_round( std::uint64_t (&state)[ 25 
 
         for( int y = 0; y < 5; ++y )
         {
-            std::uint64_t plane[ 5 ] = {};
-
-            for( int x = 0; x < 5; ++x )
+            std::uint64_t const plane[ 5 ] =
             {
-                plane[ x ] = read_lane( state, x, y );
-            }
+                state[ 5 * y + 0 ],
+                state[ 5 * y + 1 ],
+                state[ 5 * y + 2 ],
+                state[ 5 * y + 3 ],
+                state[ 5 * y + 4 ],
+            };
 
-            for( int x = 0; x < 5; ++x )
-            {
-                auto v = plane[ x ] ^ ( ( ~plane[ ( x + 1 ) % 5 ] ) & plane[ ( x + 2 ) % 5 ] );
-                write_lane( state, x, y, v );
-            }
+            // state[ 5 * y + x ] = plane[ x ] ^ ( ( ~plane[ ( x + 1 ) % 5 ] ) & plane[ ( x + 2 ) % 5 ] );
+
+            state[ 5 * y + 0 ] = plane[ 0 ] ^ ( ~plane[ 1 ] & plane[ 2 ] );
+            state[ 5 * y + 1 ] = plane[ 1 ] ^ ( ~plane[ 2 ] & plane[ 3 ] );
+            state[ 5 * y + 2 ] = plane[ 2 ] ^ ( ~plane[ 3 ] & plane[ 4 ] );
+            state[ 5 * y + 3 ] = plane[ 3 ] ^ ( ~plane[ 4 ] & plane[ 0 ] );
+            state[ 5 * y + 4 ] = plane[ 4 ] ^ ( ~plane[ 0 ] & plane[ 1 ] );
         }
     }
 }
