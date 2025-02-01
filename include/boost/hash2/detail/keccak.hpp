@@ -47,22 +47,40 @@ inline BOOST_HASH2_SHA3_CONSTEXPR void keccak_round( std::uint64_t (&state)[ 25 
     {
         // theta
 
-        std::uint64_t C1[ 5 ] = {};
-        std::uint64_t C2[ 5 ] = {};
-
-        for( int x = 0; x < 5; ++x )
+        std::uint64_t const C1[ 5 ] =
         {
-            C1[ x ] = state[ x ] ^ state[ x + 5 ] ^ state[ x + 10 ] ^ state[ x + 15 ] ^ state[ x + 20 ];
-            C2[ x ] = detail::rotl( C1[ x ], 1 );
-        }
+            // state[ x ] ^ state[ x + 5 ] ^ state[ x + 10 ] ^ state[ x + 15 ] ^ state[ x + 20 ]
+
+            state[ 0 ] ^ state[ 0 + 5 ] ^ state[ 0 + 10 ] ^ state[ 0 + 15 ] ^ state[ 0 + 20 ],
+            state[ 1 ] ^ state[ 1 + 5 ] ^ state[ 1 + 10 ] ^ state[ 1 + 15 ] ^ state[ 1 + 20 ],
+            state[ 2 ] ^ state[ 2 + 5 ] ^ state[ 2 + 10 ] ^ state[ 2 + 15 ] ^ state[ 2 + 20 ],
+            state[ 3 ] ^ state[ 3 + 5 ] ^ state[ 3 + 10 ] ^ state[ 3 + 15 ] ^ state[ 3 + 20 ],
+            state[ 4 ] ^ state[ 4 + 5 ] ^ state[ 4 + 10 ] ^ state[ 4 + 15 ] ^ state[ 4 + 20 ],
+        };
+
+        std::uint64_t const C2[ 5 ] =
+        {
+            // detail::rotl( C1[ x ], 1 )
+
+            detail::rotl( C1[ 0 ], 1 ),
+            detail::rotl( C1[ 1 ], 1 ),
+            detail::rotl( C1[ 2 ], 1 ),
+            detail::rotl( C1[ 3 ], 1 ),
+            detail::rotl( C1[ 4 ], 1 ),
+        };
 
         for( int y = 0; y < 5; ++y )
         {
-            for( int x = 0; x < 5; ++x )
-            {
-                // in proper modulo math, (x - 1) % 5 is isomorphic to (x + 4 ) % 5
-                state[ 5 * y + x ] ^= C1[ ( x + 4 ) % 5] ^ C2[ ( x + 1 ) % 5 ];
-            }
+            // for( int x = 0; x < 5; ++x )
+            // {
+            //     state[ 5 * y + x ] ^= C1[ ( x + 4 ) % 5] ^ C2[ ( x + 1 ) % 5 ];
+            // }
+
+            state[ 5 * y + 0 ] ^= C1[ 4 ] ^ C2[ 1 ];
+            state[ 5 * y + 1 ] ^= C1[ 0 ] ^ C2[ 2 ];
+            state[ 5 * y + 2 ] ^= C1[ 1 ] ^ C2[ 3 ];
+            state[ 5 * y + 3 ] ^= C1[ 2 ] ^ C2[ 4 ];
+            state[ 5 * y + 4 ] ^= C1[ 3 ] ^ C2[ 0 ];
         }
     }
 
