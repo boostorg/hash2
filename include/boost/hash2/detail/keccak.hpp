@@ -132,9 +132,9 @@ inline BOOST_HASH2_SHA3_CONSTEXPR void keccak_round( std::uint64_t (&state)[ 25 
     }
 }
 
-inline /*BOOST_HASH2_SHA3_CONSTEXPR*/ void keccak_permute( std::uint64_t (&state)[ 25 ] )
+template<class = void> struct iota_rc_holder
 {
-    static constexpr std::uint64_t iota_rc[ 24 ] =
+    static constexpr std::uint64_t data[ 24 ] =
     {
         0x0000000000000001ull, 0x0000000000008082ull, 0x800000000000808aull,
         0x8000000080008000ull, 0x000000000000808bull, 0x0000000080000001ull,
@@ -145,11 +145,16 @@ inline /*BOOST_HASH2_SHA3_CONSTEXPR*/ void keccak_permute( std::uint64_t (&state
         0x000000000000800aull, 0x800000008000000aull, 0x8000000080008081ull,
         0x8000000000008080ull, 0x0000000080000001ull, 0x8000000080008008ull,
     };
+};
 
+template<class T> constexpr std::uint64_t iota_rc_holder<T>::data[ 24 ];
+
+inline BOOST_HASH2_SHA3_CONSTEXPR void keccak_permute( std::uint64_t (&state)[ 25 ] )
+{
     for( int i = 0; i < 24; ++i )
     {
         keccak_round( state );
-        state[ 0 ] ^= iota_rc[ i ];
+        state[ 0 ] ^= iota_rc_holder<>::data[ i ];
     }
 }
 
