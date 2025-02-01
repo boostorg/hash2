@@ -46,22 +46,22 @@ void test( int N, int M )
 {
     using namespace boost::hash2;
 
-    //test_<fnv1a_32>( data, N, M );
-    //test_<fnv1a_64>( data, N, M );
-    //test_<xxhash_32>( data, N, M );
-    //test_<xxhash_64>( data, N, M );
-    //test_<siphash_32>( data, N, M );
-    //test_<siphash_64>( data, N, M );
-    //test_<md5_128>( data, N, M );
-    //test_<sha1_160>( data, N, M );
+    test_<fnv1a_32>( data, N, M );
+    test_<fnv1a_64>( data, N, M );
+    test_<xxhash_32>( data, N, M );
+    test_<xxhash_64>( data, N, M );
+    test_<siphash_32>( data, N, M );
+    test_<siphash_64>( data, N, M );
+    test_<md5_128>( data, N, M );
+    test_<sha1_160>( data, N, M );
     test_<sha2_256>( data, N, M );
-    //test_<sha2_224>( data, N, M );
+    test_<sha2_224>( data, N, M );
     test_<sha2_512>( data, N, M );
-    //test_<sha2_384>( data, N, M );
-    //test_<sha2_512_224>( data, N, M );
-    //test_<sha2_512_256>( data, N, M );
-    //test_<ripemd_160>( data, N, M );
-    //test_<ripemd_128>( data, N, M );
+    test_<sha2_384>( data, N, M );
+    test_<sha2_512_224>( data, N, M );
+    test_<sha2_512_256>( data, N, M );
+    test_<ripemd_160>( data, N, M );
+    test_<ripemd_128>( data, N, M );
     test_<sha3_256>( data, N, M );
     test_<sha3_512>( data, N, M );
     test_<shake_128>( data, N, M );
@@ -73,17 +73,17 @@ void test( int N, int M )
 unsigned const N1 = 65536;
 unsigned const M1 = 65535;
 
-//unsigned const N2 = 15;
-//unsigned const M2 = M1 * N1 / N2;
+unsigned const N2 = 15;
+unsigned const M2 = M1 * N1 / N2;
 
-//unsigned const N3 = 4;
-//unsigned const M3 = M1 * N1 / N3;
+unsigned const N3 = 4;
+unsigned const M3 = M1 * N1 / N3;
 
 int main()
 {
     test( N1, M1 );
-    //test( N2, M2 );
-    //test( N3, M3 );
+    test( N2, M2 );
+    test( N3, M3 );
 }
 
 unsigned char data[ N1 ];
