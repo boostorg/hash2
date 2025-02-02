@@ -28,20 +28,20 @@ static const std::uint64_t ref2[ 25 ] =
 
 int main()
 {
-    std::uint64_t state[ 25 ] = {};
+    unsigned char state[ 200 ] = {};
 
     boost::hash2::detail::keccak_permute( state );
 
     for( int i = 0; i < 25; ++i )
     {
-        BOOST_TEST_EQ( state[ i ], ref[ i ] );
+        BOOST_TEST_EQ( boost::hash2::detail::read64le( state + 8 * i ), ref[ i ] );
     }
 
     boost::hash2::detail::keccak_permute( state );
 
     for( int i = 0; i < 25; ++i )
     {
-        BOOST_TEST_EQ( state[ i ], ref2[ i ] );
+        BOOST_TEST_EQ( boost::hash2::detail::read64le( state + 8 * i ), ref2[ i ] );
     }
 
     return boost::report_errors();
