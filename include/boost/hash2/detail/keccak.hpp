@@ -162,7 +162,11 @@ template<class = void> struct iota_rc_holder
     };
 };
 
+#if defined(BOOST_NO_CXX17_INLINE_VARIABLES)
+
 template<class T> constexpr std::uint64_t iota_rc_holder<T>::data[ 24 ];
+
+#endif
 
 inline BOOST_HASH2_SHA3_CONSTEXPR void keccak_permute( unsigned char (&state)[ 200 ] )
 {
