@@ -14,11 +14,10 @@
 
 #define STATIC_ASSERT(...) static_assert(__VA_ARGS__, #__VA_ARGS__)
 
-// msvc-14.2 will OOM
 // gcc-5 has issues with these constexpr tests:
 // libs/hash2/test/sha3_cx.cpp:100:132: internal compiler error: in fold_binary_loc, at fold-const.c:9925
 //          TEST_EQ( test<sha3_256>( 0, str1 ), digest_from_hex( "3a985da74fe225b2045c172d6bd390bd855f086e3e9d525b46bfe24511431532" ) );
-#if defined(BOOST_NO_CXX14_CONSTEXPR) || BOOST_WORKAROUND(BOOST_GCC, >= 50000 && BOOST_GCC < 60000) || BOOST_WORKAROUND(BOOST_MSVC, >= 1920 && BOOST_MSVC < 1930)
+#if defined(BOOST_NO_CXX14_CONSTEXPR) || BOOST_WORKAROUND(BOOST_GCC, < 60000)
 
 # define TEST_EQ(x1, x2) BOOST_TEST_EQ(x1, x2)
 
