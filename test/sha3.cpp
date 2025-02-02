@@ -35,24 +35,61 @@ static void sha3_256()
     using boost::hash2::sha3_256;
     BOOST_TEST_EQ( digest<sha3_256>( "" ), std::string( "a7ffc6f8bf1ed76651c14756a061d662f580ff4de43b49fa82d80a4b80f8434a" ) );
 
+    // The block size of SHA3-256 is 1088 bits / 136 bytes
+    BOOST_TEST_EQ( sha3_256::block_size, 136 );
+
     // selected samples from the download available here:
     // https://csrc.nist.gov/Projects/Cryptographic-Algorithm-Validation-Program/Secure-Hashing
     std::pair<char const*, char const*> inputs[] =
     {
           /* expected hash */                                                 /* input message */
+
+        // 8 bits / 1 byte
         { "f0d04dd1e6cfc29a4460d521796852f25d9ef8d28b44ee91ff5b759d72c1e6d6", "e9" },
+
+        // 16 bits / 2 bytes
         { "94279e8f5ccdf6e17f292b59698ab4e614dfe696a46c46da78305fc6a3146ab7", "d477" },
+
+        // 72 bits / 9 bytes
         { "fd09b3501888445ffc8c3bb95d106440ceee469415fce1474743273094306e2e", "fb8dfa3a132f9813ac" },
+
+        // 104 bits / 13 bytes
         { "69dfc3a25865f3535f18b4a7bd9c0c69d78455f1fc1f4bf4e29fc82bf32818ec", "9c76ca5b6f8d1212d8e6896ad8" },
+
+        // 136 bits / 17 bytes
         { "6c2de3c95900a1bcec6bd4ca780056af4acf3aa36ee640474b6e870187f59361", "266e8cbd3e73d80df2a49cfdaf0dc39cd1" },
+
+        // 192 bits / 24 bytes
         { "cdfd1afa793e48fd0ee5b34dfc53fbcee43e9d2ac21515e4746475453ab3831f", "cf549a383c0ac31eae870c40867eeb94fa1b6f3cac4473f2" },
+
+        // 328 bits / 41 bytes
         { "e02c1b197979c44a5a50d05ea4882c16d8205c2e3344265f8fe0e80aed06c065", "bdd0252dec5b798ef20e51791a18e8ca234d9bfde632a9e5395337a112dd97cdf068c9f57615424f59" },
+
+        // 600 bits / 75 bytes
         { "60d80f1c703dad5da93db222fb45fb7fa768c8aa2787f4b81f1e00365b8f49e2", "a0dfaecd3e307c5ddf9a93603f7e19725a779218734904525b14586ff0ce0425e4efe7e1c06e745c28ed136f6031c4280fd4061d433ef700b6d1bc745064231fecf387015f94f504b6ad8c" },
+
+        // 616 bits / 77 bytes
         { "51cc71b6934afcf28fa49942b76323f36cd6a0aecc5a0e49c10994ddcabdbb80", "d65b9f881d1fc7f17d6dd429faca8404e6ce60fba7d89b7fba003c8ef84d8083182979327611fc341291ba80dc70ad3b2f28b6d29b988445e7fdb7c6561f45822ac81dbf677a0b27d961dc6358" },
+
+        // 856 bits / 107 bytes
         { "8cc4d39b2f5ba0bc9d2ee2a8777cf08533e60cc69b65a7b31c5c2121193aa31e", "6db2a43a229b10c3629249fc5136468b4d84df7b89ec90ebf7aa7a036c53aa2dffae9e81b2c60580543dc706a5e3457abc87e248a60ec29150c2d221a6ec08a1fda4ec0daee8576904ec7ab059b1230e7bd93c4e55ba9496cbb1e352e5b8086e303b94c861288ce53c466b" },
+
+        // 1048 bits / 131 bytes
         { "c163cd43de224ac5c262ae39db746cfcad66074ebaec4a6da23d86b310520f21", "da11c39c77250f6264dda4b096341ff9c4cc2c900633b20ea1664bf32193f790a923112488f882450cf334819bbaca46ffb88eff0265aa803bc79ca42739e4347c6bff0bb9aa99780261ffe42be0d3b5135d03723338fb2776841a0b4bc26360f9ef769b34c2bec5ed2feb216e2fa30fa5c37430c0360ecbfba3af6fb6b8dedacbb95c" },
+
+        // 1080 bits / 135 bytes
+        { "f82d9602b231d332d902cb6436b15aef89acc591cb8626233ced20c0a6e80d7a", "b1f6076509938432145bb15dbe1a7b2e007934be5f753908b50fd24333455970a7429f2ffbd28bd6fe1804c4688311f318fe3fcd9f6744410243e115bcb00d7e039a4fee4c326c2d119c42abd2e8f4155a44472643704cc0bc72403b8a8ab0fd4d68e04a059d6e5ed45033b906326abb4eb4147052779bad6a03b55ca5bd8b140e131bed2dfada" },
+
+        // 1088 bits / 136 bytes
+        { "4beae3515ba35ec8cbd1d94567e22b0d7809c466abfbafe9610349597ba15b45", "56ea14d7fcb0db748ff649aaa5d0afdc2357528a9aad6076d73b2805b53d89e73681abfad26bee6c0f3d20215295f354f538ae80990d2281be6de0f6919aa9eb048c26b524f4d91ca87b54c0c54aa9b54ad02171e8bf31e8d158a9f586e92ffce994ecce9a5185cc80364d50a6f7b94849a914242fcb73f33a86ecc83c3403630d20650ddb8cd9c4" },
+
+        // 2184 bits / 273 bytes
         { "cb5648a1d61c6c5bdacd96f81c9591debc3950dcf658145b8d996570ba881a05", "b1caa396771a09a1db9bc20543e988e359d47c2a616417bbca1b62cb02796a888fc6eeff5c0b5c3d5062fcb4256f6ae1782f492c1cf03610b4a1fb7b814c057878e1190b9835425c7a4a0e182ad1f91535ed2a35033a5d8c670e21c575ff43c194a58a82d4a1a44881dd61f9f8161fc6b998860cbe4975780be93b6f87980bad0a99aa2cb7556b478ca35d1f3746c33e2bb7c47af426641cc7bbb3425e2144820345e1d0ea5b7da2c3236a52906acdc3b4d34e474dd714c0c40bf006a3a1d889a632983814bbc4a14fe5f159aa89249e7c738b3b73666bac2a615a83fd21ae0a1ce7352ade7b278b587158fd2fabb217aa1fe31d0bda53272045598015a8ae4d8cec226fefa58daa05500906c4d85e7567" },
+
+        // 3280 bits / 410 bytes
         { "095dcd0bc55206d2e1e715fb7173fc16a81979f278495dfc69a6d8f3174eba5a", "712b03d9ebe78d3a032a612939c518a6166ca9a161183a7596aa35b294d19d1f962da3ff64b57494cb5656e24adcf3b50e16f4e52135d2d9de76e94aa801cf49db10e384035329c54c9455bb3a9725fd9a44f44cb9078d18d3783d46ce372c31281aecef2f8b53d5702b863d71bc5786a33dd15d9256103b5ff7572f703d5cde6695e6c84f239acd1d6512ef581330590f4ab2a114ea064a693d5f8df5d908587bc7f998cde4a8b43d8821595566597dc8b3bf9ea78b154bd8907ee6c5d4d8a851f94be510962292b7ddda04d17b79fab4c022deb400e5489639dbc448f573d5cf72073a8001b36f73ac6677351b39d9bdb900e9a1121f488a7fa0aee60682e7dc7c531c85ec0154593ded3ae70e4121cae58445d8896b549cacf22d07cdace7625d57158721b44851d796d6511c38dac28dd37cbf2d7073b407fbc813149adc485e3dacee66755443c389d2d90dc70d8ff91816c0c5d7adbad7e30772a1f3ce76c72a6a2284ec7f174aefb6e9a895c118717999421b470a9665d2728c3c60c6d3e048d58b43c0d1b5b2f00be8b64bfe453d1e8fadf5699331f9" },
+
+        // 4376 bits / 547 bytes
         { "cb1c691c87244c0caf733aacd427f83412cd48820b358c1b15dd9fadee54e5af", "2a459282195123ebc6cf5782ab611a11b9487706f7795e236df3a476404f4b8c1e9904e2dc5ef29c5e06b179b8649707928c3913d1e53164747f1fa9bba6eeaf8fb759d71e32adc8c611d061345882f1cdeee3ab4cab3554adb2e43f4b01c37b4546994b25f4dcd6c497bc206865643930157cb5b2f4f25be235fa223688535907efcc253bcd083021407ea09cb1c34684aa0c1849e7efe2d9af6938c46525af9e5afb4da6e5b83da4b61dc718672a8090549cbe5aadb44f5bc93a6b3fbdc2e6d32e2eaaae637465179ea17f23ad1e4f1ebc328e2c6dc90c302b74a1edbbb0676c136b269d70c41040a313af06ab291bf489d9700950b77f207c1fc41884799931b3bca8b93331a6e96b7a3f0a8bd24cdb64964c377e0512f36444bb0643a4e3ecb328194cd5428fd89ede167472a14a9bf5730aff1e3b2c708de96eff1ebaaf63beb75f9c7d8034d6e5471e8f8a1f7efce37793a958e134619c19c54d3d42645f7a7263f25471fbaae8be3ea2fbd34ec6d7aacd7d5680948c3cd9a837c9c469a88f600d95829f4d1e4e4a5ef4ed4623c07815a1c33d9fb3b91333ff04eac92806a68a46cf2e9293f8bff466ce87fe66b46fbff7c238c7f9b2c92eb2fdc7d8084167f6f4e680d03301e5c33f78f1857d6863b1b8c36c7fce3e07d2a96a8979712079ae0023a1e3970165bfcf3a5463d2a4fdf1ca0e044f9a247528cd935734cb6d85ba53ceb95325c0eaf0ff5cd81ecb32e58917eb26bfc52dba3704bf5a927fee3220" },
     };
 
@@ -67,6 +104,9 @@ static void sha3_224()
     // https://en.wikipedia.org/wiki/SHA-3#Examples_of_SHA-3_variants
     using boost::hash2::sha3_224;
     BOOST_TEST_EQ( digest<sha3_224>( "" ), std::string( "6b4e03423667dbb73b6e15454f0eb1abd4597f9a1b078e3f5b5a6bc7" ) );
+
+    // The block size of SHA3-224 is 1152 bits / 144 bytes
+    BOOST_TEST_EQ( sha3_224::block_size, 144 );
 
     // selected samples from the download available here:
     // https://csrc.nist.gov/Projects/Cryptographic-Algorithm-Validation-Program/Secure-Hashing
@@ -101,6 +141,9 @@ static void sha3_512()
     using boost::hash2::sha3_512;
     BOOST_TEST_EQ( digest<sha3_512>( "" ), std::string( "a69f73cca23a9ac5c8b567dc185a756e97c982164fe25859e0d1dcc1475c80a615b2123af1f5f94c11e3e9402c3ac558f500199d95b6d3e301758586281dcd26" ) );
 
+    // The block size of SHA3-512 is 576 bits / 72 bytes
+    BOOST_TEST_EQ( sha3_512::block_size, 72 );
+
     // selected samples from the download available here:
     // https://csrc.nist.gov/Projects/Cryptographic-Algorithm-Validation-Program/Secure-Hashing
     std::pair<char const*, char const*> inputs[] =
@@ -133,6 +176,9 @@ static void sha3_384()
     // https://en.wikipedia.org/wiki/SHA-3#Examples_of_SHA-3_variants
     using boost::hash2::sha3_384;
     BOOST_TEST_EQ( digest<sha3_384>( "" ), std::string( "0c63a75b845e4f7d01107d852e4c2485c51a50aaaa94fc61995e71bbee983a2ac3713831264adb47fb6bd1e058d5f004" ) );
+
+    // The block size of SHA3-384 is 832 bits / 104 bytes
+    BOOST_TEST_EQ( sha3_384::block_size, 104 );
 
     // selected samples from the download available here:
     // https://csrc.nist.gov/Projects/Cryptographic-Algorithm-Validation-Program/Secure-Hashing
@@ -175,6 +221,9 @@ static void shake_128()
     using boost::hash2::shake_128;
     BOOST_TEST_EQ( truncate<32>( digest<shake_128>( "" ) ), std::string( "7f9c2ba4e88f827d616045507605853ed73b8093f6efbc88eb1a6eacfa66ef26" ) );
 
+    // The block size of SHAKE-128 is 1344 bits / 168 bytes
+    BOOST_TEST_EQ( shake_128::block_size, 168 );
+
     // selected samples from the download available here:
     // https://csrc.nist.gov/Projects/Cryptographic-Algorithm-Validation-Program/Secure-Hashing
     std::pair<char const*, char const*> inputs[] =
@@ -211,6 +260,9 @@ static void shake_256()
     // SHAKE256("", 512) => 64 byte digest, truncate from default of (1600 - 256) / 8 => 168
     using boost::hash2::shake_256;
     BOOST_TEST_EQ( truncate<64>( digest<shake_256>( "" ) ), std::string( "46b9dd2b0ba88d13233b3feb743eeb243fcd52ea62b81b82b50c27646ed5762fd75dc4ddd8c0f200cb05019d67b592f6fc821c49479ab48640292eacb3b7c4be" ) );
+
+    // The block size of SHAKE-256 is 1088 bits / 136 bytes
+    BOOST_TEST_EQ( shake_256::block_size, 136 );
 
     // selected samples from the download available here:
     // https://csrc.nist.gov/Projects/Cryptographic-Algorithm-Validation-Program/Secure-Hashing
