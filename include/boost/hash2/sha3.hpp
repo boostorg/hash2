@@ -25,18 +25,20 @@ namespace hash2
 namespace detail
 {
 
-template<std::uint8_t PaddingDelim, int C, int D, int R = 1600 - C>
+template<std::uint8_t PaddingDelim, int C, int D>
 struct keccak_base
 {
 private:
-    static_assert( C + R == 1600, "Capacity and rate must sum to 1600" );
+
+    static constexpr int R = 1600 - C;
 
     unsigned char state_[ 200 ] = {};
     std::size_t m_ = 0;
 
 public:
+
     using result_type = digest<D / 8>;
-    static constexpr int block_size = ( 1600 - C ) / 8;
+    static constexpr int block_size = R / 8;
 
     void update( void const* pv, std::size_t n )
     {
@@ -113,6 +115,13 @@ public:
         return digest;
     }
 };
+
+#if defined(BOOST_NO_CXX17_INLINE_VARIABLES)
+
+template<std::uint8_t PaddingDelim, int C, int D>
+constexpr int keccak_base<PaddingDelim, C, D>::block_size;
+
+#endif
 
 } // namespace detail
 
