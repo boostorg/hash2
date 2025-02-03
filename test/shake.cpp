@@ -5,6 +5,7 @@
 #include <boost/hash2/sha3.hpp>
 #include <boost/core/lightweight_test.hpp>
 #include <string>
+#include <cstring>
 
 std::string from_hex( char const* str )
 {
@@ -19,20 +20,36 @@ std::string from_hex( char const* str )
     return s;
 }
 
-template<class H> std::string digest( std::string const & s )
+template<std::size_t D, class H> boost::hash2::digest<D> get_digest_result( H& h )
+{
+    boost::hash2::digest<D> r;
+
+    std::size_t n = 0;
+
+    for( ;; )
+    {
+        auto r2 = h.result();
+
+        if( r2.size() >= r.size() - n )
+        {
+            std::memcpy( r.data() + n, r2.data(), r.size() - n );
+            break;
+        }
+
+        std::memcpy( r.data() + n, r2.data(), r2.size() );
+        n += r2.size();
+    }
+
+    return r;
+}
+
+template<class H, std::size_t D> std::string digest( std::string const& s )
 {
     H h;
 
     h.update( s.data(), s.size() );
 
-    return to_string( h.result() );
-}
-
-template<std::size_t D>
-std::string truncate( std::string in )
-{
-    in.resize(D * 2);
-    return in;
+    return to_string( get_digest_result<D>( h ) );
 }
 
 static void shake_128()
@@ -40,7 +57,7 @@ static void shake_128()
     // https://en.wikipedia.org/wiki/SHA-3#Examples_of_SHA-3_variants
     // SHAKE128("", 256) => 32 byte digest, truncate from default of (1600 - 256) / 8 => 168
     using boost::hash2::shake_128;
-    BOOST_TEST_EQ( truncate<32>( digest<shake_128>( "" ) ), std::string( "7f9c2ba4e88f827d616045507605853ed73b8093f6efbc88eb1a6eacfa66ef26" ) );
+    BOOST_TEST_EQ( (digest<shake_128, 32>( "" )), std::string( "7f9c2ba4e88f827d616045507605853ed73b8093f6efbc88eb1a6eacfa66ef26" ) );
 
     // The block size of SHAKE-128 is 1344 bits / 168 bytes
     BOOST_TEST_EQ( shake_128::block_size, 168 );
@@ -105,13 +122,13 @@ static void shake_128()
 
     for( auto const& input : inputs )
     {
-        BOOST_TEST_EQ( truncate<16>( digest<shake_128>( from_hex( input.second ) ) ), std::string( input.first ));
+        BOOST_TEST_EQ( (digest<shake_128, 16>( from_hex( input.second ) )), std::string( input.first ));
     }
 
     // SHAKE128VariableOut.rsp
 
-    BOOST_TEST_EQ( truncate<352 / 8>( digest<shake_128>( from_hex( "0b5173a10bdd6644ed165db4dec31784" ) ) ), std::string( "f96f5e18c12945f7d1bd8b38b4465e694ba06a36ca4d9e6c271863e95534867dbfa07517c095324b9cf3dc95" ));
-    BOOST_TEST_EQ( truncate<896 / 8>( digest<shake_128>( from_hex( "511af474bdb4c85547d47373c8fb4082" ) ) ), std::string( "50397c1f6d1244b8a3741c1d82dfbe6f9b4357cbd8f3c2046c2ee95a0ade85cc4650873b08271ac33c539ad4333e2a328da5ef2348e6716b34451450579eb06a514e70923c3c7d16b97681d1f88bbc342543d0574f2bf97340e0537b03a06c3f06ec0a8928a2bf1221f50104e1f46057" ));
+    BOOST_TEST_EQ( (digest<shake_128, 352 / 8>( from_hex( "0b5173a10bdd6644ed165db4dec31784" ) )), std::string( "f96f5e18c12945f7d1bd8b38b4465e694ba06a36ca4d9e6c271863e95534867dbfa07517c095324b9cf3dc95" ));
+    BOOST_TEST_EQ( (digest<shake_128, 896 / 8>( from_hex( "511af474bdb4c85547d47373c8fb4082" ) )), std::string( "50397c1f6d1244b8a3741c1d82dfbe6f9b4357cbd8f3c2046c2ee95a0ade85cc4650873b08271ac33c539ad4333e2a328da5ef2348e6716b34451450579eb06a514e70923c3c7d16b97681d1f88bbc342543d0574f2bf97340e0537b03a06c3f06ec0a8928a2bf1221f50104e1f46057" ));
 }
 
 static void shake_256()
@@ -119,7 +136,7 @@ static void shake_256()
     // https://en.wikipedia.org/wiki/SHA-3#Examples_of_SHA-3_variants
     // SHAKE256("", 512) => 64 byte digest, truncate from default of (1600 - 512) / 8 => 136
     using boost::hash2::shake_256;
-    BOOST_TEST_EQ( truncate<64>( digest<shake_256>( "" ) ), std::string( "46b9dd2b0ba88d13233b3feb743eeb243fcd52ea62b81b82b50c27646ed5762fd75dc4ddd8c0f200cb05019d67b592f6fc821c49479ab48640292eacb3b7c4be" ) );
+    BOOST_TEST_EQ( (digest<shake_256, 64>( "" )), std::string( "46b9dd2b0ba88d13233b3feb743eeb243fcd52ea62b81b82b50c27646ed5762fd75dc4ddd8c0f200cb05019d67b592f6fc821c49479ab48640292eacb3b7c4be" ) );
 
     // The block size of SHAKE-256 is 1088 bits / 136 bytes
     BOOST_TEST_EQ( shake_256::block_size, 136 );
@@ -184,13 +201,13 @@ static void shake_256()
 
     for( auto const& input : inputs )
     {
-        BOOST_TEST_EQ( truncate<32>( digest<shake_256>( from_hex( input.second ) ) ), std::string( input.first ));
+        BOOST_TEST_EQ( (digest<shake_256, 32>( from_hex( input.second ) )), std::string( input.first ));
     }
 
     // SHAKE256VariableOut.rsp
 
-    BOOST_TEST_EQ( truncate<352 / 8>( digest<shake_256>( from_hex( "dc886df3f69c49513de3627e9481db5871e8ee88eb9f99611541930a8bc885e0" ) ) ), std::string( "00648afbc5e651649db1fd82936b00dbbc122fb4c877860d385c4950d56de7e096d613d7a3f27ed8f26334b0" ));
-    BOOST_TEST_EQ( truncate<896 / 8>( digest<shake_256>( from_hex( "e3ef127eadfafaf40408cebb28705df30b68d99dfa1893507ef3062d85461715" ) ) ), std::string( "7314002948c057006d4fc21e3e19c258fb5bdd57728fe93c9c6ef265b6d9f559ca73da32c427e135ba0db900d9003b19c9cf116f542a760418b1a435ac75ed5ab4ef151808c3849c3bce11c3cd285dd75e5c9fd0a0b32a89640a68e6e5b270f966f33911cfdffd03488b52b4c7fd1b22" ));
+    BOOST_TEST_EQ( (digest<shake_256, 352 / 8>( from_hex( "dc886df3f69c49513de3627e9481db5871e8ee88eb9f99611541930a8bc885e0" ) )), std::string( "00648afbc5e651649db1fd82936b00dbbc122fb4c877860d385c4950d56de7e096d613d7a3f27ed8f26334b0" ));
+    BOOST_TEST_EQ( (digest<shake_256, 896 / 8>( from_hex( "e3ef127eadfafaf40408cebb28705df30b68d99dfa1893507ef3062d85461715" ) )), std::string( "7314002948c057006d4fc21e3e19c258fb5bdd57728fe93c9c6ef265b6d9f559ca73da32c427e135ba0db900d9003b19c9cf116f542a760418b1a435ac75ed5ab4ef151808c3849c3bce11c3cd285dd75e5c9fd0a0b32a89640a68e6e5b270f966f33911cfdffd03488b52b4c7fd1b22" ));
 }
 
 int main()
