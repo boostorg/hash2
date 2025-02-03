@@ -31,7 +31,7 @@ template<class H, std::size_t N> BOOST_CXX14_CONSTEXPR typename H::result_type t
     std::size_t const M = N - 1; // strip off null-terminator
 
     // only update( unsigned char const*, std::size_t ) is constexpr so we memcpy here to emulate bit_cast
-    unsigned char buf[M] = {};
+    unsigned char buf[ N ] = {}; // avoids zero-sized arrays
     for( unsigned i = 0; i < M; ++i ){ buf[i] = str[i]; }
 
     h.update( buf, M / 3 );
@@ -78,7 +78,7 @@ template<class H, std::size_t N> BOOST_CXX14_CONSTEXPR typename H::result_type t
 
     std::size_t const M = ( N - 1 ) / 2;
 
-    unsigned char buf[M] = {};
+    unsigned char buf[ N ] = {}; // avoids zero-sized arrays
     for( unsigned i = 0; i < M; ++i ) {
         auto c1 = to_byte( str[ 2 * i ] );
         auto c2 = to_byte( str[ 2 * i + 1 ] );
@@ -110,6 +110,25 @@ int main()
         TEST_EQ( test<sha3_256>( 7, str2 ), digest_from_hex( "6e62b382e3a6d91715f5c488e1318196d0bc4c875f8bc7229c717aa4fa31f5ae" ) );
         TEST_EQ( test<sha3_256>( 7, str3 ), digest_from_hex( "c1c987cdc6fd9dff69ca8bbd39f8ff5afc412545f046232c4e97402d6c94a2bc" ) );
         TEST_EQ( test<sha3_256>( 7, str4 ), digest_from_hex( "a0eb0aeef201cf512ac37017810b8aae4d6f71f40e376195dcbf2848cb743d01" ) );
+    }
+
+    {
+        constexpr auto const N = sha3_256::block_size;
+
+        constexpr char const buf1[] = "";
+        constexpr unsigned char buf2[ N - 1 ] = {};
+        constexpr unsigned char buf3[ N ] = {};
+        constexpr unsigned char buf4[ N + 1 ] = {};
+
+        TEST_EQ( test<sha3_256>( 0, buf1 ), digest_from_hex( "a7ffc6f8bf1ed76651c14756a061d662f580ff4de43b49fa82d80a4b80f8434a" ) );
+        TEST_EQ( test<sha3_256>( 0, buf2 ), digest_from_hex( "7d080d7ba978a75c8a7d1f9be566c859084509c9c2b4928435c225d5777d98e3" ) );
+        TEST_EQ( test<sha3_256>( 0, buf3 ), digest_from_hex( "e772c9cf9eb9c991cdfcf125001b454fdbc0a95f188d1b4c844aa032ad6e075e" ) );
+        TEST_EQ( test<sha3_256>( 0, buf4 ), digest_from_hex( "9ed57188470a83b758cd71c00c6cc3beb984b36a6c35864b4e53017b24cf5699" ) );
+
+        TEST_EQ( test<sha3_256>( 7, buf1 ), digest_from_hex( "aeaead8936dca916412308cc89e143fd7abee742b63e58af03edbc70df57c189" ) );
+        TEST_EQ( test<sha3_256>( 7, buf2 ), digest_from_hex( "62a22f45158da5a7793a0760320a74d5b37b4acb92ed97dc2fef39c97ede5bf3" ) );
+        TEST_EQ( test<sha3_256>( 7, buf3 ), digest_from_hex( "06e557dd0972ee7a39e587a844f67545aefa2368b08806b68f5b3d0315323a42" ) );
+        TEST_EQ( test<sha3_256>( 7, buf4 ), digest_from_hex( "85bb3a4d934cbf99ebe0e798969d9cef3a50b456b37a1f2e2c96c71f913cb254" ) );
     }
 
     return boost::report_errors();
