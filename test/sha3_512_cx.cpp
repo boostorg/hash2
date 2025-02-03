@@ -99,14 +99,14 @@ int main()
         constexpr char const str1[] = "abc";
 
         TEST_EQ( test<sha3_512>( 0, str1 ), digest_from_hex( "b751850b1a57168a5693cd924b6b096e08f621827444f70d884f5d0240d2712e10e116e9192af3c91a7ec57647e3934057340b4cf408d5a56592f8274eec53f0" ) );
-        TEST_EQ( test<sha3_512>( 7, str1 ), digest_from_hex( "eda4819a1d3ebaebdbd62dc1beb8db71230fb61c266b65f2a6f090d0d8aa45ad61ce906d75ac814b45bae4023246fcfac16cd46fd28e798b6c2599bcae6c924b" ) );
+        TEST_EQ( test<sha3_512>( 7, str1 ), digest_from_hex( "7fcdaa301f16df33e622e204cbfda936928e7b23ecd26a4efdb30c11782b7dfb079d45800015a8ca306a95ad5bc97c3aa7ed99920e1730826d8260fad8a59d33" ) );
 
 #if !BOOST_WORKAROUND(BOOST_MSVC, < 1920)
 
         constexpr char const str2[] = "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu";
 
         TEST_EQ( test<sha3_512>( 0, str2 ), digest_from_hex( "afebb2ef542e6579c50cad06d2e578f9f8dd6881d7dc824d26360feebf18a4fa73e3261122948efcfd492e74e82e2189ed0fb440d187f382270cb455f21dd185" ) );
-        TEST_EQ( test<sha3_512>( 7, str2 ), digest_from_hex( "e348824e6fc0c3c89208841431ca501dc1c36b7ce10324a67e7bee930278b9c200a5c281e166c0751fa1852ee19700bc163f1e63a51b9125236e0a415dae44f3" ) );
+        TEST_EQ( test<sha3_512>( 7, str2 ), digest_from_hex( "fc4a2170b4693ae60039188d07e8d49d9b4457fc42e86f3773baa123d48b5fb655bcee8d7371fa136f4dcecdfac647e7275c42b8cc96a616ce67c8f4f3cac66e" ) );
 
         constexpr unsigned char buf1[ 111 ] = {};
         constexpr unsigned char buf2[ 112 ] = {};
@@ -120,11 +120,11 @@ int main()
         TEST_EQ( test<sha3_512>( 0, buf4 ), digest_from_hex( "017d18ab7042eacc42bcf9f100a2ba45a14594434e76b3e2c4c59bb7710b13e99d6388d2542d7f0318bb8e0467fe46f8a1277c6d26db59f09f28e46fa8b60815" ) );
         TEST_EQ( test<sha3_512>( 0, buf5 ), digest_from_hex( "422d49f19849352a41f4a61796feb28c18a79883fdb2cc52df63dc7cf0b13efddd757fac95861403b1cca3f28cb164f897df9bbfc2f579567d10f8fb21b5c6bf" ) );
 
-        TEST_EQ( test<sha3_512>( 7, buf1 ), digest_from_hex( "124a2aae5e647bbd281a321032dcb21e76c0e45092bfbf798ff9bf17b963d4c189fcdd41bf59f7d19a509655cbc7974b72b97e99984100ef2c4042d952dc83af" ) );
-        TEST_EQ( test<sha3_512>( 7, buf2 ), digest_from_hex( "c6dfb78a92d63a82fb57668a70ea480722879b06f310bcf04a00b771c92335a1461ee02ca94083e1405f92319f6206438c7e6ef1c2a28f6eabd2f4cfd9a12100" ) );
-        TEST_EQ( test<sha3_512>( 7, buf3 ), digest_from_hex( "b5db27e2df1a9960d94811d1a2c79fb472a5d864edbc0312b6119fb63ec082be05dcbd1a66872b8049c5b34c0636242e1c29a4e3f625638682a6de31234a5df0" ) );
-        TEST_EQ( test<sha3_512>( 7, buf4 ), digest_from_hex( "8b3d6c5596b989756b3c1339a5c4cac78a28c2cfc3913b635b63df77fac08a021d9cf6e9361d42511c568ecd8d14803a612b2c3f5937dc0e19bf566a480217d1" ) );
-        TEST_EQ( test<sha3_512>( 7, buf5 ), digest_from_hex( "67548af9643ce72d83339b30fd18f50c2f1ca4806ce255eca7c314b7d7ad71dbb64bc0b162c79dba4a4b4643959dd06b0f34b23e6b931f778611bcbcfce86f44" ) );
+        TEST_EQ( test<sha3_512>( 7, buf1 ), digest_from_hex( "2dead5a91b841bb750f89f6057a0d988940a68bfc6261105ce8f6d059add89169526d994339aa1f563af96e26c72e2ac5fb9d5125b5197cc214c1451bf449856" ) );
+        TEST_EQ( test<sha3_512>( 7, buf2 ), digest_from_hex( "ba654b58fb1204036dac6bc97cbabad90409561aa0c77515fbb9130754df4ac5318cab76e581f44bfc07b973af84a29734c93ba9e87a20ce087eb282c14f42e9" ) );
+        TEST_EQ( test<sha3_512>( 7, buf3 ), digest_from_hex( "705069ae85d9d02f2ec042adede304624ce7083ac2bd3611640f0073e0d0ca8d80b921a31b3cdba1632941127adada7b17075500d3e5e8b1cf308445be95f55d" ) );
+        TEST_EQ( test<sha3_512>( 7, buf4 ), digest_from_hex( "c72315a5d1eed9d02c67d523728d9ede920b19676cd4b619bf5049a236d6d0db636c3ed30fc544e7e94917f266fad09f010272c27704d9f0a20d532b5259c3ef" ) );
+        TEST_EQ( test<sha3_512>( 7, buf5 ), digest_from_hex( "b0604e689246d693890ab616ccbdc4fe39a6d6763cc74f10e10142205cd5c6f1c66beae15a4b601dcf00f868b82d375a21f2cd57e51d870a897f7f0b1995de37" ) );
 
 #endif
     }

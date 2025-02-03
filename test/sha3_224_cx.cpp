@@ -106,10 +106,10 @@ int main()
         TEST_EQ( test<sha3_224>( 0, str3 ), digest_from_hex( "624edc8a3c0c9d42bc224f0bf37040483432d7a1aeb68935e80f1e1c" ) );
         TEST_EQ( test<sha3_224>( 0, str4 ), digest_from_hex( "a2af03379fbe66d6a16b4235f124516bea38e5e5a83faa0d7175b7b7" ) );
 
-        TEST_EQ( test<sha3_224>( 7, str1 ), digest_from_hex( "59ba0702bb53175bcc14d33163d2750282e4a2c8edbf3cc5d45f749e" ) );
-        TEST_EQ( test<sha3_224>( 7, str2 ), digest_from_hex( "7f105336834af8cfebfb2b0ae74b74efc7cf44b3dd6e1b6d79020007" ) );
-        TEST_EQ( test<sha3_224>( 7, str3 ), digest_from_hex( "908f10033ebc500ba5b5454b830816e1c4517ea9cacac9ce418ebe08" ) );
-        TEST_EQ( test<sha3_224>( 7, str4 ), digest_from_hex( "1d0b1e02de8c23ab246eab2539ec90d02824e6912cf595c8d8ae5996" ) );
+        TEST_EQ( test<sha3_224>( 7, str1 ), digest_from_hex( "9f2238232485861ebf24446304640fd1c226446539ebc832c57b6bfe" ) );
+        TEST_EQ( test<sha3_224>( 7, str2 ), digest_from_hex( "3f8b95bf36fce11994f95a54e4b33e4b29fd3f65e650b56b15c1020d" ) );
+        TEST_EQ( test<sha3_224>( 7, str3 ), digest_from_hex( "305229297f49870a79c8a0b519b00876dae029387a66e07551d2c618" ) );
+        TEST_EQ( test<sha3_224>( 7, str4 ), digest_from_hex( "3180968feb3e6ba4f0d1b9e5d8d77a3c09b7402a32a2b3ec1748eaeb" ) );
     }
 
     return boost::report_errors();
