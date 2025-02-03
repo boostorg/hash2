@@ -15,7 +15,6 @@
 #include <boost/hash2/detail/keccak.hpp>
 #include <boost/assert.hpp>
 #include <boost/config.hpp>
-
 #include <cstdint>
 
 namespace boost
@@ -35,6 +34,8 @@ private:
     unsigned char state_[ 200 ] = {};
     std::size_t m_ = 0;
 
+    bool finalized_ = false;
+
 public:
 
     using result_type = digest<D / 8>;
@@ -48,6 +49,8 @@ public:
 
     BOOST_HASH2_SHA3_CONSTEXPR void update( unsigned char const* p, std::size_t n )
     {
+        finalized_ = false;
+
         auto const block_len = R / 8;
 
         if( m_ > 0 )
@@ -82,6 +85,7 @@ public:
             {
                 state_[ i ] ^= p[ i ];
             }
+
             keccak_permute( state_ );
 
             p += block_len;
@@ -96,6 +100,7 @@ public:
             {
                 state_[ i ] ^= p[ i ];
             }
+
             m_ = n;
         }
 
@@ -106,8 +111,14 @@ public:
     {
         result_type digest;
 
-        state_[ m_ ] ^= PaddingDelim;
-        state_[ R / 8 - 1 ] ^= 0x80;
+        if( !finalized_ )
+        {
+            state_[ m_ ] ^= PaddingDelim;
+            state_[ R / 8 - 1 ] ^= 0x80;
+
+            m_ = 0;
+            finalized_ = true;
+        }
 
         keccak_permute( state_ );
         detail::memcpy( digest.data(), state_, digest.size() );
@@ -125,9 +136,10 @@ constexpr int keccak_base<PaddingDelim, C, D>::block_size;
 
 } // namespace detail
 
-class sha3_224 : public detail::keccak_base<0x06, 2 * 224, 224>
+class sha3_224: public detail::keccak_base<0x06, 2 * 224, 224>
 {
 public:
+
     BOOST_HASH2_SHA3_CONSTEXPR sha3_224()
     {
     }
@@ -137,9 +149,12 @@ public:
         if( seed != 0 )
         {
             unsigned char tmp[ 8 ] = {};
+
             detail::write64le( tmp, seed );
             update( tmp, 8 );
+
             result();
+            update( tmp, 0 ); // sets finalized_ to false
         }
     }
 
@@ -149,13 +164,15 @@ public:
         {
             update( p, n );
             result();
+            update( p, 0 ); // sets finalized_ to false
         }
     }
 };
 
-class sha3_256 : public detail::keccak_base<0x06, 2 * 256, 256>
+class sha3_256: public detail::keccak_base<0x06, 2 * 256, 256>
 {
 public:
+
     BOOST_HASH2_SHA3_CONSTEXPR sha3_256()
     {
     }
@@ -165,9 +182,12 @@ public:
         if( seed != 0 )
         {
             unsigned char tmp[ 8 ] = {};
+
             detail::write64le( tmp, seed );
             update( tmp, 8 );
+
             result();
+            update( tmp, 0 ); // sets finalized_ to false
         }
     }
 
@@ -177,13 +197,15 @@ public:
         {
             update( p, n );
             result();
+            update( p, 0 ); // sets finalized_ to false
         }
     }
 };
 
-class sha3_384 : public detail::keccak_base<0x06, 2 * 384, 384>
+class sha3_384: public detail::keccak_base<0x06, 2 * 384, 384>
 {
 public:
+
     BOOST_HASH2_SHA3_CONSTEXPR sha3_384()
     {
     }
@@ -193,9 +215,12 @@ public:
         if( seed != 0 )
         {
             unsigned char tmp[ 8 ] = {};
+
             detail::write64le( tmp, seed );
             update( tmp, 8 );
+
             result();
+            update( tmp, 0 ); // sets finalized_ to false
         }
     }
 
@@ -205,13 +230,15 @@ public:
         {
             update( p, n );
             result();
+            update( p, 0 ); // sets finalized_ to false
         }
     }
 };
 
-class sha3_512 : public detail::keccak_base<0x06, 2 * 512, 512>
+class sha3_512: public detail::keccak_base<0x06, 2 * 512, 512>
 {
 public:
+
     BOOST_HASH2_SHA3_CONSTEXPR sha3_512()
     {
     }
@@ -221,9 +248,12 @@ public:
         if( seed != 0 )
         {
             unsigned char tmp[ 8 ] = {};
+
             detail::write64le( tmp, seed );
             update( tmp, 8 );
+
             result();
+            update( tmp, 0 ); // sets finalized_ to false
         }
     }
 
@@ -233,13 +263,15 @@ public:
         {
             update( p, n );
             result();
+            update( p, 0 ); // sets finalized_ to false
         }
     }
 };
 
-class shake_128 : public detail::keccak_base<0x1f, 256, 1600 - 256>
+class shake_128: public detail::keccak_base<0x1f, 256, 1600 - 256>
 {
 public:
+
     BOOST_HASH2_SHA3_CONSTEXPR shake_128()
     {
     }
@@ -249,9 +281,12 @@ public:
         if( seed != 0 )
         {
             unsigned char tmp[ 8 ] = {};
+
             detail::write64le( tmp, seed );
             update( tmp, 8 );
+
             result();
+            update( tmp, 0 ); // sets finalized_ to false
         }
     }
 
@@ -261,13 +296,15 @@ public:
         {
             update( p, n );
             result();
+            update( p, 0 ); // sets finalized_ to false
         }
     }
 };
 
-class shake_256 : public detail::keccak_base<0x1f, 512, 1600 - 512>
+class shake_256: public detail::keccak_base<0x1f, 512, 1600 - 512>
 {
 public:
+
     BOOST_HASH2_SHA3_CONSTEXPR shake_256()
     {
     }
@@ -277,9 +314,12 @@ public:
         if( seed != 0 )
         {
             unsigned char tmp[ 8 ] = {};
+
             detail::write64le( tmp, seed );
             update( tmp, 8 );
+
             result();
+            update( tmp, 0 ); // sets finalized_ to false
         }
     }
 
@@ -289,6 +329,7 @@ public:
         {
             update( p, n );
             result();
+            update( p, 0 ); // sets finalized_ to false
         }
     }
 };

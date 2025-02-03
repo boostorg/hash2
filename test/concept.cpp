@@ -50,6 +50,12 @@ template<class H> void test_default_constructible()
     typename H::result_type r2 = h2.result();
 
     BOOST_TEST( r1 == r2 );
+
+    H h3;
+    h3.update( static_cast<void const*>( nullptr ), 0 );
+    typename H::result_type r3 = h3.result();
+
+    BOOST_TEST( r1 == r3 );
 }
 
 template<class H> void test_byte_seed_constructible( bool is_hmac )
@@ -90,6 +96,15 @@ template<class H> void test_byte_seed_constructible( bool is_hmac )
             H h2( seed, 3 );
 
             BOOST_TEST( h1.result() != h2.result() );
+        }
+
+        {
+            H h1( seed, 3 );
+
+            H h2( seed, 3 );
+            h2.update( seed, 0 );
+
+            BOOST_TEST( h1.result() == h2.result() );
         }
     }
 
@@ -151,6 +166,13 @@ template<class H> void test_integral_seed_constructible()
 
     {
         H h;
+        BOOST_TEST( h.result() == r0 );
+    }
+
+    {
+        H h( 0 );
+        h.update( static_cast<void const*>( nullptr ), 0 );
+
         BOOST_TEST( h.result() == r0 );
     }
 
@@ -326,6 +348,17 @@ template<class H> void test_update()
             h1.update( data, 3 );
 
             H h2;
+            h2.update( data, 0 );
+            h2.update( data + 0, 3 );
+
+            BOOST_TEST( h1.result() == h2.result() );
+        }
+
+        {
+            H h1;
+            h1.update( data, 3 );
+
+            H h2;
             h2.update( data, 1 );
             h2.update( data + 1, 2 );
 
@@ -339,6 +372,17 @@ template<class H> void test_update()
             H h2;
             h2.update( data, 2 );
             h2.update( data + 2, 1 );
+
+            BOOST_TEST( h1.result() == h2.result() );
+        }
+
+        {
+            H h1;
+            h1.update( data, 3 );
+
+            H h2;
+            h2.update( data, 3 );
+            h2.update( data + 3, 0 );
 
             BOOST_TEST( h1.result() == h2.result() );
         }
