@@ -128,6 +128,8 @@ int main()
     {
         constexpr char const str1[] = "abc";
         constexpr char const str2[] = "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu";
+
+        // https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Standards-and-Guidelines/documents/examples/SHA2_Additional.pdf
         constexpr unsigned char buf1[ 111 ] = {};
         constexpr unsigned char buf2[ 112 ] = {};
         constexpr unsigned char buf3[ 113 ] = {};
@@ -154,6 +156,8 @@ int main()
     {
         constexpr char const str1[] = "abc";
         constexpr char const str2[] = "abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu";
+
+        // https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Standards-and-Guidelines/documents/examples/SHA2_Additional.pdf
         constexpr unsigned char buf1[ 111 ] = {};
         constexpr unsigned char buf2[ 112 ] = {};
         constexpr unsigned char buf3[ 113 ] = {};
