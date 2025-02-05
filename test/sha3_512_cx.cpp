@@ -103,7 +103,9 @@ int main()
         TEST_EQ( test<sha3_512>( 7, str1 ), digest_from_hex( "7fcdaa301f16df33e622e204cbfda936928e7b23ecd26a4efdb30c11782b7dfb079d45800015a8ca306a95ad5bc97c3aa7ed99920e1730826d8260fad8a59d33" ) );
 
         TEST_EQ( test<sha3_512>( 0, str2 ), digest_from_hex( "afebb2ef542e6579c50cad06d2e578f9f8dd6881d7dc824d26360feebf18a4fa73e3261122948efcfd492e74e82e2189ed0fb440d187f382270cb455f21dd185" ) );
+#if !BOOST_WORKAROUND(BOOST_MSVC, < 1920)
         TEST_EQ( test<sha3_512>( 7, str2 ), digest_from_hex( "fc4a2170b4693ae60039188d07e8d49d9b4457fc42e86f3773baa123d48b5fb655bcee8d7371fa136f4dcecdfac647e7275c42b8cc96a616ce67c8f4f3cac66e" ) );
+#endif
     }
 
     {
@@ -121,8 +123,10 @@ int main()
 
         TEST_EQ( test<sha3_512>( 7, buf1 ), digest_from_hex( "f1536509c1233999f06de145520cc1af9060ae6170d0f1d93f53b9fbe6b9a97361418c0543c025d6617f4d2efdc8bf2ad6c2876ca9c4185df07930475901868c" ) );
         TEST_EQ( test<sha3_512>( 7, buf2 ), digest_from_hex( "8829e5266a464eb6b8134ca6c86ff20d9e21d1e8ad7ced228774d61074d7b41f5efe7ee4ffbf2018db2517e23de72e579714f7225795232a6e75869c3e412588" ) );
+#if !BOOST_WORKAROUND(BOOST_MSVC, < 1920)
         TEST_EQ( test<sha3_512>( 7, buf3 ), digest_from_hex( "777df6099f998508c5001a3eb50aec9087130969c932febd0cdbaa74e40c5cc3fe2eb9473692c5859dbfd3432b6bbf9d9062a23670ae6a575dd8e7154f22d83a" ) );
         TEST_EQ( test<sha3_512>( 7, buf4 ), digest_from_hex( "be1fcd3011172808c97416cc4fe3bdd030378a82ad916744d19eadec2cf5f4344b779ae4c97808190cb7a968add2a8d151cdba42bc3c9ac2296233bc7515e881" ) );
+#endif
     }
 
     return boost::report_errors();

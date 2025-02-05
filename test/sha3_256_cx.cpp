@@ -127,8 +127,10 @@ int main()
 
         TEST_EQ( test<sha3_256>( 7, buf1 ), digest_from_hex( "aeaead8936dca916412308cc89e143fd7abee742b63e58af03edbc70df57c189" ) );
         TEST_EQ( test<sha3_256>( 7, buf2 ), digest_from_hex( "62a22f45158da5a7793a0760320a74d5b37b4acb92ed97dc2fef39c97ede5bf3" ) );
+#if !BOOST_WORKAROUND(BOOST_MSVC, < 1920)
         TEST_EQ( test<sha3_256>( 7, buf3 ), digest_from_hex( "06e557dd0972ee7a39e587a844f67545aefa2368b08806b68f5b3d0315323a42" ) );
         TEST_EQ( test<sha3_256>( 7, buf4 ), digest_from_hex( "85bb3a4d934cbf99ebe0e798969d9cef3a50b456b37a1f2e2c96c71f913cb254" ) );
+#endif
     }
 
     return boost::report_errors();
