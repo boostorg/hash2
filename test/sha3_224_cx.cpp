@@ -31,7 +31,7 @@ template<class H, std::size_t N> BOOST_CXX14_CONSTEXPR typename H::result_type t
     std::size_t const M = N - 1; // strip off null-terminator
 
     // only update( unsigned char const*, std::size_t ) is constexpr so we memcpy here to emulate bit_cast
-    unsigned char buf[M] = {};
+    unsigned char buf[ N ] = {}; // avoids zero-sized arrays
     for( unsigned i = 0; i < M; ++i ){ buf[i] = str[i]; }
 
     h.update( buf, M / 3 );
@@ -78,7 +78,7 @@ template<class H, std::size_t N> BOOST_CXX14_CONSTEXPR typename H::result_type t
 
     std::size_t const M = ( N - 1 ) / 2;
 
-    unsigned char buf[M] = {};
+    unsigned char buf[ N ] = {}; // avoids zero-sized arrays
     for( unsigned i = 0; i < M; ++i ) {
         auto c1 = to_byte( str[ 2 * i ] );
         auto c2 = to_byte( str[ 2 * i + 1 ] );
@@ -110,6 +110,27 @@ int main()
         TEST_EQ( test<sha3_224>( 7, str2 ), digest_from_hex( "3f8b95bf36fce11994f95a54e4b33e4b29fd3f65e650b56b15c1020d" ) );
         TEST_EQ( test<sha3_224>( 7, str3 ), digest_from_hex( "305229297f49870a79c8a0b519b00876dae029387a66e07551d2c618" ) );
         TEST_EQ( test<sha3_224>( 7, str4 ), digest_from_hex( "3180968feb3e6ba4f0d1b9e5d8d77a3c09b7402a32a2b3ec1748eaeb" ) );
+    }
+
+    {
+        constexpr auto const N = sha3_224::block_size;
+
+        constexpr char const buf1[] = "";
+        constexpr unsigned char buf2[ N - 1 ] = {};
+        constexpr unsigned char buf3[ N ] = {};
+        constexpr unsigned char buf4[ N + 1 ] = {};
+
+        TEST_EQ( test<sha3_224>( 0, buf1 ), digest_from_hex( "6b4e03423667dbb73b6e15454f0eb1abd4597f9a1b078e3f5b5a6bc7" ) );
+        TEST_EQ( test<sha3_224>( 0, buf2 ), digest_from_hex( "b6b709fdb9852b8c7439a33595d42dba2940f44c10c3ce09f8b6a87a" ) );
+        TEST_EQ( test<sha3_224>( 0, buf3 ), digest_from_hex( "f2b8486fceee2c6a11a604ce4efe217da854829c2c2dcc9a23758b4d" ) );
+        TEST_EQ( test<sha3_224>( 0, buf4 ), digest_from_hex( "361ca40de495e03bd091694f1d1372851105046a1bf6d59fafe7d668" ) );
+
+        TEST_EQ( test<sha3_224>( 7, buf1 ), digest_from_hex( "9efd7f9eef5d3ba1e211e916b4ae4cfcf3f5d961069779673c23ef00" ) );
+        TEST_EQ( test<sha3_224>( 7, buf2 ), digest_from_hex( "75e7e927f7426794f12e9e8e6dd6ea14d1c97eccea7e758090d26d56" ) );
+#if !BOOST_WORKAROUND(BOOST_MSVC, < 1920)
+        TEST_EQ( test<sha3_224>( 7, buf3 ), digest_from_hex( "6204402e2b7315449ad467de22613b6c873eb283299028634b50c8c1" ) );
+        TEST_EQ( test<sha3_224>( 7, buf4 ), digest_from_hex( "b18c71acab0556cfb7e39eab66042b5bd0849f9c4b5501eb338fe8ef" ) );
+#endif
     }
 
     return boost::report_errors();
