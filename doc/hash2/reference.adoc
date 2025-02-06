@@ -20,6 +20,7 @@ include::reference/hmac.adoc[]
 include::reference/md5.adoc[]
 include::reference/sha1.adoc[]
 include::reference/sha2.adoc[]
+include::reference/sha3.adoc[]
 include::reference/ripemd.adoc[]
 
 :leveloffset: -2
@@ -49,4 +50,3 @@ include::reference/hash_append_fwd.adoc[]
 include::reference/hash_append.adoc[]
 
 :leveloffset: -2
-
