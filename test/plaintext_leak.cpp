@@ -10,11 +10,12 @@
 #include <boost/hash2/sha2.hpp>
 #include <boost/hash2/sha3.hpp>
 #include <boost/hash2/ripemd.hpp>
+#include <boost/hash2/blake2.hpp>
 #include <boost/core/lightweight_test.hpp>
 #include <algorithm>
 #include <cstddef>
 
-template<class H> void test()
+template<class H> void test( bool is_blake2 = false )
 {
     char const * s = "xxxx";
 
@@ -47,7 +48,14 @@ template<class H> void test()
         BOOST_TEST_EQ( std::search( p, p + n, s, s + 4 ) - p, n );
     }
 
+    if( !is_blake2 )
     {
+        // A 4 byte seed is sufficient to be treated as keyed construction for BLAKE2.
+        // This means that the internal buffer will contain the seed here as it's
+        // incorrect to transform the input without knowing if we have the last block
+        // or not.
+        // https://datatracker.ietf.org/doc/html/rfc7693#section-3.3
+
         H h( s, 4 );
 
         unsigned char const * p = reinterpret_cast<unsigned char const*>( &h );
@@ -82,6 +90,8 @@ int main()
     test<boost::hash2::shake_256>();
     test<boost::hash2::ripemd_160>();
     test<boost::hash2::ripemd_128>();
+    test<boost::hash2::blake2b_512>( true );
+    test<boost::hash2::blake2s_256>( true );
 
     test<boost::hash2::hmac_md5_128>();
     test<boost::hash2::hmac_sha1_160>();
