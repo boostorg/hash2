@@ -48,7 +48,7 @@ template<class H> void test()
     }
 
     {
-        H h( reinterpret_cast<unsigned char const*>( s ), 4 );
+        H h( s, 4 );
 
         unsigned char const * p = reinterpret_cast<unsigned char const*>( &h );
         std::size_t n = sizeof( h );
