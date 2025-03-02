@@ -106,6 +106,24 @@ template<class H> void test_byte_seed_constructible( bool is_hmac )
 
             BOOST_TEST( h1.result() == h2.result() );
         }
+
+        {
+            H h1( seed, 3 );
+
+            H h2( seed, 0 );
+            h2.update( seed, 3 );
+
+            BOOST_TEST( h1.result() != h2.result() );
+        }
+
+        {
+            H h1( seed, 3 );
+
+            H h2( seed, 2 );
+            h2.update( seed + 2, 1 );
+
+            BOOST_TEST( h1.result() != h2.result() );
+        }
     }
 
     if( !is_hmac )
