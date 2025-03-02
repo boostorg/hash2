@@ -64,6 +64,10 @@ public:
         if( n != 0 )
         {
             update( p, n );
+
+            unsigned char tmp[ 4 ] = {};
+            detail::write32le( tmp, static_cast<std::uint32_t>( n ) );
+            update( tmp, 4 );
         }
     }
 
