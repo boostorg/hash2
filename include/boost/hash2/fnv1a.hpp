@@ -71,6 +71,10 @@ public:
         }
     }
 
+    fnv1a( void const * p, std::size_t n ): fnv1a( static_cast<unsigned char const*>( p ), n )
+    {
+    }
+
     BOOST_CXX14_CONSTEXPR void update( unsigned char const * p, std::size_t n )
     {
         T h = st_;
@@ -119,6 +123,10 @@ public:
     BOOST_CXX14_CONSTEXPR fnv1a_32( unsigned char const * p, std::size_t n ): detail::fnv1a<std::uint32_t>( p, n )
     {
     }
+
+    fnv1a_32( void const * p, std::size_t n ): detail::fnv1a<std::uint32_t>( p, n )
+    {
+    }
 };
 
 class fnv1a_64: public detail::fnv1a<std::uint64_t>
@@ -132,6 +140,10 @@ public:
     }
 
     BOOST_CXX14_CONSTEXPR fnv1a_64( unsigned char const * p, std::size_t n ): detail::fnv1a<std::uint64_t>( p, n )
+    {
+    }
+
+    fnv1a_64( void const * p, std::size_t n ): detail::fnv1a<std::uint64_t>( p, n )
     {
     }
 };

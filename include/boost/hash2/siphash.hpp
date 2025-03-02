@@ -99,6 +99,10 @@ public:
         }
     }
 
+    siphash_64( void const * p, std::size_t n ): siphash_64( static_cast<unsigned char const*>( p ), n )
+    {
+    }
+
     BOOST_CXX14_CONSTEXPR void update( unsigned char const* p, std::size_t n )
     {
         BOOST_ASSERT( m_ == n_ % 8 );
@@ -267,6 +271,10 @@ public:
             update( p, n );
             result();
         }
+    }
+
+    siphash_32( void const * p, std::size_t n ): siphash_32( static_cast<unsigned char const*>( p ), n )
+    {
     }
 
     BOOST_CXX14_CONSTEXPR void update( unsigned char const* p, std::size_t n )

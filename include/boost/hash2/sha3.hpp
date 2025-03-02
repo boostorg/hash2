@@ -167,6 +167,10 @@ public:
             update( p, 0 ); // sets finalized_ to false
         }
     }
+
+    sha3_224( void const * p, std::size_t n ): sha3_224( static_cast<unsigned char const*>( p ), n )
+    {
+    }
 };
 
 class sha3_256: public detail::keccak_base<0x06, 2 * 256, 256>
@@ -199,6 +203,10 @@ public:
             result();
             update( p, 0 ); // sets finalized_ to false
         }
+    }
+
+    sha3_256( void const * p, std::size_t n ): sha3_256( static_cast<unsigned char const*>( p ), n )
+    {
     }
 };
 
@@ -233,6 +241,10 @@ public:
             update( p, 0 ); // sets finalized_ to false
         }
     }
+
+    sha3_384( void const * p, std::size_t n ): sha3_384( static_cast<unsigned char const*>( p ), n )
+    {
+    }
 };
 
 class sha3_512: public detail::keccak_base<0x06, 2 * 512, 512>
@@ -265,6 +277,10 @@ public:
             result();
             update( p, 0 ); // sets finalized_ to false
         }
+    }
+
+    sha3_512( void const * p, std::size_t n ): sha3_512( static_cast<unsigned char const*>( p ), n )
+    {
     }
 };
 
@@ -299,6 +315,10 @@ public:
             update( p, 0 ); // sets finalized_ to false
         }
     }
+
+    shake_128( void const * p, std::size_t n ): shake_128( static_cast<unsigned char const*>( p ), n )
+    {
+    }
 };
 
 class shake_256: public detail::keccak_base<0x1f, 512, 1600 - 512>
@@ -331,6 +351,10 @@ public:
             result();
             update( p, 0 ); // sets finalized_ to false
         }
+    }
+
+    shake_256( void const * p, std::size_t n ): shake_256( static_cast<unsigned char const*>( p ), n )
+    {
     }
 };
 

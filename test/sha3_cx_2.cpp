@@ -69,27 +69,27 @@ int main()
 
     TEST_EQ( sha3_256().result(), r1 );
     TEST_EQ( sha3_256(0).result(), r1 );
-    TEST_EQ( sha3_256(nullptr, 0).result(), r1 );
+    TEST_EQ( sha3_256(static_cast<unsigned char const*>(nullptr), 0).result(), r1 );
 
     TEST_EQ( sha3_224().result(), r2 );
     TEST_EQ( sha3_224(0).result(), r2 );
-    TEST_EQ( sha3_224(nullptr, 0).result(), r2 );
+    TEST_EQ( sha3_224(static_cast<unsigned char const*>(nullptr), 0).result(), r2 );
 
     TEST_EQ( sha3_512().result(), r3 );
     TEST_EQ( sha3_512(0).result(), r3 );
-    TEST_EQ( sha3_512(nullptr, 0).result(), r3 );
+    TEST_EQ( sha3_512(static_cast<unsigned char const*>(nullptr), 0).result(), r3 );
 
     TEST_EQ( sha3_384().result(), r4 );
     TEST_EQ( sha3_384(0).result(), r4 );
-    TEST_EQ( sha3_384(nullptr, 0).result(), r4 );
+    TEST_EQ( sha3_384(static_cast<unsigned char const*>(nullptr), 0).result(), r4 );
 
     TEST_EQ( truncate<32>( shake_128().result() ), r5 );
     TEST_EQ( truncate<32>( shake_128(0).result() ), r5 );
-    TEST_EQ( truncate<32>( shake_128(nullptr, 0).result() ), r5 );
+    TEST_EQ( truncate<32>( shake_128(static_cast<unsigned char const*>(nullptr), 0).result() ), r5 );
 
     TEST_EQ( truncate<64>( shake_256().result() ), r6 );
     TEST_EQ( truncate<64>( shake_256(0).result() ), r6 );
-    TEST_EQ( truncate<64>( shake_256(nullptr, 0).result() ), r6 );
+    TEST_EQ( truncate<64>( shake_256(static_cast<unsigned char const*>(nullptr), 0).result() ), r6 );
 
     return boost::report_errors();
 }

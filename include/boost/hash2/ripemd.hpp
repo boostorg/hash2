@@ -290,6 +290,10 @@ public:
         }
     }
 
+    ripemd_128( void const * p, std::size_t n ): ripemd_128( static_cast<unsigned char const*>( p ), n )
+    {
+    }
+
     BOOST_CXX14_CONSTEXPR void update( unsigned char const* p, std::size_t n )
     {
         BOOST_ASSERT( m_ == n_ % N );
@@ -708,6 +712,10 @@ public:
             update( p, n );
             result();
         }
+    }
+
+    ripemd_160( void const * p, std::size_t n ): ripemd_160( static_cast<unsigned char const*>( p ), n )
+    {
     }
 
     BOOST_CXX14_CONSTEXPR void update( unsigned char const* p, std::size_t n )

@@ -557,6 +557,10 @@ public:
         }
     }
 
+    sha2_256( void const * p, std::size_t n ): sha2_256( static_cast<unsigned char const*>( p ), n )
+    {
+    }
+
     using detail::sha2_256_base::update;
 
     BOOST_CXX14_CONSTEXPR result_type result()
@@ -633,6 +637,10 @@ public:
         }
     }
 
+
+    sha2_224( void const * p, std::size_t n ): sha2_224( static_cast<unsigned char const*>( p ), n )
+    {
+    }
 
     using detail::sha2_256_base::update;
 
@@ -711,6 +719,10 @@ public:
         }
     }
 
+    sha2_512( void const * p, std::size_t n ): sha2_512( static_cast<unsigned char const*>( p ), n )
+    {
+    }
+
     BOOST_CXX14_CONSTEXPR result_type result()
     {
         unsigned char bits[ 16 ] = { 0 };
@@ -785,6 +797,10 @@ public:
             update( p, n );
             result();
         }
+    }
+
+    sha2_384( void const * p, std::size_t n ): sha2_384( static_cast<unsigned char const*>( p ), n )
+    {
     }
 
     BOOST_CXX14_CONSTEXPR result_type result()
@@ -864,6 +880,10 @@ public:
     }
 
 
+    sha2_512_224( void const * p, std::size_t n ): sha2_512_224( static_cast<unsigned char const*>( p ), n )
+    {
+    }
+
     BOOST_CXX14_CONSTEXPR result_type result()
     {
         unsigned char bits[ 16 ] = { 0 };
@@ -939,6 +959,10 @@ public:
             update( p, n );
             result();
         }
+    }
+
+    sha2_512_256( void const * p, std::size_t n ): sha2_512_256( static_cast<unsigned char const*>( p ), n )
+    {
     }
 
     BOOST_CXX14_CONSTEXPR result_type result()

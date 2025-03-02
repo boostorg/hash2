@@ -31,7 +31,7 @@ int main()
 
     TEST_EQ( sha1_160().result(), r );
     TEST_EQ( sha1_160(0).result(), r );
-    TEST_EQ( sha1_160(nullptr, 0).result(), r );
+    TEST_EQ( sha1_160(static_cast<unsigned char const*>(nullptr), 0).result(), r );
 
     return boost::report_errors();
 }

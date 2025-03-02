@@ -65,7 +65,7 @@ template<class H> void test_byte_seed_constructible( bool is_hmac )
 
         {
             H h1;
-            H h2( nullptr, 0 );
+            H h2( static_cast<void const*>( nullptr ), 0 );
 
             BOOST_TEST( h1.result() == h2.result() );
         }
@@ -123,6 +123,15 @@ template<class H> void test_byte_seed_constructible( bool is_hmac )
             h2.update( seed + 2, 1 );
 
             BOOST_TEST( h1.result() != h2.result() );
+        }
+
+        {
+            char const seed2[] = { 0x01, 0x02, 0x03 };
+
+            H h1( seed, 3 );
+            H h2( seed2, 3 );
+
+            BOOST_TEST( h1.result() == h2.result() );
         }
     }
 

@@ -32,7 +32,7 @@ int main()
 
         TEST_EQ( fnv1a_32().result(), r );
         TEST_EQ( fnv1a_32(0).result(), r );
-        TEST_EQ( fnv1a_32(nullptr, 0).result(), r );
+        TEST_EQ( fnv1a_32(static_cast<unsigned char const*>(nullptr), 0).result(), r );
     }
 
     {
@@ -40,7 +40,7 @@ int main()
 
         TEST_EQ( fnv1a_64().result(), r );
         TEST_EQ( fnv1a_64(0).result(), r );
-        TEST_EQ( fnv1a_64(nullptr, 0).result(), r );
+        TEST_EQ( fnv1a_64(static_cast<unsigned char const*>(nullptr), 0).result(), r );
     }
 
     return boost::report_errors();

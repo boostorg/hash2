@@ -32,7 +32,7 @@ int main()
 
         TEST_EQ( ripemd_160().result(), r );
         TEST_EQ( ripemd_160(0).result(), r );
-        TEST_EQ( ripemd_160(nullptr, 0).result(), r );
+        TEST_EQ( ripemd_160(static_cast<unsigned char const*>(nullptr), 0).result(), r );
     }
 
     {
@@ -40,7 +40,7 @@ int main()
 
         TEST_EQ( ripemd_128().result(), r );
         TEST_EQ( ripemd_128(0).result(), r );
-        TEST_EQ( ripemd_128(nullptr, 0).result(), r );
+        TEST_EQ( ripemd_128(static_cast<unsigned char const*>(nullptr), 0).result(), r );
     }
 
     return boost::report_errors();

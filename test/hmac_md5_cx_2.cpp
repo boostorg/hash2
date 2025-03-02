@@ -31,7 +31,7 @@ int main()
 
     TEST_EQ( hmac_md5_128().result(), r );
     TEST_EQ( hmac_md5_128(0).result(), r );
-    TEST_EQ( hmac_md5_128(nullptr, 0).result(), r );
+    TEST_EQ( hmac_md5_128(static_cast<unsigned char const*>(nullptr), 0).result(), r );
 
     return boost::report_errors();
 }

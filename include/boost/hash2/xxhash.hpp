@@ -119,6 +119,10 @@ public:
         }
     }
 
+    xxhash_32( void const * p, std::size_t n ): xxhash_32( static_cast<unsigned char const*>( p ), n )
+    {
+    }
+
     BOOST_CXX14_CONSTEXPR void update( unsigned char const* p, std::size_t n )
     {
         BOOST_ASSERT( m_ == n_ % 16 );
@@ -327,6 +331,10 @@ public:
             update( p, n );
             result();
         }
+    }
+
+    xxhash_64( void const * p, std::size_t n ): xxhash_64( static_cast<unsigned char const*>( p ), n )
+    {
     }
 
     BOOST_CXX14_CONSTEXPR void update( unsigned char const* p, std::size_t n )

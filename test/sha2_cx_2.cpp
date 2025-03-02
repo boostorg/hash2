@@ -57,27 +57,27 @@ int main()
 
     TEST_EQ( sha2_256().result(), r1 );
     TEST_EQ( sha2_256(0).result(), r1 );
-    TEST_EQ( sha2_256(nullptr, 0).result(), r1 );
+    TEST_EQ( sha2_256(static_cast<unsigned char const*>(nullptr), 0).result(), r1 );
 
     TEST_EQ( sha2_224().result(), r2 );
     TEST_EQ( sha2_224(0).result(), r2 );
-    TEST_EQ( sha2_224(nullptr, 0).result(), r2 );
+    TEST_EQ( sha2_224(static_cast<unsigned char const*>(nullptr), 0).result(), r2 );
 
     TEST_EQ( sha2_512().result(), r3 );
     TEST_EQ( sha2_512(0).result(), r3 );
-    TEST_EQ( sha2_512(nullptr, 0).result(), r3 );
+    TEST_EQ( sha2_512(static_cast<unsigned char const*>(nullptr), 0).result(), r3 );
 
     TEST_EQ( sha2_384().result(), r4 );
     TEST_EQ( sha2_384(0).result(), r4 );
-    TEST_EQ( sha2_384(nullptr, 0).result(), r4 );
+    TEST_EQ( sha2_384(static_cast<unsigned char const*>(nullptr), 0).result(), r4 );
 
     TEST_EQ( sha2_512_224().result(), r5 );
     TEST_EQ( sha2_512_224(0).result(), r5 );
-    TEST_EQ( sha2_512_224(nullptr, 0).result(), r5 );
+    TEST_EQ( sha2_512_224(static_cast<unsigned char const*>(nullptr), 0).result(), r5 );
 
     TEST_EQ( sha2_512_256().result(), r6 );
     TEST_EQ( sha2_512_256(0).result(), r6 );
-    TEST_EQ( sha2_512_256(nullptr, 0).result(), r6 );
+    TEST_EQ( sha2_512_256(static_cast<unsigned char const*>(nullptr), 0).result(), r6 );
 
     return boost::report_errors();
 }

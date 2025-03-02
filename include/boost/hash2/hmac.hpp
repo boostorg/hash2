@@ -115,6 +115,11 @@ public:
         init( p, n );
     }
 
+    hmac( void const* p, std::size_t n )
+    {
+        init( static_cast<unsigned char const*>( p ), n );
+    }
+
     BOOST_CXX14_CONSTEXPR void update( unsigned char const* p, std::size_t n )
     {
         inner_.update( p, n );
