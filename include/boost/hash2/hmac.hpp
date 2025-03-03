@@ -40,7 +40,7 @@ template<class H> class hmac
 public:
 
     using result_type = typename H::result_type;
-    static constexpr int block_size = H::block_size;
+    static constexpr std::size_t block_size = H::block_size;
 
 private:
 

@@ -199,7 +199,7 @@ public:
 
     using result_type = digest<16>;
 
-    static constexpr int block_size = 64;
+    static constexpr std::size_t block_size = 64;
 
     md5_128() = default;
 

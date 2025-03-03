@@ -39,7 +39,7 @@ private:
 public:
 
     using result_type = digest<D / 8>;
-    static constexpr int block_size = R / 8;
+    static constexpr std::size_t block_size = R / 8;
 
     void update( void const* pv, std::size_t n )
     {
@@ -130,7 +130,7 @@ public:
 #if defined(BOOST_NO_CXX17_INLINE_VARIABLES)
 
 template<std::uint8_t PaddingDelim, int C, int D>
-constexpr int keccak_base<PaddingDelim, C, D>::block_size;
+constexpr std::size_t keccak_base<PaddingDelim, C, D>::block_size;
 
 #endif
 

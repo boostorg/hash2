@@ -194,7 +194,7 @@ public:
 
     typedef digest<20> result_type;
 
-    static constexpr int block_size = 64;
+    static constexpr std::size_t block_size = 64;
 
     sha1_160() = default;
 

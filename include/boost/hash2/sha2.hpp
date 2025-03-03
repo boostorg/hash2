@@ -525,7 +525,7 @@ public:
 
     using result_type = digest<32>;
 
-    static constexpr int block_size = 64;
+    static constexpr std::size_t block_size = 64;
 
     BOOST_CXX14_CONSTEXPR sha2_256()
     {
@@ -605,7 +605,7 @@ public:
 
     using result_type = digest<28>;
 
-    static constexpr int block_size = 64;
+    static constexpr std::size_t block_size = 64;
 
     BOOST_CXX14_CONSTEXPR sha2_224()
     {
@@ -687,7 +687,7 @@ public:
 
     using detail::sha2_512_base::update;
 
-    static constexpr int block_size = 128;
+    static constexpr std::size_t block_size = 128;
 
     BOOST_CXX14_CONSTEXPR sha2_512()
     {
@@ -765,7 +765,7 @@ public:
 
     using result_type = digest<48>;
 
-    static constexpr int block_size = 128;
+    static constexpr std::size_t block_size = 128;
 
     using detail::sha2_512_base::update;
 
@@ -845,7 +845,7 @@ public:
 
     using result_type = digest<28>;
 
-    static constexpr int block_size = 128;
+    static constexpr std::size_t block_size = 128;
 
     using detail::sha2_512_base::update;
 
@@ -927,7 +927,7 @@ public:
 
     using result_type = digest<32>;
 
-    static constexpr int block_size = 128;
+    static constexpr std::size_t block_size = 128;
 
     using detail::sha2_512_base::update;
 

@@ -265,7 +265,7 @@ public:
 
     typedef digest<16> result_type;
 
-    static constexpr int block_size = 64;
+    static constexpr std::size_t block_size = 64;
 
     ripemd_128() = default;
 
@@ -689,7 +689,7 @@ public:
 
     typedef digest<20> result_type;
 
-    static constexpr int block_size = 64;
+    static constexpr std::size_t block_size = 64;
 
     ripemd_160() = default;
 
