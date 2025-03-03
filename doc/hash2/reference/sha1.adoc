@@ -34,7 +34,7 @@ public:
 
     using result_type = digest<20>;
 
-    static constexpr int block_size = 64;
+    static constexpr std::size_t block_size = 64;
 
     constexpr sha1_160();
     explicit constexpr sha1_160( std::uint64_t seed );

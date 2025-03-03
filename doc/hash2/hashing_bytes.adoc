@@ -33,7 +33,7 @@ struct HashAlgorithm
 {
     using result_type = /*integral or array-like*/;
 
-    static constexpr int block_size = /*...*/; // optional
+    static constexpr std::size_t block_size = /*...*/; // optional
 
     HashAlgorithm();
     explicit HashAlgorithm( std::uint64_t seed );
@@ -185,7 +185,7 @@ struct HashAlgorithm
 {
     using result_type = /*integral or array-like*/;
 
-    static constexpr int block_size = /*...*/; // optional
+    static constexpr std::size_t block_size = /*...*/; // optional
 
     constexpr HashAlgorithm();
     explicit constexpr HashAlgorithm( std::uint64_t seed );

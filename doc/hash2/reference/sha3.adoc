@@ -49,7 +49,7 @@ class sha3_256
 {
     using result_type = digest<32>;
 
-    static constexpr int block_size = 136; // ( 1600 - 2 * 256 ) / 8 => 136
+    static constexpr std::size_t block_size = 136; // ( 1600 - 2 * 256 ) / 8 => 136
 
     constexpr sha3_256();
     constexpr explicit sha3_256( std::uint64_t seed );
@@ -134,7 +134,7 @@ The SHA3-224 algorithm is identical to the SHA3-256 algorithm described above.
 The only differences are the size of the input block and the size of the message digest, which is:
 ```
 using result_type = digest<28>;
-static constexpr int block_size = 144; // ( 1600 - 2 * 224 ) / 8 => 144
+static constexpr std::size_t block_size = 144; // ( 1600 - 2 * 224 ) / 8 => 144
 ```
 
 Otherwise, all other operations and constants are identical.
@@ -148,7 +148,7 @@ The SHA3-512 algorithm is identical to the SHA3-256 algorithm described above.
 The only differences are the size of the input block and the size of the message digest, which is:
 ```
 using result_type = digest<64>;
-static constexpr int block_size = 72; // ( 1600 - 2 * 512 ) / 8 => 72
+static constexpr std::size_t block_size = 72; // ( 1600 - 2 * 512 ) / 8 => 72
 ```
 
 Otherwise, all other operations and constants are identical.
@@ -162,7 +162,7 @@ The SHA3-384 algorithm is identical to the SHA3-256 algorithm described above.
 The only differences are the size of the input block and the size of the message digest, which is:
 ```
 using result_type = digest<48>;
-static constexpr int block_size = 104; // ( 1600 - 2 * 384 ) / 8 => 104
+static constexpr std::size_t block_size = 104; // ( 1600 - 2 * 384 ) / 8 => 104
 ```
 
 Otherwise, all other operations and constants are identical.
@@ -176,7 +176,7 @@ class shake_128
 {
     using result_type = digest<168>;
 
-    static constexpr int block_size = 168; // ( 1600 - 2 * 128 ) / 8 => 168
+    static constexpr std::size_t block_size = 168; // ( 1600 - 2 * 128 ) / 8 => 168
 
     constexpr shake_128();
     constexpr explicit shake_128( std::uint64_t seed );
@@ -261,7 +261,7 @@ The SHAKE256 algorithm is identical to the SHAKE128 algorithm described above.
 The only differences are the size of the input block and the size of the message digest, which is:
 ```
 using result_type = digest<136>;
-static constexpr int block_size = 136; // ( 1600 - 2 * 256 ) / 8 => 136
+static constexpr std::size_t block_size = 136; // ( 1600 - 2 * 256 ) / 8 => 136
 ```
 
 Otherwise, all other operations and constants are identical.

@@ -34,7 +34,7 @@ class ripemd_160
 {
     using result_type = digest<20>;
 
-    static constexpr int block_size = 64;
+    static constexpr std::size_t block_size = 64;
 
     constexpr ripemd_160();
     explicit constexpr ripemd_160( std::uint64_t seed );

@@ -42,7 +42,7 @@ class sha2_256
 {
     using result_type = digest<32>;
 
-    static constexpr int block_size = 64;
+    static constexpr std::size_t block_size = 64;
 
     constexpr sha2_256();
     constexpr explicit sha2_256( std::uint64_t seed );
@@ -140,7 +140,7 @@ class sha2_512
 {
     using result_type = digest<64>;
 
-    static constexpr int block_size = 128;
+    static constexpr std::size_t block_size = 128;
 
     constexpr sha2_512();
     constexpr explicit sha2_512( std::uint64_t seed );
