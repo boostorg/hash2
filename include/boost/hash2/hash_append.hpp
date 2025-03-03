@@ -112,12 +112,12 @@ template<class Hash, class Flavor = default_flavor, class T> BOOST_CXX14_CONSTEX
     hash2::hash_append( h, f, static_cast<typename Flavor::size_type>( v ) );
 }
 
-// hash_append_sized_range
+// hash_append_range_and_size
 
 namespace detail
 {
 
-template<class Hash, class Flavor, class It> void BOOST_CXX14_CONSTEXPR hash_append_sized_range_( Hash& h, Flavor const& f, It first, It last, std::input_iterator_tag )
+template<class Hash, class Flavor, class It> void BOOST_CXX14_CONSTEXPR hash_append_range_and_size_( Hash& h, Flavor const& f, It first, It last, std::input_iterator_tag )
 {
     typename std::iterator_traits<It>::difference_type m = 0;
 
@@ -129,7 +129,7 @@ template<class Hash, class Flavor, class It> void BOOST_CXX14_CONSTEXPR hash_app
     hash2::hash_append_size( h, f, m );
 }
 
-template<class Hash, class Flavor, class It> BOOST_CXX14_CONSTEXPR void hash_append_sized_range_( Hash& h, Flavor const& f, It first, It last, std::random_access_iterator_tag )
+template<class Hash, class Flavor, class It> BOOST_CXX14_CONSTEXPR void hash_append_range_and_size_( Hash& h, Flavor const& f, It first, It last, std::random_access_iterator_tag )
 {
     hash2::hash_append_range( h, f, first, last );
     hash2::hash_append_size( h, f, last - first );
@@ -137,9 +137,9 @@ template<class Hash, class Flavor, class It> BOOST_CXX14_CONSTEXPR void hash_app
 
 } // namespace detail
 
-template<class Hash, class Flavor = default_flavor, class It> BOOST_CXX14_CONSTEXPR void hash_append_sized_range( Hash& h, Flavor const& f, It first, It last )
+template<class Hash, class Flavor = default_flavor, class It> BOOST_CXX14_CONSTEXPR void hash_append_range_and_size( Hash& h, Flavor const& f, It first, It last )
 {
-    detail::hash_append_sized_range_( h, f, first, last, typename std::iterator_traits<It>::iterator_category() );
+    detail::hash_append_range_and_size_( h, f, first, last, typename std::iterator_traits<It>::iterator_category() );
 }
 
 // hash_append_unordered_range
@@ -259,7 +259,7 @@ template<class Hash, class Flavor, class T>
     typename std::enable_if< container_hash::is_range<T>::value && !has_constant_size<T>::value && !container_hash::is_contiguous_range<T>::value && !container_hash::is_unordered_range<T>::value, void >::type
     do_hash_append( Hash& h, Flavor const& f, T const& v )
 {
-    hash2::hash_append_sized_range( h, f, v.begin(), v.end() );
+    hash2::hash_append_range_and_size( h, f, v.begin(), v.end() );
 }
 
 #if defined(BOOST_MSVC)

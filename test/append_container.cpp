@@ -27,7 +27,7 @@ template<class Hash, class Flavor, class T, class R> void test_container( R r )
 
     {
         Hash h;
-        boost::hash2::hash_append_sized_range( h, f, v.begin(), v.end() );
+        boost::hash2::hash_append_range_and_size( h, f, v.begin(), v.end() );
 
         BOOST_TEST_EQ( h.result(), r );
     }
