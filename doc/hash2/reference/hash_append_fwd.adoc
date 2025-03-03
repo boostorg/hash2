@@ -24,7 +24,7 @@ template<class Hash, class Flavor, class T>
 constexpr void hash_append_size( Hash& h, Flavor const& f, T const& v );
 
 template<class Hash, class Flavor, class It>
-constexpr void hash_append_sized_range( Hash& h, Flavor const& f, It first, It last );
+constexpr void hash_append_range_and_size( Hash& h, Flavor const& f, It first, It last );
 
 template<class Hash, class Flavor, class It>
 constexpr void hash_append_unordered_range( Hash& h, Flavor const& f, It first, It last );

@@ -24,7 +24,7 @@ template<class Hash, class Flavor = default_flavor, class T>
 constexpr void hash_append_size( Hash& h, Flavor const& f, T const& v );
 
 template<class Hash, class Flavor = default_flavor, class It>
-constexpr void hash_append_sized_range( Hash& h, Flavor const& f, It first, It last );
+constexpr void hash_append_range_and_size( Hash& h, Flavor const& f, It first, It last );
 
 template<class Hash, class Flavor = default_flavor, class It>
 constexpr void hash_append_unordered_range( Hash& h, Flavor const& f, It first, It last );
@@ -56,10 +56,10 @@ Effects: ::
 * If `boost::container_hash::is_unordered_range<T>::value` is `true`, calls `hash_append_unordered_range(h, f, v.begin(), v.end())`;
 * If `boost::container_hash::is_contiguous_range<T>::value` is `true` and
   - `has_constant_size<T>::value` is `true`, calls `hash_append_range(h, f, v.data(), v.data() + v.size())`;
-  - `has_constant_size<T>::value` is `false`, calls `hash_append_sized_range(h, f, v.data(), v.data() + v.size())`;
+  - `has_constant_size<T>::value` is `false`, calls `hash_append_range_and_size(h, f, v.data(), v.data() + v.size())`;
 * If `boost::container_hash::is_range<T>::value` is `true` and
   - `has_constant_size<T>::value` is `true`, calls `hash_append_range(h, f, v.begin(), v.end())`;
-  - `has_constant_size<T>::value` is `false`, calls `hash_append_sized_range(h, f, v.begin(), v.end())`;
+  - `has_constant_size<T>::value` is `false`, calls `hash_append_range_and_size(h, f, v.begin(), v.end())`;
 * If `boost::container_hash::is_tuple_like<T>::value` is `true`, calls `hash_append(h, f, w)` for each tuple element `w`;
 * If `boost::container_hash::is_described_class<T>::value` is `true`, calls `hash_append(h, f, b)` for each base class subobject `b` of `v`, then `hash_append(h, f, m)` for each member subobject `m` of `v`;
 * Otherwise, the result is a compile-time error.
@@ -102,11 +102,11 @@ Requires: ::
 Effects: ::
   Equivalent to `hash_append(h, f, static_cast<typename Flavor::size_type>(v));`
 
-## hash_append_sized_range
+## hash_append_range_and_size
 
 ```
 template<class Hash, class Flavor = default_flavor, class It>
-constexpr void hash_append_sized_range( Hash& h, Flavor const& f, It first, It last );
+constexpr void hash_append_range_and_size( Hash& h, Flavor const& f, It first, It last );
 ```
 
 Appends the representations of the elements of the range `[first, last)`, followed by the size of the range, to the message stored in `h`.
