@@ -46,9 +46,10 @@ class sha2_256
 
     constexpr sha2_256();
     constexpr explicit sha2_256( std::uint64_t seed );
-    constexpr sha2_256( unsigned char const * p, std::size_t n );
+    sha2_256( void const* p, std::size_t n );
+    constexpr sha2_256( unsigned char const* p, std::size_t n );
 
-    void update( void const * p, std::size_t n );
+    void update( void const* p, std::size_t n );
     constexpr void update( unsigned char const* p, std::size_t n );
 
     constexpr result_type result();
@@ -79,7 +80,8 @@ Remarks: ::
   By convention, if `seed` is zero, the effect of this constructor is the same as default construction.
 
 ```
-constexpr sha2_256( unsigned char const * p, std::size_t n );
+sha2_256( void const* p, std::size_t n );
+constexpr sha2_256( unsigned char const* p, std::size_t n );
 ```
 
 Constructor taking a byte sequence seed.
@@ -93,7 +95,7 @@ Remarks: ::
 ### update
 
 ```
-void update( void const * p, std::size_t n );
+void update( void const* p, std::size_t n );
 constexpr void update( unsigned char const* p, std::size_t n );
 ```
 
@@ -142,9 +144,10 @@ class sha2_512
 
     constexpr sha2_512();
     constexpr explicit sha2_512( std::uint64_t seed );
-    constexpr sha2_512( unsigned char const * p, std::size_t n );
+    sha2_512( void const* p, std::size_t n );
+    constexpr sha2_512( unsigned char const* p, std::size_t n );
 
-    void update( void const * p, std::size_t n );
+    void update( void const* p, std::size_t n );
     constexpr void update( unsigned char const* p, std::size_t n );
 
     constexpr result_type result();
@@ -175,7 +178,8 @@ Remarks: ::
   By convention, if `seed` is zero, the effect of this constructor is the same as default construction.
 
 ```
-constexpr sha2_512( unsigned char const * p, std::size_t n );
+sha2_512( void const* p, std::size_t n );
+constexpr sha2_512( unsigned char const* p, std::size_t n );
 ```
 
 Constructor taking a byte sequence seed.
@@ -189,7 +193,7 @@ Remarks: ::
 ### update
 
 ```
-void update( void const * p, std::size_t n );
+void update( void const* p, std::size_t n );
 constexpr void update( unsigned char const* p, std::size_t n );
 ```
 

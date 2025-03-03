@@ -33,6 +33,7 @@ public:
 
     constexpr hmac();
     explicit constexpr hmac( std::uint64_t seed );
+    hmac( void const* p, std::size_t n );
     constexpr hmac( unsigned char const* p, std::size_t n );
 
     void update( void const* p, std::size_t n );
@@ -71,6 +72,7 @@ Remarks: ::
   By convention, if `seed` is zero, the effect of this constructor is the same as default construction.
 
 ```
+hmac( void const* p, std::size_t n );
 hmac( unsigned char const* p, std::size_t n );
 ```
 

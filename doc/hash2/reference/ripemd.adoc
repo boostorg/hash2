@@ -38,6 +38,7 @@ class ripemd_160
 
     constexpr ripemd_160();
     explicit constexpr ripemd_160( std::uint64_t seed );
+    ripemd_160( void const* p, std::size_t n );
     constexpr ripemd_160( unsigned char const* p, std::size_t n );
 
     void update( void const * pv, std::size_t n );
@@ -71,6 +72,7 @@ Remarks: ::
   By convention, if `seed` is zero, the effect of this constructor is the same as default construction.
 
 ```
+ripemd_160( void const* p, std::size_t n );
 constexpr ripemd_160( unsigned char const* p, std::size_t n );
 ```
 

@@ -32,6 +32,7 @@ public:
 
     constexpr xxhash_32();
     explicit constexpr xxhash_32( std::uint64_t seed );
+    xxhash_32( void const* p, std::size_t n );
     constexpr xxhash_32( unsigned char const* p, std::size_t n );
 
     void update( void const* p, std::size_t n );
@@ -65,7 +66,8 @@ Remarks: ::
   By convention, if `seed` is zero, the effect of this constructor is the same as default construction.
 
 ```
-xxhash_32( unsigned char const* p, std::size_t n );
+xxhash_32( void const* p, std::size_t n );
+constexpr xxhash_32( unsigned char const* p, std::size_t n );
 ```
 
 Constructor taking a byte sequence seed.
@@ -115,6 +117,7 @@ public:
 
     constexpr xxhash_64();
     explicit constexpr xxhash_64( std::uint64_t seed );
+    xxhash_64( void const* p, std::size_t n );
     constexpr xxhash_64( unsigned char const* p, std::size_t n );
 
     void update( void const* p, std::size_t n );
@@ -148,7 +151,8 @@ Remarks: ::
   By convention, if `seed` is zero, the effect of this constructor is the same as default construction.
 
 ```
-xxhash_64( unsigned char const* p, std::size_t n );
+xxhash_64( void const* p, std::size_t n );
+constexpr xxhash_64( unsigned char const* p, std::size_t n );
 ```
 
 Constructor taking a byte sequence seed.

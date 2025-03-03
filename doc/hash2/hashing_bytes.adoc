@@ -37,7 +37,7 @@ struct HashAlgorithm
 
     HashAlgorithm();
     explicit HashAlgorithm( std::uint64_t seed );
-    HashAlgorithm( unsigned char const* seed, std::size_t n );
+    HashAlgorithm( void const* seed, std::size_t n );
 
     HashAlgorithm( HashAlgorithm const& r );
     HashAlgorithm& operator=( HashAlgorithm const& r );
@@ -189,6 +189,7 @@ struct HashAlgorithm
 
     constexpr HashAlgorithm();
     explicit constexpr HashAlgorithm( std::uint64_t seed );
+    HashAlgorithm( void const* seed, std::size_t n );
     constexpr HashAlgorithm( unsigned char const* seed, std::size_t n );
 
     constexpr HashAlgorithm( HashAlgorithm const& r );
@@ -202,9 +203,9 @@ struct HashAlgorithm
 ```
 
 Apart from the added `constexpr` qualifiers, the only difference is that
-`update` has a second overload that takes `unsigned char const*` instead
-of `void const*`. (Pointers to `void` cannot be used in `constexpr` functions
-before {cpp}26.)
+the byte seed constructor and `update` have a second overload that takes
+`unsigned char const*` instead of `void const*`.
+(Pointers to `void` cannot be used in `constexpr` functions before {cpp}26.)
 
 ## Provided Hash Algorithms
 

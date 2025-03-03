@@ -13,6 +13,7 @@ It also contains implementations of several popular hashing algorithms:
 * [MD5](https://tools.ietf.org/html/rfc1321)
 * [SHA-1](https://tools.ietf.org/html/rfc3174)
 * [SHA-2](https://tools.ietf.org/html/rfc6234)
+* [SHA-3](https://csrc.nist.gov/pubs/fips/202/final)
 * [RIPEMD-160, RIPEMD-128](https://homes.esat.kuleuven.be/%7Ebosselae/ripemd160.html)
 * [HMAC](https://tools.ietf.org/html/rfc2104)
 
@@ -25,7 +26,7 @@ struct HashAlgorithm
 
     HashAlgorithm(); // default-constructible
     explicit HashAlgorithm( uint64_t seed ); // seed-constructible
-    HashAlgorithm( unsigned char const* seed, size_t n ); // seed-constructible
+    HashAlgorithm( void const* seed, size_t n ); // seed-constructible
 
     HashAlgorithm( HashAlgorithm const& r ); // copy-constructible
     HashAlgorithm& operator=( HashAlgorithm const& r ); // assignable
