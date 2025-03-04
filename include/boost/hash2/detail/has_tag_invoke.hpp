@@ -43,7 +43,7 @@ template<class T, class En = void> struct has_tag_invoke: std::false_type
 };
 
 template<class T> struct has_tag_invoke<T, decltype(
-    tag_invoke( std::declval<hash_append_tag const&>(), std::declval<hash_archetype&>(), std::declval<flavor_archetype const&>(), std::declval<T const&>() ),
+    tag_invoke( std::declval<hash_append_tag const&>(), std::declval<hash_archetype&>(), std::declval<flavor_archetype const&>(), std::declval<T const*>() ),
     void())>: std::true_type
 {
 };

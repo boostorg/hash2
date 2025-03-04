@@ -13,10 +13,10 @@ struct X
 };
 
 template<class Hash, class Flavor>
-void tag_invoke( boost::hash2::hash_append_tag const&, Hash& h, Flavor const& f, X const& x )
+void tag_invoke( boost::hash2::hash_append_tag const&, Hash& h, Flavor const& f, X const* x )
 {
-    boost::hash2::hash_append( h, f, x.a );
-    boost::hash2::hash_append( h, f, x.b );
+    boost::hash2::hash_append( h, f, x->a );
+    boost::hash2::hash_append( h, f, x->b );
 }
 
 template<class Hash, class Flavor, class R> void test( X const& x, int const (&a)[ 2 ], R r )

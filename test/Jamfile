@@ -190,4 +190,4 @@ link ../example/hash_with_byte_seed.cpp ;
 link ../example/hash_with_any_seed.cpp ;
 link ../example/hash_32_64.cpp ;
 link ../example/xxh128_from_xxh64.cpp ;
-link ../example/json_value.cpp : <cxxstd>11:<build>no ;
+link ../example/json_value.cpp : <library>/boost/json//boost_json <cxxstd>11:<build>no ;

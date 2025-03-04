@@ -13,10 +13,10 @@ private:
     std::string s2_;
 
     template<class Hash, class Flavor>
-    friend void tag_invoke( boost::hash2::hash_append_tag const&, Hash& h, Flavor const& f, X const& x )
+    friend void tag_invoke( boost::hash2::hash_append_tag const&, Hash& h, Flavor const& f, X const* x )
     {
-        boost::hash2::hash_append( h, f, x.s1_ );
-        boost::hash2::hash_append( h, f, x.s2_ );
+        boost::hash2::hash_append( h, f, x->s1_ );
+        boost::hash2::hash_append( h, f, x->s2_ );
     }
 
 public:

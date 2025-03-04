@@ -13,4 +13,4 @@ exe hash_with_byte_seed : hash_with_byte_seed.cpp ;
 exe hash_with_any_seed : hash_with_any_seed.cpp ;
 exe hash_32_64 : hash_32_64.cpp ;
 exe xxh128_from_xxh64 : xxh128_from_xxh64.cpp ;
-exe json_value : json_value.cpp ;
+exe json_value : json_value.cpp : <library>/boost/json//boost_json ;

@@ -400,7 +400,7 @@ template<class Hash, class Flavor, class T>
     typename std::enable_if< detail::has_tag_invoke<T>::value, void >::type
     do_hash_append( Hash& h, Flavor const& f, T const& v )
 {
-    tag_invoke( hash_append_tag(), h, f, v );
+    tag_invoke( hash_append_tag(), h, f, &v );
 }
 
 } // namespace detail

@@ -15,11 +15,11 @@ namespace json
 
 template<class Hash, class Flavor>
 void tag_invoke( boost::hash2::hash_append_tag const&,
-    Hash& h, Flavor const& f, boost::json::value const& v )
+    Hash& h, Flavor const& f, boost::json::value const* v )
 {
-    boost::hash2::hash_append( h, f, v.kind() ); // TODO: int64 vs uint64
+    boost::hash2::hash_append( h, f, v->kind() ); // TODO: int64 vs uint64
     boost::json::visit( [&](auto const& w){
-        boost::hash2::hash_append( h, f, w ); }, v );
+        boost::hash2::hash_append( h, f, w ); }, *v );
 }
 
 } // namespace json
