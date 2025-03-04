@@ -57,10 +57,10 @@ private:
     template<class Provider, class Hash, class Flavor>
     friend void tag_invoke(
         boost::hash2::hash_append_tag const&, Provider const&,
-        Hash& h, Flavor const& f, X const& v )
+        Hash& h, Flavor const& f, X const* v )
     {
-        boost::hash2::hash_append( h, f, v.a );
-        boost::hash2::hash_append( h, f, v.b );
+        boost::hash2::hash_append( h, f, v->a );
+        boost::hash2::hash_append( h, f, v->b );
     }
 
 public:
@@ -105,10 +105,10 @@ private:
     template<class Provider, class Hash, class Flavor>
     friend void tag_invoke(
         boost::hash2::hash_append_tag const&, Provider const& pr,
-        Hash& h, Flavor const& f, X const& v )
+        Hash& h, Flavor const& f, X const* v )
     {
-        pr.hash_append( h, f, v.a );
-        pr.hash_append( h, f, v.b );
+        pr.hash_append( h, f, v->a );
+        pr.hash_append( h, f, v->b );
     }
 
 public:
