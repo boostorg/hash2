@@ -16,12 +16,18 @@ namespace hash2
 {
 
 struct hash_append_tag;
+struct default_flavor;
 
 namespace detail
 {
 
 struct provider_archetype
 {
+    template<class Hash, class Flavor = default_flavor, class T> static void hash_append( Hash& h, Flavor const& f, T const& v );
+    template<class Hash, class Flavor = default_flavor, class It> static void hash_append_range( Hash& h, Flavor const& f, It first, It last );
+    template<class Hash, class Flavor = default_flavor, class T> static void hash_append_size( Hash& h, Flavor const& f, T const& v );
+    template<class Hash, class Flavor = default_flavor, class It> static void hash_append_range_and_size( Hash& h, Flavor const& f, It first, It last );
+    template<class Hash, class Flavor = default_flavor, class It> static void hash_append_unordered_range( Hash& h, Flavor const& f, It first, It last );
 };
 
 struct hash_archetype

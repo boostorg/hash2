@@ -14,7 +14,6 @@ namespace boost
 namespace hash2
 {
 
-template<class Hash, class Flavor, class T> BOOST_CXX14_CONSTEXPR void hash_append( Hash& h, Flavor const& f, T const& v );
 struct hash_append_tag;
 
 } // namespace hash2
@@ -33,10 +32,10 @@ private:
     std::string s2_;
 
     template<class Provider, class Hash, class Flavor>
-    friend void tag_invoke( boost::hash2::hash_append_tag const&, Provider const&, Hash& h, Flavor const& f, X const* x )
+    friend void tag_invoke( boost::hash2::hash_append_tag const&, Provider const& pr, Hash& h, Flavor const& f, X const* x )
     {
-        boost::hash2::hash_append( h, f, x->s1_ );
-        boost::hash2::hash_append( h, f, x->s2_ );
+        pr.hash_append( h, f, x->s1_ );
+        pr.hash_append( h, f, x->s2_ );
     }
 
 public:
