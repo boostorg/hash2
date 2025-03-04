@@ -16,7 +16,8 @@ struct X2
     int b;
 };
 
-template<class Hash, class Flavor> void tag_invoke( boost::hash2::hash_append_tag const&, Hash& h, Flavor const& f, X2 const* x )
+template<class Provider, class Hash, class Flavor>
+void tag_invoke( boost::hash2::hash_append_tag const&, Provider const&, Hash& h, Flavor const& f, X2 const* x )
 {
     boost::hash2::hash_append( h, f, x->a );
     boost::hash2::hash_append( h, f, x->b );
@@ -31,8 +32,8 @@ private:
 
 private:
 
-    template<class Hash, class Flavor>
-    inline friend void tag_invoke( boost::hash2::hash_append_tag const&, Hash& h, Flavor const& f, X3 const* x )
+    template<class Provider, class Hash, class Flavor>
+    inline friend void tag_invoke( boost::hash2::hash_append_tag const&, Provider const&, Hash& h, Flavor const& f, X3 const* x )
     {
         boost::hash2::hash_append( h, f, x->a );
         boost::hash2::hash_append( h, f, x->b );
@@ -47,7 +48,7 @@ struct X4
 {
 };
 
-template<class T1, class T2> void tag_invoke( another_tag const&, T1 const&, T2 const&, X4 const* )
+template<class... T> void tag_invoke( another_tag const&, T const&... )
 {
 }
 

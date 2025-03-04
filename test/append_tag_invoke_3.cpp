@@ -12,8 +12,8 @@ private:
     std::string s1_;
     std::string s2_;
 
-    template<class Hash, class Flavor>
-    friend void tag_invoke( boost::hash2::hash_append_tag const&, Hash& h, Flavor const& f, X const* x )
+    template<class Provider, class Hash, class Flavor>
+    friend void tag_invoke( boost::hash2::hash_append_tag const&, Provider const&, Hash& h, Flavor const& f, X const* x )
     {
         boost::hash2::hash_append( h, f, x->s1_ );
         boost::hash2::hash_append( h, f, x->s2_ );

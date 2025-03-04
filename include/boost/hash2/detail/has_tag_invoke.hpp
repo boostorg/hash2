@@ -20,13 +20,17 @@ struct hash_append_tag;
 namespace detail
 {
 
+struct provider_archetype
+{
+};
+
 struct hash_archetype
 {
     using result_type = std::uint64_t;
 
     hash_archetype();
     explicit hash_archetype( std::uint64_t );
-    hash_archetype( unsigned char const*, std::size_t );
+    hash_archetype( void const*, std::size_t );
 
     void update( void const*, std::size_t );
     result_type result();
@@ -43,7 +47,7 @@ template<class T, class En = void> struct has_tag_invoke: std::false_type
 };
 
 template<class T> struct has_tag_invoke<T, decltype(
-    tag_invoke( std::declval<hash_append_tag const&>(), std::declval<hash_archetype&>(), std::declval<flavor_archetype const&>(), std::declval<T const*>() ),
+    tag_invoke( std::declval<hash_append_tag const&>(), std::declval<provider_archetype&>(), std::declval<hash_archetype&>(), std::declval<flavor_archetype const&>(), std::declval<T const*>() ),
     void())>: std::true_type
 {
 };

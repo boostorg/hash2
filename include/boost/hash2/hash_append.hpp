@@ -395,12 +395,16 @@ template<class Hash, class Flavor, class T>
 
 // classes with tag_invoke
 
+struct hash_append_provider
+{
+};
+
 template<class Hash, class Flavor, class T>
     BOOST_CXX14_CONSTEXPR
     typename std::enable_if< detail::has_tag_invoke<T>::value, void >::type
     do_hash_append( Hash& h, Flavor const& f, T const& v )
 {
-    tag_invoke( hash_append_tag(), h, f, &v );
+    tag_invoke( hash_append_tag(), hash_append_provider(), h, f, &v );
 }
 
 } // namespace detail

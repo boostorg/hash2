@@ -26,8 +26,8 @@ struct B
     A a_;
 };
 
-template<class Hash, class Flavor>
-void tag_invoke( boost::hash2::hash_append_tag const&, Hash& h, Flavor const& f, B const* b )
+template<class Provider, class Hash, class Flavor>
+void tag_invoke( boost::hash2::hash_append_tag const&, Provider const&, Hash& h, Flavor const& f, B const* b )
 {
     boost::hash2::hash_append( h, f, b->a_ );
 }

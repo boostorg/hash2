@@ -13,8 +13,8 @@ namespace boost
 namespace json
 {
 
-template<class Hash, class Flavor>
-void tag_invoke( boost::hash2::hash_append_tag const&,
+template<class Provider, class Hash, class Flavor>
+void tag_invoke( boost::hash2::hash_append_tag const&, Provider const&,
     Hash& h, Flavor const& f, boost::json::value const* v )
 {
     boost::hash2::hash_append( h, f, v->kind() ); // TODO: int64 vs uint64
