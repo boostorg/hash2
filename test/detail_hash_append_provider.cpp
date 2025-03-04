@@ -20,6 +20,8 @@ int main()
         pr.hash_append( h2, {}, w );
 
         BOOST_TEST_EQ( h1.result(), h2.result() );
+
+        (void)pr; // avoid msvc-14.0 warning
     }
 
     {
@@ -32,6 +34,8 @@ int main()
         pr.hash_append_range( h2, {}, w + 0, w + 4 );
 
         BOOST_TEST_EQ( h1.result(), h2.result() );
+
+        (void)pr; // avoid msvc-14.0 warning
     }
 
     {
@@ -44,6 +48,8 @@ int main()
         pr.hash_append_size( h2, {}, 4 );
 
         BOOST_TEST_EQ( h1.result(), h2.result() );
+
+        (void)pr; // avoid msvc-14.0 warning
     }
 
     {
@@ -56,6 +62,8 @@ int main()
         pr.hash_append_range_and_size( h2, {}, w + 0, w + 4 );
 
         BOOST_TEST_EQ( h1.result(), h2.result() );
+
+        (void)pr; // avoid msvc-14.0 warning
     }
 
     {
@@ -68,6 +76,8 @@ int main()
         pr.hash_append_unordered_range( h2, {}, w + 0, w + 4 );
 
         BOOST_TEST_EQ( h1.result(), h2.result() );
+
+        (void)pr; // avoid msvc-14.0 warning
     }
 
     return boost::report_errors();

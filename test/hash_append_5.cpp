@@ -36,6 +36,8 @@ private:
     {
         pr.hash_append( h, f, x->s1_ );
         pr.hash_append( h, f, x->s2_ );
+
+        (void)pr; // avoid msvc-14.0 warning
     }
 
 public:
