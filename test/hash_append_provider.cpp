@@ -13,7 +13,7 @@ int main()
     boost::hash2::default_flavor f;
 
     {
-        boost::hash2::detail::hash_append_provider pr;
+        boost::hash2::hash_append_provider pr;
 
         boost::hash2::fnv1a_32 h1;
         boost::hash2::hash_append( h1, f, w );
@@ -27,7 +27,7 @@ int main()
     }
 
     {
-        boost::hash2::detail::hash_append_provider pr;
+        boost::hash2::hash_append_provider pr;
 
         boost::hash2::fnv1a_32 h1;
         boost::hash2::hash_append_range( h1, f, w + 0, w + 4 );
@@ -41,7 +41,7 @@ int main()
     }
 
     {
-        boost::hash2::detail::hash_append_provider pr;
+        boost::hash2::hash_append_provider pr;
 
         boost::hash2::fnv1a_32 h1;
         boost::hash2::hash_append_size( h1, f, 4 );
@@ -55,7 +55,7 @@ int main()
     }
 
     {
-        boost::hash2::detail::hash_append_provider pr;
+        boost::hash2::hash_append_provider pr;
 
         boost::hash2::fnv1a_32 h1;
         boost::hash2::hash_append_range_and_size( h1, f, w + 0, w + 4 );
@@ -69,7 +69,7 @@ int main()
     }
 
     {
-        boost::hash2::detail::hash_append_provider pr;
+        boost::hash2::hash_append_provider pr;
 
         boost::hash2::fnv1a_32 h1;
         boost::hash2::hash_append_unordered_range( h1, f, w + 0, w + 4 );

@@ -164,10 +164,6 @@ template<class Hash, class Flavor = default_flavor, class It> BOOST_CXX14_CONSTE
 
 // do_hash_append
 
-struct hash_append_tag
-{
-};
-
 namespace detail
 {
 
@@ -395,6 +391,12 @@ template<class Hash, class Flavor, class T>
 
 // classes with tag_invoke
 
+} // namespace detail
+
+struct hash_append_tag
+{
+};
+
 struct hash_append_provider
 {
     template<class Hash, class Flavor, class T>
@@ -427,6 +429,9 @@ struct hash_append_provider
         hash2::hash_append_unordered_range( h, f, first, last );
     }
 };
+
+namespace detail
+{
 
 template<class Hash, class Flavor, class T>
     BOOST_CXX14_CONSTEXPR
