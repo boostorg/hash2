@@ -397,31 +397,31 @@ template<class Hash, class Flavor, class T>
 
 struct hash_append_provider
 {
-    template<class Hash, class Flavor = default_flavor, class T>
+    template<class Hash, class Flavor, class T>
     static BOOST_CXX14_CONSTEXPR void hash_append( Hash& h, Flavor const& f, T const& v )
     {
         hash2::hash_append( h, f, v );
     }
 
-    template<class Hash, class Flavor = default_flavor, class It>
+    template<class Hash, class Flavor, class It>
     static BOOST_CXX14_CONSTEXPR void hash_append_range( Hash& h, Flavor const& f, It first, It last )
     {
         hash2::hash_append_range( h, f, first, last );
     }
 
-    template<class Hash, class Flavor = default_flavor, class T>
+    template<class Hash, class Flavor, class T>
     static BOOST_CXX14_CONSTEXPR void hash_append_size( Hash& h, Flavor const& f, T const& v )
     {
         hash2::hash_append_size( h, f, v );
     }
 
-    template<class Hash, class Flavor = default_flavor, class It>
+    template<class Hash, class Flavor, class It>
     static BOOST_CXX14_CONSTEXPR void hash_append_range_and_size( Hash& h, Flavor const& f, It first, It last )
     {
         hash2::hash_append_range_and_size( h, f, first, last );
     }
 
-    template<class Hash, class Flavor = default_flavor, class It>
+    template<class Hash, class Flavor, class It>
     static BOOST_CXX14_CONSTEXPR void hash_append_unordered_range( Hash& h, Flavor const& f, It first, It last )
     {
         hash2::hash_append_unordered_range( h, f, first, last );

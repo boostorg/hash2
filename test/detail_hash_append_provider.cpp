@@ -10,14 +10,16 @@ int main()
 {
     unsigned const w[ 4 ] = { 1, 2, 3, 4 };
 
+    boost::hash2::default_flavor f;
+
     {
         boost::hash2::detail::hash_append_provider pr;
 
         boost::hash2::fnv1a_32 h1;
-        boost::hash2::hash_append( h1, {}, w );
+        boost::hash2::hash_append( h1, f, w );
 
         boost::hash2::fnv1a_32 h2;
-        pr.hash_append( h2, {}, w );
+        pr.hash_append( h2, f, w );
 
         BOOST_TEST_EQ( h1.result(), h2.result() );
 
@@ -28,10 +30,10 @@ int main()
         boost::hash2::detail::hash_append_provider pr;
 
         boost::hash2::fnv1a_32 h1;
-        boost::hash2::hash_append_range( h1, {}, w + 0, w + 4 );
+        boost::hash2::hash_append_range( h1, f, w + 0, w + 4 );
 
         boost::hash2::fnv1a_32 h2;
-        pr.hash_append_range( h2, {}, w + 0, w + 4 );
+        pr.hash_append_range( h2, f, w + 0, w + 4 );
 
         BOOST_TEST_EQ( h1.result(), h2.result() );
 
@@ -42,10 +44,10 @@ int main()
         boost::hash2::detail::hash_append_provider pr;
 
         boost::hash2::fnv1a_32 h1;
-        boost::hash2::hash_append_size( h1, {}, 4 );
+        boost::hash2::hash_append_size( h1, f, 4 );
 
         boost::hash2::fnv1a_32 h2;
-        pr.hash_append_size( h2, {}, 4 );
+        pr.hash_append_size( h2, f, 4 );
 
         BOOST_TEST_EQ( h1.result(), h2.result() );
 
@@ -56,10 +58,10 @@ int main()
         boost::hash2::detail::hash_append_provider pr;
 
         boost::hash2::fnv1a_32 h1;
-        boost::hash2::hash_append_range_and_size( h1, {}, w + 0, w + 4 );
+        boost::hash2::hash_append_range_and_size( h1, f, w + 0, w + 4 );
 
         boost::hash2::fnv1a_32 h2;
-        pr.hash_append_range_and_size( h2, {}, w + 0, w + 4 );
+        pr.hash_append_range_and_size( h2, f, w + 0, w + 4 );
 
         BOOST_TEST_EQ( h1.result(), h2.result() );
 
@@ -70,10 +72,10 @@ int main()
         boost::hash2::detail::hash_append_provider pr;
 
         boost::hash2::fnv1a_32 h1;
-        boost::hash2::hash_append_unordered_range( h1, {}, w + 0, w + 4 );
+        boost::hash2::hash_append_unordered_range( h1, f, w + 0, w + 4 );
 
         boost::hash2::fnv1a_32 h2;
-        pr.hash_append_unordered_range( h2, {}, w + 0, w + 4 );
+        pr.hash_append_unordered_range( h2, f, w + 0, w + 4 );
 
         BOOST_TEST_EQ( h1.result(), h2.result() );
 
