@@ -3,6 +3,12 @@
 
 import testing ;
 
+local werror =
+    <toolset>msvc:<warnings-as-errors>on
+    <toolset>gcc:<warnings-as-errors>on
+    <toolset>clang:<warnings-as-errors>on
+    ;
+
 project
   : default-build
 
@@ -10,9 +16,7 @@ project
 
   : requirements
 
-    <toolset>msvc:<warnings-as-errors>on
-    <toolset>gcc:<warnings-as-errors>on
-    <toolset>clang:<warnings-as-errors>on
+    $(werror)
   ;
 
 # type traits
@@ -83,6 +87,9 @@ run hash_append_range_2.cpp ;
 
 run append_zero_sized.cpp ;
 run append_digest.cpp ;
+
+compile-fail append_tag_invoke_4.cpp
+  : -$(werror) ;
 
 # hash_append, constexpr
 
