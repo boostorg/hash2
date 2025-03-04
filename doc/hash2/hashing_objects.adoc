@@ -356,8 +356,8 @@ When `T` is a user defined type that does not fall into one of the above categor
 This `tag_invoke` overload needs to have the following form:
 
 ```
-template<class Hash, class Flavor>
-void tag_invoke( boost::hash2::hash_append_tag const&, Hash& h, Flavor const& f, X const& v );
+template<class Provider, class Hash, class Flavor>
+void tag_invoke( boost::hash2::hash_append_tag const&, Provider const& pr, Hash& h, Flavor const& f, X const* v );
 ```
 
 where `X` is the user-defined type.
@@ -385,12 +385,13 @@ public:
         return x1.a == x2.a && x1.b == x2.b;
     }
 
-    template<class Hash, class Flavor>
-    friend void tag_invoke( boost::hash2::hash_append_tag const&,
-        Hash& h, Flavor const& f, X const& v )
+    template<class Provider, class Hash, class Flavor>
+    friend void tag_invoke(
+        boost::hash2::hash_append_tag const&, Provider const&,
+        Hash& h, Flavor const& f, X const* v )
     {
-        boost::hash2::hash_append(h, f, v.a);
-        boost::hash2::hash_append(h, f, v.b);
+        boost::hash2::hash_append(h, f, v->a);
+        boost::hash2::hash_append(h, f, v->b);
     }
 };
 ```
@@ -424,15 +425,51 @@ public:
         return x1.size_ == x2.size_ && std::equal( x1.data_, x1.data_ + x1.size_, x2.data_ );
     }
 
-    template<class Hash, class Flavor>
-    friend constexpr void tag_invoke( boost::hash2::hash_append_tag const&,
-        Hash& h, Flavor const& f, X const& v )
+    template<class Provider, class Hash, class Flavor>
+    friend constexpr void tag_invoke(
+        boost::hash2::hash_append_tag const&, Provider const&,
+        Hash& h, Flavor const& f, Str const* v )
     {
-        boost::hash2::hash_append_range( h, f, v.data_, v.data_ + v.size_ );
-        boost::hash2::hash_append_size( h, f, v.size_ );
+        boost::hash2::hash_append_range_and_size( h, f, v->data_, v->data_ + v->size_ );
     }
 };
 ```
 
 NOTE: This example is illustrative; in practice, the above type will likely provide `begin()`, `end()`, `data()`, and `size()` member functions, which will make it a _contiguous range_ and the built-in support will do the right thing.
 
+The `Provider` argument of `tag_invoke` that we've ignored receives an object of type `hash_append_provider`.
+This object contains static member functions that are copies of the functions declared in `<boost/hash2/hash_append_fwd.hpp>`.
+This allows `tag_invoke` overloads to be written without the need to include `<boost/hash2/hash_append_fwd.hpp>`, such that the header is not dependent on anything from Hash2.
+
+For example, this is how we can alternatively declare the user-defined type `X` above:
+
+```
+#include <string>
+
+class X
+{
+private:
+
+    std::string a;
+    int b;
+
+    // not part of the salient state
+    void const* c;
+
+public:
+
+    friend bool operator==( X const& x1, X const& x2 )
+    {
+        return x1.a == x2.a && x1.b == x2.b;
+    }
+
+    template<class Provider, class Hash, class Flavor>
+    friend void tag_invoke(
+        boost::hash2::hash_append_tag const&, Provider const& pr,
+        Hash& h, Flavor const& f, X const* v )
+    {
+        pr.hash_append(h, f, v->a);
+        pr.hash_append(h, f, v->b);
+    }
+};
+```

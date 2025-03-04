@@ -31,6 +31,8 @@ constexpr void hash_append_unordered_range( Hash& h, Flavor const& f, It first, 
 
 struct hash_append_tag;
 
+struct hash_append_provider;
+
 } // namespace hash2
 } // namespace boost
 ```
@@ -51,7 +53,7 @@ Effects: ::
 * If `std::is_pointer<T>::value` is `true`, calls `hash_append(h, f, reinterpret_cast<std::uintptr_t>(v))`;
 * If `T` is `std::nullptr_t`, calls `hash_append(h, f, static_cast<void*>(v))`;
 * If `T` is an array type `U[N]`, calls `hash_append_range(h, f, v + 0, v + N)`;
-* If a suitable overload of `tag_invoke` exists for `T`, calls (unqualified) `tag_invoke(hash_append_tag(), h, f, v)`;
+* If a suitable overload of `tag_invoke` exists for `T`, calls (unqualified) `tag_invoke(hash_append_tag(), hash_append_provider(), h, f, v)`;
 * If `std::is_enum<T>::value` is `true`, calls `hash_append(h, f, w)`, where `w` is `v` converted to the underlying type of `T`;
 * If `boost::container_hash::is_unordered_range<T>::value` is `true`, calls `hash_append_unordered_range(h, f, v.begin(), v.end())`;
 * If `boost::container_hash::is_contiguous_range<T>::value` is `true` and
@@ -151,3 +153,28 @@ struct hash_append_tag
 
 `hash_append_tag` is a tag type used as the first argument of a `tag_invoke` overload to identify the `hash_append` operation.
 
+## hash_append_provider
+
+```
+struct hash_append_provider
+{
+    template<class Hash, class Flavor, class T>
+    static constexpr void hash_append( Hash& h, Flavor const& f, T const& v );
+
+    template<class Hash, class Flavor, class It>
+    static constexpr void hash_append_range( Hash& h, Flavor const& f, It first, It last );
+
+    template<class Hash, class Flavor, class T>
+    static constexpr void hash_append_size( Hash& h, Flavor const& f, T const& v );
+
+    template<class Hash, class Flavor, class It>
+    static constexpr void hash_append_range_and_size( Hash& h, Flavor const& f, It first, It last );
+
+    template<class Hash, class Flavor, class It>
+    static constexpr void hash_append_unordered_range( Hash& h, Flavor const& f, It first, It last );
+};
+```
+
+An object of type `hash_append_provider` is passed as the second argument of a `tag_invoke` overload.
+
+All its member functions call the corresponding functions with the same names in `boost::hash2`.

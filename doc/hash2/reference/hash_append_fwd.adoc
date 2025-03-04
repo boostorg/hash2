@@ -39,7 +39,7 @@ The header `boost/hash2/hash_append_fwd.hpp` declares the functions implemented 
 
 It can be used when code wishes to implement `hash_append` support for a user-defined type without physically depending on the implementation of `hash_append`.
 
-## Example
+## Examples
 
 .X.hpp
 [source]
@@ -54,9 +54,10 @@ private:
     int a = -1;
     std::vector<int> b{ 1, 2, 3 };
 
-    template<class Hash, class Flavor>
+    template<class Provider, class Hash, class Flavor>
     friend void tag_invoke(
-        boost::hash2::hash_append_tag const&, Hash& h, Flavor const& f, X const& v )
+        boost::hash2::hash_append_tag const&, Provider const&,
+        Hash& h, Flavor const& f, X const& v )
     {
         boost::hash2::hash_append( h, f, v.a );
         boost::hash2::hash_append( h, f, v.b );
@@ -85,5 +86,34 @@ int main()
 
     std::cout << "MD5 digest of x: " << hash.result() << std::endl;
 }
+----
+
+Note, however, that it's possible to achieve the same effect even without including `<boost/hash2/hash_append_fwd.hpp>`, by using the `Provider` argument of `tag_invoke`:
+
+.X.hpp
+[source]
+----
+#include <vector>
+
+class X
+{
+private:
+
+    int a = -1;
+    std::vector<int> b{ 1, 2, 3 };
+
+    template<class Provider, class Hash, class Flavor>
+    friend void tag_invoke(
+        boost::hash2::hash_append_tag const&, Provider const& pr,
+        Hash& h, Flavor const& f, X const& v )
+    {
+        pr.hash_append( h, f, v.a );
+        pr.hash_append( h, f, v.b );
+    }
+
+public:
+
+    X() = default;
+};
 ----
 
