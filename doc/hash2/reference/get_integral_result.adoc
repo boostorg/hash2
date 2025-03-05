@@ -12,7 +12,7 @@ https://www.boost.org/LICENSE_1_0.txt
 namespace boost {
 namespace hash2 {
 
-template<class T, class R> constexpr T get_integral_result( R const& r ) noexcept;
+template<class T, class Hash> constexpr T get_integral_result( Hash& h );
 
 } // namespace hash2
 } // namespace boost
@@ -21,18 +21,21 @@ template<class T, class R> constexpr T get_integral_result( R const& r ) noexcep
 ## get_integral_result
 
 ```
-template<class T, class R> constexpr T get_integral_result( R const& r ) noexcept;
+template<class T, class Hash> constexpr T get_integral_result( Hash& h );
 ```
 
 Requires: ::
   `T` must be an integral type that is not `bool`.
-  `R` must be a valid _hash algorithm_ result type; that is, it must be an unsigned integer type, or an array-like type with a `value_type` of `unsigned char` (`std::array<unsigned char, N>` or `digest<N>`) and size of at least 8.
+  `Hash` must be a _hash algorithm_.
+
+Effects: ::
+  Calls `h.result()` one or more times.
 
 Returns: ::
-  A value that is derived from `r` in a way that is approximately uniformly distributed over the possible values of `T`. `r` is assumed to have been produced by a `result()` invocation of a _hash algorithm_.
+  A value that is derived from the return values of the `h.result()` calls in a way that is approximately uniformly distributed over the possible values of `T`.
 
 Remarks: ::
-  When `R` is an array-like type, `get_integral_result` is allowed to assume that `r` has been produced by a high quality hash algorithm and that therefore its values are uniformly distributed over the entire domain of `R`.
+  When `Hash::result_type` is an array-like type, `get_integral_result` is allowed to assume that `Hash` is a high quality hash algorithm and that therefore the values of `h.result()` are uniformly distributed over the entire domain of `Hash::result_type`.
 
 Example: ::
 +
@@ -43,7 +46,7 @@ template<class T, class Hash> struct my_hash
     {
         Hash hash;
         boost::hash2::hash_append( hash, {}, st );
-        return boost::hash2::get_integral_result<std::size_t>( hash.result() );
+        return boost::hash2::get_integral_result<std::size_t>( hash );
     }
 };
 ```
