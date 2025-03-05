@@ -131,51 +131,54 @@ template<class U, class R>
 
 // contraction
 
-template<class T, class R>
+template<class T, class Hash, class R = typename Hash::result_type>
     typename std::enable_if<std::is_integral<R>::value && (sizeof(R) > sizeof(T)), T>::type
-    get_integral_result( R const & r )
+    get_integral_result( Hash& h )
 {
     static_assert( std::is_integral<T>::value, "T must be integral" );
     static_assert( !std::is_same<typename std::remove_cv<T>::type, bool>::value, "T must not be bool" );
 
-    static_assert( std::is_unsigned<R>::value, "R must be unsigned" );
+    static_assert( std::is_unsigned<R>::value, "Hash::result_type must be unsigned" );
 
     typedef typename std::make_unsigned<T>::type U;
 
     constexpr auto m = detail::get_result_multiplier<U, R>();
 
+    auto r = h.result();
     return static_cast<T>( static_cast<U>( ( r * m ) >> ( std::numeric_limits<R>::digits - std::numeric_limits<U>::digits ) ) );
 }
 
 // identity or expansion
 
-template<class T, class R>
+template<class T, class Hash, class R = typename Hash::result_type>
     typename std::enable_if<std::is_integral<R>::value && (sizeof(R) <= sizeof(T)), T>::type
-    get_integral_result( R const & r )
+    get_integral_result( Hash& h )
 {
     static_assert( std::is_integral<T>::value, "T must be integral" );
     static_assert( !std::is_same<typename std::remove_cv<T>::type, bool>::value, "T must not be bool" );
 
-    static_assert( std::is_unsigned<R>::value, "R must be unsigned" );
+    static_assert( std::is_unsigned<R>::value, "Hash::result_type must be unsigned" );
 
     typedef typename std::make_unsigned<T>::type U;
 
     constexpr auto m = detail::get_result_multiplier<U, R>();
 
+    auto r = h.result();
     return static_cast<T>( static_cast<U>( r * m ) );
 }
 
 // array-like R
 
-template<class T, class R>
+template<class T, class Hash, class R = typename Hash::result_type>
     typename std::enable_if< !std::is_integral<R>::value, T >::type
-    get_integral_result( R const & r )
+    get_integral_result( Hash& h )
 {
     static_assert( std::is_integral<T>::value, "T must be integral" );
     static_assert( !std::is_same<typename std::remove_cv<T>::type, bool>::value, "T must not be bool" );
 
     static_assert( R().size() >= 8, "Array-like result type is too short" );
 
+    auto r = h.result();
     return static_cast<T>( detail::read64le( r.data() ) );
 }
 
