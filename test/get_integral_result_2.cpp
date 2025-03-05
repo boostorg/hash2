@@ -3,76 +3,106 @@
 // https://www.boost.org/LICENSE_1_0.txt
 
 #include <boost/hash2/get_integral_result.hpp>
+#include <boost/hash2/fnv1a.hpp>
+#include <boost/hash2/md5.hpp>
+#include <boost/hash2/sha1.hpp>
+#include <boost/hash2/sha2.hpp>
 #include <boost/hash2/digest.hpp>
 #include <boost/array.hpp>
 #include <boost/core/lightweight_test.hpp>
 #include <array>
 #include <cstdint>
 
-template<class R> void test( R const& r )
+template<class Hash> void test()
 {
     using boost::hash2::get_integral_result;
 
+    Hash h;
+
     {
-        auto t1 = get_integral_result<signed char>( r );
-        auto t2 = get_integral_result<unsigned char>( r );
+        Hash h2( h );
+        auto t1 = get_integral_result<signed char>( h );
+        auto t2 = get_integral_result<unsigned char>( h2 );
 
         BOOST_TEST_EQ( static_cast<unsigned char>( t1 ), t2 );
     }
 
     {
-        auto t1 = get_integral_result<signed short>( r );
-        auto t2 = get_integral_result<unsigned short>( r );
+        Hash h2( h );
+        auto t1 = get_integral_result<signed short>( h );
+        auto t2 = get_integral_result<unsigned short>( h2 );
 
         BOOST_TEST_EQ( static_cast<unsigned short>( t1 ), t2 );
     }
 
     {
-        auto t1 = get_integral_result<signed int>( r );
-        auto t2 = get_integral_result<unsigned int>( r );
+        Hash h2( h );
+        auto t1 = get_integral_result<signed int>( h );
+        auto t2 = get_integral_result<unsigned int>( h2 );
 
         BOOST_TEST_EQ( static_cast<unsigned int>( t1 ), t2 );
     }
 
     {
-        auto t1 = get_integral_result<signed long>( r );
-        auto t2 = get_integral_result<unsigned long>( r );
+        Hash h2( h );
+        auto t1 = get_integral_result<signed long>( h );
+        auto t2 = get_integral_result<unsigned long>( h2 );
 
         BOOST_TEST_EQ( static_cast<unsigned long>( t1 ), t2 );
     }
 
     {
-        auto t1 = get_integral_result<signed long long>( r );
-        auto t2 = get_integral_result<unsigned long long>( r );
+        Hash h2( h );
+        auto t1 = get_integral_result<signed long long>( h );
+        auto t2 = get_integral_result<unsigned long long>( h2 );
 
         BOOST_TEST_EQ( static_cast<unsigned long long>( t1 ), t2 );
     }
 }
 
+template<class R> struct H1: private boost::hash2::fnv1a_64
+{
+    using result_type = R;
+
+    result_type result()
+    {
+        return static_cast<R>( boost::hash2::fnv1a_64::result() );
+    }
+};
+
+template<class R> struct H2: private boost::hash2::md5_128
+{
+    using result_type = R;
+
+    result_type result()
+    {
+        boost::hash2::md5_128::result_type r1 = boost::hash2::md5_128::result();
+        R r2 = {};
+
+        std::memcpy( &r2[0], &r1[0], std::min( r1.size(), r2.size() ) );
+        return r2;
+    }
+};
+
 int main()
 {
-    using boost::hash2::get_integral_result;
+    test<boost::hash2::fnv1a_32>();
+    test<boost::hash2::fnv1a_64>();
+    test<boost::hash2::md5_128>();
+    test<boost::hash2::sha1_160>();
+    test<boost::hash2::sha2_224>();
+    test<boost::hash2::sha2_256>();
+    test<boost::hash2::sha2_384>();
+    test<boost::hash2::sha2_512>();
 
-    test<std::uint8_t>( 0x1E );
-    test<std::uint8_t>( 0xE1 );
+    test< H1<std::uint8_t> >();
+    test< H1<std::uint16_t> >();
+    test< H1<std::uint32_t> >();
+    test< H1<std::uint64_t> >();
 
-    test<std::uint16_t>( 0x1E1E );
-    test<std::uint16_t>( 0xE1E1 );
-
-    test<std::uint32_t>( 0x1E1E1E1Eu );
-    test<std::uint32_t>( 0xE1E1E1E1u );
-
-    test<std::uint64_t>( 0x1E1E1E1E1E1E1E1Eull );
-    test<std::uint64_t>( 0xE1E1E1E1E1E1E1E1ull );
-
-    test< std::array<unsigned char, 8> >( {{ 0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E }} );
-    test< std::array<unsigned char, 8> >( {{ 0xE1, 0xE1, 0xE1, 0xE1, 0xE1, 0xE1, 0xE1, 0xE1 }} );
-
-    test< boost::array<unsigned char, 8> >( {{ 0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E }} );
-    test< boost::array<unsigned char, 8> >( {{ 0xE1, 0xE1, 0xE1, 0xE1, 0xE1, 0xE1, 0xE1, 0xE1 }} );
-
-    test< boost::hash2::digest<8> >( {{ 0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E, 0x1E }} );
-    test< boost::hash2::digest<8> >( {{ 0xE1, 0xE1, 0xE1, 0xE1, 0xE1, 0xE1, 0xE1, 0xE1 }} );
+    test< H2<std::array<unsigned char, 8>> >();
+    test< H2<boost::array<unsigned char, 8>> >();
+    test< H2<boost::hash2::digest<8>> >();
 
     return boost::report_errors();
 }
