@@ -49,7 +49,7 @@ template<class R> struct H2: private boost::hash2::md5_128
     result_type result()
     {
         boost::hash2::md5_128::result_type r1 = boost::hash2::md5_128::result();
-        R r2 = {};
+        R r2 = {{}};
 
         std::memcpy( &r2[0], &r1[0], std::min( r1.size(), r2.size() ) );
         return r2;
