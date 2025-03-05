@@ -43,21 +43,21 @@ int main()
 {
     using namespace boost::hash2;
 
-    TEST_EQ( (test<fnv1a_32, little_endian_flavor, char>()), 2468847257 );
-    TEST_EQ( (test<fnv1a_32, big_endian_flavor, char>()), 78451921 );
+    TEST_EQ( (test<fnv1a_32, little_endian_flavor, char>()), 2227238665 );
+    TEST_EQ( (test<fnv1a_32, big_endian_flavor, char>()), 3245468929 );
 
 #if defined(__cpp_char8_t) && __cpp_char8_t >= 201811L
 
-    TEST_EQ( (test<fnv1a_32, little_endian_flavor, char8_t>()), 2468847257 );
-    TEST_EQ( (test<fnv1a_32, big_endian_flavor, char8_t>()), 78451921 );
+    TEST_EQ( (test<fnv1a_32, little_endian_flavor, char8_t>()), 2227238665 );
+    TEST_EQ( (test<fnv1a_32, big_endian_flavor, char8_t>()), 3245468929 );
 
 #endif
 
-    TEST_EQ( (test<fnv1a_32, little_endian_flavor, char16_t>()), 634283301 );
-    TEST_EQ( (test<fnv1a_32, big_endian_flavor, char16_t>()), 1469224165 );
+    TEST_EQ( (test<fnv1a_32, little_endian_flavor, char16_t>()), 2981571797 );
+    TEST_EQ( (test<fnv1a_32, big_endian_flavor, char16_t>()), 1063054677 );
 
-    TEST_EQ( (test<fnv1a_32, little_endian_flavor, char32_t>()), 2374676325 );
-    TEST_EQ( (test<fnv1a_32, big_endian_flavor, char32_t>()), 2877134693 );
+    TEST_EQ( (test<fnv1a_32, little_endian_flavor, char32_t>()), 1745310485 );
+    TEST_EQ( (test<fnv1a_32, big_endian_flavor, char32_t>()), 3959736277 );
 
     return boost::report_errors();
 }

@@ -64,8 +64,8 @@ int main()
 {
     using namespace boost::hash2;
 
-    test<fnv1a_32, little_endian_flavor>( {}, 2447527756 );
-    test<fnv1a_32, big_endian_flavor>( {}, 2986383648 );
+    test<fnv1a_32, little_endian_flavor>( {}, 1388033884 );
+    test<fnv1a_32, big_endian_flavor>( {}, 3611226160 );
 
     return boost::report_errors();
 }

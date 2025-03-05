@@ -45,16 +45,16 @@ int main()
 
     constexpr char const* str = "\x01\x02\x03\x04";
 
-    TEST_EQ( (test<fnv1a_32, little_endian_flavor>( boost::string_view( str, 4 ) )), 2468847257 );
-    TEST_EQ( (test<fnv1a_32, big_endian_flavor>( boost::string_view( str, 4 ) )), 78451921 );
+    TEST_EQ( (test<fnv1a_32, little_endian_flavor>( boost::string_view( str, 4 ) )), 2227238665 );
+    TEST_EQ( (test<fnv1a_32, big_endian_flavor>( boost::string_view( str, 4 ) )), 3245468929 );
 
-    TEST_EQ( (test<fnv1a_32, little_endian_flavor>( boost::core::string_view( str, 4 ) )), 2468847257 );
-    TEST_EQ( (test<fnv1a_32, big_endian_flavor>( boost::core::string_view( str, 4 ) )), 78451921 );
+    TEST_EQ( (test<fnv1a_32, little_endian_flavor>( boost::core::string_view( str, 4 ) )), 2227238665 );
+    TEST_EQ( (test<fnv1a_32, big_endian_flavor>( boost::core::string_view( str, 4 ) )), 3245468929 );
 
 #if !defined(BOOST_NO_CXX17_HDR_STRING_VIEW)
 
-    TEST_EQ( (test<fnv1a_32, little_endian_flavor>( std::string_view( str ) )), 2468847257 );
-    TEST_EQ( (test<fnv1a_32, big_endian_flavor>( std::string_view( str ) )), 78451921 );
+    TEST_EQ( (test<fnv1a_32, little_endian_flavor>( std::string_view( str ) )), 2227238665 );
+    TEST_EQ( (test<fnv1a_32, big_endian_flavor>( std::string_view( str ) )), 3245468929 );
 
 #endif
 

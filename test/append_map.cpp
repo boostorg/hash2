@@ -65,17 +65,17 @@ int main()
 {
     using namespace boost::hash2;
 
-    test< fnv1a_32, little_endian_flavor, std::map<int, int> >( 1082144933ul );
-    test< fnv1a_64, little_endian_flavor, std::map<int, int> >( 12051529320333828229ull );
+    test< fnv1a_32, little_endian_flavor, std::map<int, int> >( 3152726101ul );
+    test< fnv1a_64, little_endian_flavor, std::map<int, int> >( 11386405661620022965ull );
 
-    test< fnv1a_32, little_endian_flavor, std::multimap<int, int> >( 1082144933ul );
-    test< fnv1a_64, little_endian_flavor, std::multimap<int, int> >( 12051529320333828229ull );
+    test< fnv1a_32, little_endian_flavor, std::multimap<int, int> >( 3152726101ul );
+    test< fnv1a_64, little_endian_flavor, std::multimap<int, int> >( 11386405661620022965ull );
 
-    test< fnv1a_32, little_endian_flavor, std::unordered_map<int, int> >( 2445282413ul );
-    test< fnv1a_64, little_endian_flavor, std::unordered_map<int, int> >( 2617313294186790738ull );
+    test< fnv1a_32, little_endian_flavor, std::unordered_map<int, int> >( 2742410178ul );
+    test< fnv1a_64, little_endian_flavor, std::unordered_map<int, int> >( 7026041901235387186ull );
 
-    test< fnv1a_32, little_endian_flavor, std::unordered_multimap<int, int> >( 2445282413ul );
-    test< fnv1a_64, little_endian_flavor, std::unordered_multimap<int, int> >( 2617313294186790738ull );
+    test< fnv1a_32, little_endian_flavor, std::unordered_multimap<int, int> >( 2742410178ul );
+    test< fnv1a_64, little_endian_flavor, std::unordered_multimap<int, int> >( 7026041901235387186ull );
 
     return boost::report_errors();
 }

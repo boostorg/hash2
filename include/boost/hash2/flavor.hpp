@@ -15,19 +15,19 @@ namespace hash2
 
 struct default_flavor
 {
-    using size_type = std::uint64_t;
+    using size_type = std::uint32_t;
     static constexpr auto byte_order = endian::native;
 };
 
 struct little_endian_flavor
 {
-    using size_type = std::uint64_t;
+    using size_type = std::uint32_t;
     static constexpr auto byte_order = endian::little;
 };
 
 struct big_endian_flavor
 {
-    using size_type = std::uint64_t;
+    using size_type = std::uint32_t;
     static constexpr auto byte_order = endian::big;
 };
 

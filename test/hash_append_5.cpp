@@ -129,8 +129,8 @@ template<class Hash, class Flavor, class R> void test( R r )
 
 int main()
 {
-    test<boost::hash2::fnv1a_32, boost::hash2::little_endian_flavor>( 4058687743ul );
-    test<lib2::fnv1a, boost::hash2::little_endian_flavor>( 4058687743ul );
+    test<boost::hash2::fnv1a_32, boost::hash2::little_endian_flavor>( 2425039999ul );
+    test<lib2::fnv1a, boost::hash2::little_endian_flavor>( 2425039999ul );
 
     return boost::report_errors();
 }
