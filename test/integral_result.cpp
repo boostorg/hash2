@@ -22,9 +22,9 @@ template<class H> void test()
 {
     H h;
 
-    get_integral_result<int>( h.result() );
-    get_integral_result<std::uint32_t>( h.result() );
-    get_integral_result<std::uint64_t>( h.result() );
+    get_integral_result<int>( h );
+    get_integral_result<std::uint32_t>( h );
+    get_integral_result<std::uint64_t>( h );
 }
 
 int main()

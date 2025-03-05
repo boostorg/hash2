@@ -62,7 +62,7 @@ public:
 
         hash_append_impl( h, v, boost::container_hash::is_contiguous_range<T>() );
 
-        return boost::hash2::get_integral_result<std::size_t>( h.result() );
+        return boost::hash2::get_integral_result<std::size_t>( h );
     }
 };
 

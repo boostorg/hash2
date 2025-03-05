@@ -35,7 +35,7 @@ template<class Hash> void test_( unsigned char const * p, int N, int M )
 
     long long ms = std::chrono::duration_cast<std::chrono::milliseconds>( t2 - t1 ).count();
 
-    unsigned r = boost::hash2::get_integral_result<unsigned>( h.result() );
+    unsigned r = boost::hash2::get_integral_result<unsigned>( h );
 
     std::printf( "%s (N=%d): %u: %lld ms, %.2f MB/s\n", boost::core::type_name<Hash>().c_str(), N, r, ms, 1000.0 * N * M / ms / 1048576 );
 }

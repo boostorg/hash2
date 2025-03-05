@@ -41,7 +41,7 @@ template<class Hash, class T> inline void compute_hash_value_impl( Hash& h, T co
 template<class Hash, class T> inline std::size_t compute_hash_value( Hash& h, T const& v )
 {
     detail::compute_hash_value_impl( h, v, boost::container_hash::is_contiguous_range<T>() );
-    return boost::hash2::get_integral_result<std::size_t>( h.result() );
+    return boost::hash2::get_integral_result<std::size_t>( h );
 }
 
 } // namespace detail

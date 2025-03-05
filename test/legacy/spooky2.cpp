@@ -98,7 +98,7 @@ int main()
 
         h.update( buf, i );
 
-        std::uint32_t r = get_integral_result<std::uint32_t>( h.result() );
+        std::uint32_t r = get_integral_result<std::uint32_t>( h );
 
         BOOST_TEST_EQ( r, expected[ i ] );
     }

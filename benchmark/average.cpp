@@ -33,7 +33,7 @@ template<class R, class H> void test_( int N )
     for( int i = 0; i < N; ++i )
     {
         using boost::hash2::get_integral_result;
-        r += get_integral_result<R>( h.result() );
+        r += get_integral_result<R>( h );
         r += 0.5;
     }
 

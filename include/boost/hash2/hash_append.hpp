@@ -155,7 +155,7 @@ template<class Hash, class Flavor = default_flavor, class It> BOOST_CXX14_CONSTE
         Hash h2( h );
         hash2::hash_append( h2, f, *first );
 
-        w += hash2::get_integral_result<std::uint64_t>( h2.result() );
+        w += hash2::get_integral_result<std::uint64_t>( h2 );
     }
 
     hash2::hash_append( h, f, w );

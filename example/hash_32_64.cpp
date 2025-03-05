@@ -42,7 +42,7 @@ public:
     {
         hash_type h( h_ );
         boost::hash2::hash_append( h, {}, v );
-        return boost::hash2::get_integral_result<std::size_t>( h.result() );
+        return boost::hash2::get_integral_result<std::size_t>( h );
     }
 };
 
