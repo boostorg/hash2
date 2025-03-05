@@ -9,34 +9,116 @@
 #include <cstdint>
 #include <array>
 
+template<class R> class H
+{
+private:
+
+    R r_;
+
+public:
+
+    using result_type = R;
+
+    explicit H( R const& r ): r_( r )
+    {
+    }
+
+    result_type result()
+    {
+        return r_;
+    }
+};
+
 template<class R> void test()
 {
     using boost::hash2::get_integral_result;
 
     {
-        R a64 = {{ 0xEF, 0xCD, 0xAB, 0x89, 0x67, 0x45, 0x23, 0x01 }};
+        R r = {{ 0xEF, 0xCD, 0xAB, 0x89, 0x67, 0x45, 0x23, 0x01 }};
 
-        BOOST_TEST_EQ( get_integral_result<std::uint8_t>( a64 ), 0xEF );
-        BOOST_TEST_EQ( get_integral_result<std::int8_t>( a64 ), -0x11 );
-        BOOST_TEST_EQ( get_integral_result<std::uint16_t>( a64 ), 0xCDEF );
-        BOOST_TEST_EQ( get_integral_result<std::int16_t>( a64 ), -0x3211 );
-        BOOST_TEST_EQ( get_integral_result<std::uint32_t>( a64 ), 0x89ABCDEF );
-        BOOST_TEST_EQ( get_integral_result<std::int32_t>( a64 ), 0x89ABCDEF );
-        BOOST_TEST_EQ( get_integral_result<std::uint64_t>( a64 ), 0x0123456789ABCDEFull );
-        BOOST_TEST_EQ( get_integral_result<std::int64_t>( a64 ), 0x0123456789ABCDEFull );
+        {
+            H<R> h( r );
+            BOOST_TEST_EQ( get_integral_result<std::uint8_t>( h ), 0xEF );
+        }
+
+        {
+            H<R> h( r );
+            BOOST_TEST_EQ( get_integral_result<std::int8_t>( h ), -0x11 );
+        }
+
+        {
+            H<R> h( r );
+            BOOST_TEST_EQ( get_integral_result<std::uint16_t>( h ), 0xCDEF );
+        }
+
+        {
+            H<R> h( r );
+            BOOST_TEST_EQ( get_integral_result<std::int16_t>( h ), -0x3211 );
+        }
+
+        {
+            H<R> h( r );
+            BOOST_TEST_EQ( get_integral_result<std::uint32_t>( h ), 0x89ABCDEF );
+        }
+
+        {
+            H<R> h( r );
+            BOOST_TEST_EQ( get_integral_result<std::int32_t>( h ), 0x89ABCDEF );
+        }
+
+        {
+            H<R> h( r );
+            BOOST_TEST_EQ( get_integral_result<std::uint64_t>( h ), 0x0123456789ABCDEFull );
+        }
+
+        {
+            H<R> h( r );
+            BOOST_TEST_EQ( get_integral_result<std::int64_t>( h ), 0x0123456789ABCDEFull );
+        }
     }
 
     {
-        R b64 = {{ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF }};
+        R r = {{ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF }};
 
-        BOOST_TEST_EQ( get_integral_result<std::uint8_t>( b64 ), 0xFF );
-        BOOST_TEST_EQ( get_integral_result<std::int8_t>( b64 ), -1 );
-        BOOST_TEST_EQ( get_integral_result<std::uint16_t>( b64 ), 0xFFFF );
-        BOOST_TEST_EQ( get_integral_result<std::int16_t>( b64 ), -1 );
-        BOOST_TEST_EQ( get_integral_result<std::uint32_t>( b64 ), 0xFFFFFFFFu );
-        BOOST_TEST_EQ( get_integral_result<std::int32_t>( b64 ), -1 );
-        BOOST_TEST_EQ( get_integral_result<std::uint64_t>( b64 ), 0xFFFFFFFFFFFFFFFFull );
-        BOOST_TEST_EQ( get_integral_result<std::int64_t>( b64 ), -1 );
+        {
+            H<R> h( r );
+            BOOST_TEST_EQ( get_integral_result<std::uint8_t>( h ), 0xFF );
+        }
+
+        {
+            H<R> h( r );
+            BOOST_TEST_EQ( get_integral_result<std::int8_t>( h ), -1 );
+        }
+
+        {
+            H<R> h( r );
+            BOOST_TEST_EQ( get_integral_result<std::uint16_t>( h ), 0xFFFF );
+        }
+
+        {
+            H<R> h( r );
+            BOOST_TEST_EQ( get_integral_result<std::int16_t>( h ), -1 );
+        }
+
+        {
+            H<R> h( r );
+            BOOST_TEST_EQ( get_integral_result<std::uint32_t>( h ), 0xFFFFFFFFu );
+        }
+
+        {
+            H<R> h( r );
+            BOOST_TEST_EQ( get_integral_result<std::int32_t>( h ), -1 );
+        }
+
+        {
+            H<R> h( r );
+            BOOST_TEST_EQ( get_integral_result<std::uint64_t>( h ), 0xFFFFFFFFFFFFFFFFull );
+        }
+
+        {
+            H<R> h( r );
+            BOOST_TEST_EQ( get_integral_result<std::int64_t>( h ), -1 );
+        }
     }
 }
 
