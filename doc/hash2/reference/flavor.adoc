@@ -37,7 +37,7 @@ Flavor types have two members, a type `size_type` and a value `byte_order` of ty
 ```
 struct default_flavor
 {
-    using size_type = std::uint64_t;
+    using size_type = std::uint32_t;
     static constexpr auto byte_order = endian::native;
 };
 ```
@@ -52,7 +52,7 @@ There is rarely a need to use `default_flavor` explicitly, because it's default 
 ```
 struct little_endian_flavor
 {
-    using size_type = std::uint64_t;
+    using size_type = std::uint32_t;
     static constexpr auto byte_order = endian::little;
 };
 ```
@@ -66,7 +66,7 @@ However, if the platform is big endian, `hash_append` will be slower because it 
 ```
 struct big_endian_flavor
 {
-    using size_type = std::uint64_t;
+    using size_type = std::uint32_t;
     static constexpr auto byte_order = endian::big;
 };
 ```

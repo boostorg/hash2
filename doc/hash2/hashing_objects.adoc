@@ -70,7 +70,7 @@ the serialization process in cases where more than one behavior is
 possible and desirable. It currently contains the following members:
 
 * `static constexpr endian byte_order; // native, little, or big`
-* `using size_type = std::uint64_t; // or std::uint32_t`
+* `using size_type = std::uint32_t; // or std::uint64_t`
 
 The `byte_order` member of the flavor affects how scalar {cpp} objects
 are serialized into bytes. For example, the `uint32_t` integer `0x01020304`
@@ -94,19 +94,19 @@ There are three predefined flavors, defined in `boost/hash2/flavor.hpp`:
 ```
 struct default_flavor
 {
-    using size_type = std::uint64_t;
+    using size_type = std::uint32_t;
     static constexpr auto byte_order = endian::native;
 };
 
 struct little_endian_flavor
 {
-    using size_type = std::uint64_t;
+    using size_type = std::uint32_t;
     static constexpr auto byte_order = endian::little;
 };
 
 struct big_endian_flavor
 {
-    using size_type = std::uint64_t;
+    using size_type = std::uint32_t;
     static constexpr auto byte_order = endian::big;
 };
 ```
