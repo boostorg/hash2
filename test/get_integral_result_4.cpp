@@ -3,44 +3,32 @@
 // https://www.boost.org/LICENSE_1_0.txt
 
 #include <boost/hash2/get_integral_result.hpp>
+#include <boost/hash2/fnv1a.hpp>
+#include <boost/hash2/hash_append.hpp>
 #include <boost/core/lightweight_test.hpp>
 #include <set>
 #include <limits>
 #include <cstdint>
 
-template<class T> void test_identity()
+template<class Hash> void test_identity()
 {
     using boost::hash2::get_integral_result;
 
-    using R = T;
+    using R = typename Hash::result_type;
 
-    for( unsigned i = 0; i <= std::numeric_limits<T>::max(); ++i )
+    Hash h;
+    Hash h2( h );
+
+    for( int i = 0; i < 1024; ++i )
     {
-        R r = static_cast<R>( i );
-        T t = get_integral_result<T>( r );
+        R r = h.result();
+        R t = get_integral_result<R>( h2 );
 
         BOOST_TEST_EQ( t, r );
     }
 }
 
-template<class T, class R> std::size_t test_permutation( int shift )
-{
-    using boost::hash2::get_integral_result;
-
-    std::set<T> dist;
-
-    for( unsigned i = 0; i <= std::numeric_limits<T>::max(); ++i )
-    {
-        R r = static_cast<R>( i << shift );
-        T t = get_integral_result<T>( r );
-
-        dist.insert( t );
-    }
-
-    return dist.size();
-}
-
-template<class T, class R> std::size_t test_roundtrip()
+template<class T, class Hash> std::size_t test_sample()
 {
     using boost::hash2::get_integral_result;
 
@@ -49,8 +37,11 @@ template<class T, class R> std::size_t test_roundtrip()
     for( unsigned i = 0; i <= std::numeric_limits<T>::max(); ++i )
     {
         T t1 = static_cast<T>( i );
-        R r = get_integral_result<R>( t1 );
-        T t2 = get_integral_result<T>( r );
+
+        Hash h;
+        boost::hash2::hash_append( h, {}, t1 );
+
+        T t2 = get_integral_result<T>( h );
 
         dist.insert( t2 );
     }
@@ -58,62 +49,34 @@ template<class T, class R> std::size_t test_roundtrip()
     return dist.size();
 }
 
+template<class R> struct H1: private boost::hash2::fnv1a_64
+{
+    using result_type = R;
+
+    using boost::hash2::fnv1a_64::update;
+
+    result_type result()
+    {
+        return static_cast<R>( boost::hash2::fnv1a_64::result() );
+    }
+};
+
 int main()
 {
-    // 1 -> 1
+    test_identity< H1<std::uint8_t> >();
 
-    test_identity<std::uint8_t>();
+    BOOST_TEST_EQ( (test_sample<std::uint8_t, H1<std::uint8_t>>()), 256u );
+    BOOST_TEST_GE( (test_sample<std::uint8_t, H1<std::uint16_t>>()), 191u ); // !
+    BOOST_TEST_GE( (test_sample<std::uint8_t, boost::hash2::fnv1a_32>()), 64u ); // !!
+    BOOST_TEST_GE( (test_sample<std::uint8_t, boost::hash2::fnv1a_64>()), 255u ); // !
 
-    // 1 -> 2
+    test_identity< H1<std::uint16_t> >();
 
-    BOOST_TEST_EQ( (test_permutation<std::uint8_t, std::uint16_t>( 0 )), 256u );
-    BOOST_TEST_EQ( (test_permutation<std::uint8_t, std::uint16_t>( 8 )), 256u );
+    BOOST_TEST_GE( (test_sample<std::uint16_t, boost::hash2::fnv1a_32>()), 46414u ); // !
+    BOOST_TEST_GE( (test_sample<std::uint16_t, boost::hash2::fnv1a_64>()), 47196u ); // !
 
-    BOOST_TEST_GE( (test_roundtrip<std::uint8_t, std::uint16_t>()), 255u ); // !
-
-    // 1 -> 4
-
-    BOOST_TEST_EQ( (test_permutation<std::uint8_t, std::uint32_t>(  0 )), 256u );
-    BOOST_TEST_EQ( (test_permutation<std::uint8_t, std::uint32_t>(  8 )), 256u );
-    BOOST_TEST_GE( (test_permutation<std::uint8_t, std::uint32_t>( 16 )), 255u ); // !
-    BOOST_TEST_EQ( (test_permutation<std::uint8_t, std::uint32_t>( 24 )), 256u );
-
-    BOOST_TEST_EQ( (test_roundtrip<std::uint8_t, std::uint32_t>()), 256u );
-
-    // 1 -> 8
-
-    BOOST_TEST_EQ( (test_permutation<std::uint8_t, std::uint64_t>(  0 )), 256u );
-    BOOST_TEST_EQ( (test_permutation<std::uint8_t, std::uint64_t>(  8 )), 256u );
-    BOOST_TEST_EQ( (test_permutation<std::uint8_t, std::uint64_t>( 16 )), 256u );
-    BOOST_TEST_EQ( (test_permutation<std::uint8_t, std::uint64_t>( 24 )), 256u );
-    BOOST_TEST_EQ( (test_permutation<std::uint8_t, std::uint64_t>( 32 )), 256u );
-    BOOST_TEST_EQ( (test_permutation<std::uint8_t, std::uint64_t>( 40 )), 256u );
-    BOOST_TEST_EQ( (test_permutation<std::uint8_t, std::uint64_t>( 48 )), 256u );
-    BOOST_TEST_EQ( (test_permutation<std::uint8_t, std::uint64_t>( 56 )), 256u );
-
-    BOOST_TEST_EQ( (test_roundtrip<std::uint8_t, std::uint64_t>()), 256u );
-
-    // 2 -> 2
-
-    test_identity<std::uint16_t>();
-
-    // 2 -> 4
-
-    BOOST_TEST_EQ( (test_permutation<std::uint16_t, std::uint32_t>(  0 )), 65536u );
-    BOOST_TEST_EQ( (test_permutation<std::uint16_t, std::uint32_t>( 16 )), 65536u );
-
-    BOOST_TEST_GE( (test_roundtrip<std::uint16_t, std::uint32_t>()), 65535u ); // !
-
-    // 2 -> 8
-
-    BOOST_TEST_EQ( (test_permutation<std::uint16_t, std::uint64_t>(  0 )), 65536u );
-    BOOST_TEST_EQ( (test_permutation<std::uint16_t, std::uint64_t>( 16 )), 65536u );
-    BOOST_TEST_EQ( (test_permutation<std::uint16_t, std::uint64_t>( 32 )), 65536u );
-    BOOST_TEST_EQ( (test_permutation<std::uint16_t, std::uint64_t>( 48 )), 65536u );
-
-    BOOST_TEST_EQ( (test_roundtrip<std::uint16_t, std::uint64_t>()), 65536u );
-
-    //
+    test_identity< boost::hash2::fnv1a_32 >();
+    test_identity< boost::hash2::fnv1a_64 >();
 
     return boost::report_errors();
 }
