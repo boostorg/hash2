@@ -148,10 +148,10 @@ template<class T, class Hash, class R = typename Hash::result_type>
     return static_cast<T>( static_cast<U>( ( r * m ) >> ( std::numeric_limits<R>::digits - std::numeric_limits<U>::digits ) ) );
 }
 
-// identity or expansion
+// identity
 
 template<class T, class Hash, class R = typename Hash::result_type>
-    typename std::enable_if<std::is_integral<R>::value && (sizeof(R) <= sizeof(T)), T>::type
+    typename std::enable_if<std::is_integral<R>::value && sizeof(R) == sizeof(T), T>::type
     get_integral_result( Hash& h )
 {
     static_assert( std::is_integral<T>::value, "T must be integral" );
@@ -161,10 +161,35 @@ template<class T, class Hash, class R = typename Hash::result_type>
 
     typedef typename std::make_unsigned<T>::type U;
 
-    constexpr auto m = detail::get_result_multiplier<U, R>();
-
     auto r = h.result();
-    return static_cast<T>( static_cast<U>( r * m ) );
+    return static_cast<T>( static_cast<U>( r ) );
+}
+
+// expansion
+
+template<class T, class Hash, class R = typename Hash::result_type>
+    typename std::enable_if<std::is_integral<R>::value && (sizeof(R) < sizeof(T)), T>::type
+    get_integral_result( Hash& h )
+{
+    static_assert( std::is_integral<T>::value, "T must be integral" );
+    static_assert( !std::is_same<typename std::remove_cv<T>::type, bool>::value, "T must not be bool" );
+
+    static_assert( std::is_unsigned<R>::value, "Hash::result_type must be unsigned" );
+
+    typedef typename std::make_unsigned<T>::type U;
+
+    constexpr auto rd = std::numeric_limits<R>::digits;
+    constexpr auto ud = std::numeric_limits<U>::digits;
+
+    U u = 0;
+
+    for( int i = 0; i < ud; i += rd )
+    {
+        auto r = h.result();
+        u += static_cast<U>( r ) << i;
+    }
+
+    return static_cast<T>( u );
 }
 
 // array-like R

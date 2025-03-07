@@ -41,6 +41,7 @@ run get_integral_result_2.cpp ;
 run get_integral_result_3.cpp ;
 run get_integral_result_4.cpp ;
 run get_integral_result_5.cpp ;
+run get_integral_result_6.cpp ;
 
 # digest
 
