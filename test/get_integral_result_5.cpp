@@ -10,6 +10,24 @@
 #include <limits>
 #include <cstdint>
 
+template<class Hash> void test_identity()
+{
+    using boost::hash2::get_integral_result;
+
+    using R = typename Hash::result_type;
+
+    Hash h;
+    Hash h2( h );
+
+    for( int i = 0; i < 1024; ++i )
+    {
+        R r = h.result();
+        R t = get_integral_result<R>( h2 );
+
+        BOOST_TEST_EQ( t, r );
+    }
+}
+
 template<class T, class Hash> void test_sample()
 {
     using boost::hash2::get_integral_result;
@@ -33,6 +51,9 @@ template<class T, class Hash> void test_sample()
 
 int main()
 {
+    test_identity< boost::hash2::fnv1a_32 >();
+    test_identity< boost::hash2::fnv1a_64 >();
+
     test_sample<std::uint32_t, boost::hash2::fnv1a_32>();
     test_sample<std::uint32_t, boost::hash2::fnv1a_64>();
     test_sample<std::uint64_t, boost::hash2::fnv1a_32>();

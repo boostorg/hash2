@@ -75,8 +75,5 @@ int main()
     BOOST_TEST_GE( (test_sample<std::uint16_t, boost::hash2::fnv1a_32>()), 46414u ); // !
     BOOST_TEST_GE( (test_sample<std::uint16_t, boost::hash2::fnv1a_64>()), 47196u ); // !
 
-    test_identity< boost::hash2::fnv1a_32 >();
-    test_identity< boost::hash2::fnv1a_64 >();
-
     return boost::report_errors();
 }
