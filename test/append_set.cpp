@@ -69,10 +69,10 @@ int main()
     test< fnv1a_32, little_endian_flavor, std::multiset<int> >( 2078558933ul );
     test< fnv1a_64, little_endian_flavor, std::multiset<int> >( 6271229243378528309ull );
 
-    test< fnv1a_32, little_endian_flavor, std::unordered_set<int> >( 561812553ul );
+    test< fnv1a_32, little_endian_flavor, std::unordered_set<int> >( 396645525ul );
     test< fnv1a_64, little_endian_flavor, std::unordered_set<int> >( 2830007867253608057ull );
 
-    test< fnv1a_32, little_endian_flavor, std::unordered_multiset<int> >( 561812553ul );
+    test< fnv1a_32, little_endian_flavor, std::unordered_multiset<int> >( 396645525ul );
     test< fnv1a_64, little_endian_flavor, std::unordered_multiset<int> >( 2830007867253608057ull );
 
     return boost::report_errors();
