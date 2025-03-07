@@ -20,52 +20,20 @@ namespace detail
 
 // contraction
 
-// 2 -> 1
-template<class U, class R>
-    constexpr typename std::enable_if<sizeof(R) == 2 && sizeof(U) == 1, R>::type
+// 2 -> 1, 4 -> x
+template<class R>
+constexpr typename std::enable_if<sizeof(R) <= 4, std::uint32_t>::type
     get_result_multiplier()
 {
-    return 0xBF01;
+    return 0xBF3D6763u;
 }
 
-// 4 -> 1
-template<class U, class R>
-    constexpr typename std::enable_if<sizeof(R) == 4 && sizeof(U) == 1, R>::type
+// 8 -> x
+template<class R>
+constexpr typename std::enable_if<sizeof(R) == 8, std::uint64_t>::type
     get_result_multiplier()
 {
-    return 0x7F7F7F7Fu;
-}
-
-// 8 -> 1
-template<class U, class R>
-    constexpr typename std::enable_if<sizeof(R) == 8 && sizeof(U) == 1, R>::type
-    get_result_multiplier()
-{
-    return 0x7F7F7F7F7F7F7F7Full;
-}
-
-// 4 -> 2
-template<class U, class R>
-    constexpr typename std::enable_if<sizeof(R) == 4 && sizeof(U) == 2, R>::type
-    get_result_multiplier()
-{
-    return 0xBFFF0001u;
-}
-
-// 8 -> 2
-template<class U, class R>
-    constexpr typename std::enable_if<sizeof(R) == 8 && sizeof(U) == 2, R>::type
-    get_result_multiplier()
-{
-    return 0xBFFFBFFFBFFFBFFFull;
-}
-
-// 8 -> 4
-template<class U, class R>
-    constexpr typename std::enable_if<sizeof(R) == 8 && sizeof(U) == 4, R>::type
-    get_result_multiplier()
-{
-    return 0xBFFFFFFF00000001ull;
+    return 0x99EBE72FE70129CBull;
 }
 
 } // namespace detail
@@ -83,7 +51,7 @@ template<class T, class Hash, class R = typename Hash::result_type>
 
     typedef typename std::make_unsigned<T>::type U;
 
-    constexpr auto m = detail::get_result_multiplier<U, R>();
+    constexpr auto m = detail::get_result_multiplier<R>();
 
     auto r = h.result();
     return static_cast<T>( static_cast<U>( ( r * m ) >> ( std::numeric_limits<R>::digits - std::numeric_limits<U>::digits ) ) );

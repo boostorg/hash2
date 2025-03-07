@@ -49,31 +49,55 @@ template<class T, class Hash> std::size_t test_sample()
     return dist.size();
 }
 
-template<class R> struct H1: private boost::hash2::fnv1a_64
-{
-    using result_type = R;
+using boost::hash2::fnv1a_32;
+using boost::hash2::fnv1a_64;
 
-    using boost::hash2::fnv1a_64::update;
+struct fnv1a_16: private fnv1a_32
+{
+    using result_type = std::uint16_t;
+
+    using fnv1a_32::update;
 
     result_type result()
     {
-        return static_cast<R>( boost::hash2::fnv1a_64::result() );
+        std::uint32_t r = fnv1a_32::result();
+        return static_cast<std::uint16_t>( r ^ ( r >> 16 ) );
+    }
+};
+
+struct fnv1a_8: private fnv1a_16
+{
+    using result_type = std::uint8_t;
+
+    using fnv1a_16::update;
+
+    result_type result()
+    {
+        std::uint16_t r = fnv1a_16::result();
+        return static_cast<std::uint8_t>( r ^ ( r >> 8 ) );
     }
 };
 
 int main()
 {
-    test_identity< H1<std::uint8_t> >();
+    test_identity<fnv1a_8>();
 
-    BOOST_TEST_EQ( (test_sample<std::uint8_t, H1<std::uint8_t>>()), 256u );
-    BOOST_TEST_GE( (test_sample<std::uint8_t, H1<std::uint16_t>>()), 191u ); // !
-    BOOST_TEST_GE( (test_sample<std::uint8_t, boost::hash2::fnv1a_32>()), 64u ); // !!
-    BOOST_TEST_GE( (test_sample<std::uint8_t, boost::hash2::fnv1a_64>()), 255u ); // !
+    // EV(256 samples in 256 buckets) = 162 (256 * (1-e^-1)), stddev ~= 7.7 (sqrt(256) * 0.482)
 
-    test_identity< H1<std::uint16_t> >();
+    BOOST_TEST_EQ( (test_sample<std::uint8_t, fnv1a_8>()), 168u ); // get_integral_result is identity
 
-    BOOST_TEST_GE( (test_sample<std::uint16_t, boost::hash2::fnv1a_32>()), 46414u ); // !
-    BOOST_TEST_GE( (test_sample<std::uint16_t, boost::hash2::fnv1a_64>()), 47196u ); // !
+    BOOST_TEST_GE( (test_sample<std::uint8_t, fnv1a_16>()), 154u );
+    BOOST_TEST_GE( (test_sample<std::uint8_t, fnv1a_32>()), 154u );
+    BOOST_TEST_GE( (test_sample<std::uint8_t, fnv1a_64>()), 154u );
+
+    test_identity<fnv1a_16>();
+
+    // EV(65536 samples in 65536 buckets) = 41427 (65536 * (1-e^-1)), stddev ~= 123.4 (sqrt(65536) * 0.482)
+
+    BOOST_TEST_EQ( (test_sample<std::uint16_t, fnv1a_16>()), 40718u ); // get_integral_result is identity
+
+    BOOST_TEST_GE( (test_sample<std::uint16_t, fnv1a_32>()), 41303u );
+    BOOST_TEST_GE( (test_sample<std::uint16_t, fnv1a_64>()), 41303u );
 
     return boost::report_errors();
 }
