@@ -7,6 +7,7 @@
 //
 
 #include <boost/hash2/digest.hpp>
+#include <boost/hash2/hmac.hpp>
 
 #include <boost/hash2/detail/is_constant_evaluated.hpp>
 #include <boost/hash2/detail/memcpy.hpp>
@@ -700,6 +701,9 @@ public:
         return digest;
     }
 };
+
+using hmac_blake2b_512 = hmac<blake2b_512>;
+using hmac_blake2s_256 = hmac<blake2s_256>;
 
 } // namespace hash2
 } // namespace boost

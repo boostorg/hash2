@@ -162,6 +162,7 @@ run ripemd_cx_2.cpp ;
 
 run blake2.cpp ;
 run blake2_cx.cpp ;
+run hmac_blake2.cpp ;
 
 # legacy
 
