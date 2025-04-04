@@ -22,6 +22,7 @@ include::reference/sha1.adoc[]
 include::reference/sha2.adoc[]
 include::reference/sha3.adoc[]
 include::reference/ripemd.adoc[]
+include::reference/blake2.adoc[]
 
 :leveloffset: -2
 

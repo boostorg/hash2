@@ -10,6 +10,7 @@
 #include <boost/hash2/sha2.hpp>
 #include <boost/hash2/sha3.hpp>
 #include <boost/hash2/ripemd.hpp>
+#include <boost/hash2/blake2.hpp>
 #include <boost/hash2/digest.hpp>
 #include <boost/core/lightweight_test.hpp>
 #include <boost/core/lightweight_test_trait.hpp>
@@ -528,6 +529,8 @@ int main()
     test<boost::hash2::shake_256>();
     test<boost::hash2::ripemd_160>();
     test<boost::hash2::ripemd_128>();
+    test<boost::hash2::blake2b_512>();
+    test<boost::hash2::blake2s_256>();
 
     test<boost::hash2::hmac_md5_128>( true );
     test<boost::hash2::hmac_sha1_160>( true );
