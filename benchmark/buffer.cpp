@@ -10,6 +10,7 @@
 #include <boost/hash2/sha2.hpp>
 #include <boost/hash2/sha3.hpp>
 #include <boost/hash2/ripemd.hpp>
+#include <boost/hash2/blake2.hpp>
 #include <boost/hash2/hash_append.hpp>
 #include <boost/hash2/get_integral_result.hpp>
 #include <boost/core/type_name.hpp>
@@ -61,6 +62,8 @@ void test( int N, int M )
     test_<sha3_256>( data, N, M );
     test_<sha3_512>( data, N, M );
     test_<shake_128>( data, N, M );
+    test_<blake2b_512>( data, N, M );
+    test_<blake2s_256>( data, N, M );
 
     puts( "--" );
 }

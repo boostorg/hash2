@@ -160,6 +160,10 @@ run hmac_ripemd.cpp ;
 run ripemd_cx.cpp ;
 run ripemd_cx_2.cpp ;
 
+run blake2.cpp ;
+run blake2_cx.cpp ;
+run hmac_blake2.cpp ;
+
 # legacy
 
 run legacy/spooky2.cpp ;
