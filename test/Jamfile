@@ -54,6 +54,8 @@ run detail_write.cpp ;
 run detail_write_2.cpp ;
 run detail_rot.cpp ;
 run detail_has_tag_invoke.cpp ;
+run detail_byteswap.cpp ;
+run detail_byteswap_cx.cpp ;
 
 # hash_append
 
