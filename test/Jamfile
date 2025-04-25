@@ -123,6 +123,9 @@ run xxhash_2.cpp ;
 run xxhash_cx.cpp ;
 run xxhash_cx_2.cpp ;
 
+run xxh3.cpp ;
+run xxh3_cx.cpp ;
+
 run siphash32.cpp ;
 run siphash64.cpp ;
 run siphash_cx.cpp ;
