@@ -2,9 +2,23 @@
 // Distributed under the Boost Software License, Version 1.0.
 // https://www.boost.org/LICENSE_1_0.txt
 
+// due to aggressiving inlining effects, it seems we can only reliably silence this warning
+// in the end TU itself
+#include <boost/config/workaround.hpp>
+#if BOOST_WORKAROUND(BOOST_GCC, >= 110000 && BOOST_GCC < 120000)
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wstringop-overread"
+#endif
+
+#if BOOST_WORKAROUND(BOOST_GCC, >= 80000 && BOOST_GCC < 90000)
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
+
 #include <boost/hash2/fnv1a.hpp>
 #include <boost/hash2/siphash.hpp>
 #include <boost/hash2/xxhash.hpp>
+#include <boost/hash2/xxh3.hpp>
 #include <boost/hash2/md5.hpp>
 #include <boost/hash2/sha1.hpp>
 #include <boost/hash2/sha2.hpp>
@@ -510,6 +524,7 @@ int main()
     test<boost::hash2::fnv1a_64>();
     test<boost::hash2::xxhash_32>();
     test<boost::hash2::xxhash_64>();
+    test<boost::hash2::xxh3_128>();
     test<boost::hash2::siphash_32>();
     test<boost::hash2::siphash_64>();
 

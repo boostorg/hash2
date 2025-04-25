@@ -5,6 +5,7 @@
 #include <boost/hash2/fnv1a.hpp>
 #include <boost/hash2/siphash.hpp>
 #include <boost/hash2/xxhash.hpp>
+#include <boost/hash2/xxh3.hpp>
 #include <boost/hash2/md5.hpp>
 #include <boost/hash2/sha1.hpp>
 #include <boost/hash2/sha2.hpp>
@@ -34,6 +35,7 @@ int main()
     test<boost::hash2::fnv1a_64>();
     test<boost::hash2::xxhash_32>();
     test<boost::hash2::xxhash_64>();
+    test<boost::hash2::xxh3_128>();
     test<boost::hash2::siphash_32>();
     test<boost::hash2::siphash_64>();
 
