@@ -142,7 +142,7 @@ private:
             secret_words[ i ] = detail::read64le( secret_ + secret_offset + 8 * i );
         }
 
-        detail::uint128_t r = detail::mul128( data_words[ 0 ] ^ ( secret_words[ 0 ] + seed ), data_words[ 1 ] ^ ( secret_words[ 1 ] - seed ) );
+        detail::uint128 r = detail::mul128( data_words[ 0 ] ^ ( secret_words[ 0 ] + seed ), data_words[ 1 ] ^ ( secret_words[ 1 ] - seed ) );
         return r.low ^ r.high;
     }
 
@@ -308,7 +308,7 @@ private:
         std::uint64_t combined = std::uint64_t{ input_first } | ( std::uint64_t{ input_last } << 32 );
         std::uint64_t value = ( ( secret_words[ 0 ] ^ secret_words[ 1 ] ) + modified_seed ) ^ combined;
 
-        detail::uint128_t mul_result = detail::mul128( value, P64_1 + ( n_ << 2 ) );
+        detail::uint128 mul_result = detail::mul128( value, P64_1 + ( n_ << 2 ) );
         std::uint64_t high = mul_result.high;
         std::uint64_t low = mul_result.low;
 
@@ -341,13 +341,13 @@ private:
         std::uint64_t val1 = ( ( secret_words[ 0 ] ^ secret_words[ 1 ] ) - seed_ ) ^ input_first ^ input_last;
         std::uint64_t val2 = ( ( secret_words[ 2 ] ^ secret_words[ 3 ] ) + seed_ ) ^ input_last;
 
-        detail::uint128_t mul_result = detail::mul128( val1, P64_1 );
+        detail::uint128 mul_result = detail::mul128( val1, P64_1 );
         std::uint64_t low = mul_result.low + ( std::uint64_t{ n_ - 1 } << 54 );
         std::uint64_t high = mul_result.high + val2 + ( val2 & 0x00000000ffffffff ) * ( P32_2 - 1 );
 
         low ^= detail::byteswap( high );
 
-        detail::uint128_t mul_result2 = detail::mul128( low, P64_2 );
+        detail::uint128 mul_result2 = detail::mul128( low, P64_2 );
         low = mul_result2.low;
         high = mul_result2.high + high * P64_2;
 

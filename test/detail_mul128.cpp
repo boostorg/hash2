@@ -6,7 +6,7 @@
 #include <boost/core/lightweight_test.hpp>
 #include <climits>
 
-void test( std::uint64_t x, std::uint64_t y, boost::hash2::detail::uint128_t e )
+void test( std::uint64_t x, std::uint64_t y, boost::hash2::detail::uint128 e )
 {
     auto r = boost::hash2::detail::mul128( x, y );
     BOOST_TEST_EQ( r.low, e.low );

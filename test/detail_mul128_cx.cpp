@@ -15,7 +15,7 @@
 # define TEST_EQ(x1, x2) BOOST_TEST(x1 == x2); STATIC_ASSERT( x1 == x2 )
 #endif
 
-BOOST_CXX14_CONSTEXPR bool operator==( boost::hash2::detail::uint128_t x, boost::hash2::detail::uint128_t y ) noexcept
+BOOST_CXX14_CONSTEXPR bool operator==( boost::hash2::detail::uint128 x, boost::hash2::detail::uint128 y ) noexcept
 {
     return ( x.low == y.low ) && ( x.high == y.high );
 }
@@ -23,12 +23,12 @@ BOOST_CXX14_CONSTEXPR bool operator==( boost::hash2::detail::uint128_t x, boost:
 int main()
 {
     using boost::hash2::detail::mul128;
-    using boost::hash2::detail::uint128_t;
+    using boost::hash2::detail::uint128;
 
-    TEST_EQ( mul128( ULLONG_MAX, ULLONG_MAX ), ( uint128_t{ 0x0000000000000001ull, 0xfffffffffffffffeull } ) );
-    TEST_EQ( mul128( 0, 0 ), ( uint128_t{ 0x0000000000000000ull, 0x0000000000000000ull } ) );
-    TEST_EQ( mul128( 1, 2 ), ( uint128_t{ 0x0000000000000002ull, 0x0000000000000000ull } ) );
-    TEST_EQ( mul128( 3, ULLONG_MAX ), ( uint128_t{ 0xfffffffffffffffdull, 0x0000000000000002ull } ) );
+    TEST_EQ( mul128( ULLONG_MAX, ULLONG_MAX ), ( uint128{ 0x0000000000000001ull, 0xfffffffffffffffeull } ) );
+    TEST_EQ( mul128( 0, 0 ), ( uint128{ 0x0000000000000000ull, 0x0000000000000000ull } ) );
+    TEST_EQ( mul128( 1, 2 ), ( uint128{ 0x0000000000000002ull, 0x0000000000000000ull } ) );
+    TEST_EQ( mul128( 3, ULLONG_MAX ), ( uint128{ 0xfffffffffffffffdull, 0x0000000000000002ull } ) );
 
     return boost::report_errors();
 }
