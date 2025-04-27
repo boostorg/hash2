@@ -650,6 +650,23 @@ public:
 
         detail::memset( buffer_, 0, buffer_size );
 
+        // perturb state to enable result extension
+
+        // short string state
+
+        seed_ += P64_5;
+
+        // long string state
+
+        acc_[ 0 ] -= P64_1;
+        acc_[ 1 ] += P64_1;
+        acc_[ 2 ] -= P64_2;
+        acc_[ 3 ] += P64_2;
+        acc_[ 4 ] -= P64_3;
+        acc_[ 5 ] += P64_3;
+        acc_[ 6 ] -= P64_4;
+        acc_[ 7 ] += P64_4;
+
         return r;
     }
 };
