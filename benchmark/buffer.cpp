@@ -5,6 +5,7 @@
 #include <boost/hash2/fnv1a.hpp>
 #include <boost/hash2/siphash.hpp>
 #include <boost/hash2/xxhash.hpp>
+#include <boost/hash2/xxh3.hpp>
 #include <boost/hash2/md5.hpp>
 #include <boost/hash2/sha1.hpp>
 #include <boost/hash2/sha2.hpp>
@@ -51,6 +52,7 @@ void test( int N, int M )
     test_<fnv1a_64>( data, N, M );
     test_<xxhash_32>( data, N, M );
     test_<xxhash_64>( data, N, M );
+    test_<xxh3_128>( data, N, M );
     test_<siphash_32>( data, N, M );
     test_<siphash_64>( data, N, M );
     test_<md5_128>( data, N, M );
