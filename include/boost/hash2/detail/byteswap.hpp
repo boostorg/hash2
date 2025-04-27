@@ -9,7 +9,7 @@
 #include <boost/config.hpp>
 #include <cstdint>
 
-#if defined(BOOST_MSVC)
+#if defined(_MSC_VER)
 #include <intrin.h>
 #endif
 
@@ -20,76 +20,65 @@ namespace hash2
 namespace detail
 {
 
-#if defined(BOOST_GCC) || defined(BOOST_CLANG)
-
 BOOST_CXX14_CONSTEXPR inline std::uint32_t byteswap_impl( std::uint32_t x ) noexcept
 {
-    return __builtin_bswap32( x );
-}
-
-BOOST_CXX14_CONSTEXPR inline std::uint64_t byteswap_impl( std::uint64_t x ) noexcept
-{
-    return __builtin_bswap64( x );
-}
-
-#elif defined(BOOST_MSVC)
-
-BOOST_CXX14_CONSTEXPR inline std::uint32_t byteswap_impl( std::uint32_t x ) noexcept
-{
-    if( !detail::is_constant_evaluated() )
-    {
-        return _byteswap_ulong( x );
-    }
-    else
-    {
-        // copy-paste the approach used by Core in bit.hpp
-        std::uint32_t step16 = x << 16 | x >> 16;
-        return ( ( step16 << 8 ) & 0xff00ff00 ) | ( ( step16 >> 8 ) & 0x00ff00ff );
-    }
-}
-
-BOOST_CXX14_CONSTEXPR inline std::uint64_t byteswap_impl( std::uint64_t x ) noexcept
-{
-    if( !detail::is_constant_evaluated() )
-    {
-        return _byteswap_uint64( x );
-    }
-    else
-    {
-        // copy-paste the approach used by Core in bit.hpp
-        std::uint64_t step32 = x << 32 | x >> 32;
-        std::uint64_t step16 = ( step32 & 0x0000ffff0000ffffull ) << 16 | ( step32 & 0xffff0000ffff0000ull ) >> 16;
-        return ( step16 & 0x00ff00ff00ff00ffull ) << 8 | ( step16 & 0xff00ff00ff00ff00ull ) >> 8;
-    }
-}
-
-#else
-
-BOOST_CXX14_CONSTEXPR inline std::uint32_t byteswap_impl( std::uint32_t x ) noexcept
-{
-    // copy-paste the approach used by Core in bit.hpp
     std::uint32_t step16 = x << 16 | x >> 16;
     return ( ( step16 << 8 ) & 0xff00ff00 ) | ( ( step16 >> 8 ) & 0x00ff00ff );
 }
 
 BOOST_CXX14_CONSTEXPR inline std::uint64_t byteswap_impl( std::uint64_t x ) noexcept
 {
-    // copy-paste the approach used by Core in bit.hpp
     std::uint64_t step32 = x << 32 | x >> 32;
     std::uint64_t step16 = ( step32 & 0x0000ffff0000ffffull ) << 16 | ( step32 & 0xffff0000ffff0000ull ) >> 16;
     return ( step16 & 0x00ff00ff00ff00ffull ) << 8 | ( step16 & 0xff00ff00ff00ff00ull ) >> 8;
 }
 
-#endif
-
 BOOST_CXX14_CONSTEXPR inline std::uint32_t byteswap( std::uint32_t x ) noexcept
 {
+#if defined(__GNUC__) || defined(__clang__)
+
+    return __builtin_bswap32( x );
+
+#elif defined(_MSC_VER)
+
+    if( !detail::is_constant_evaluated() )
+    {
+        return _byteswap_ulong( x );
+    }
+    else
+    {
+        return byteswap_impl( x );
+    }
+
+#else
+
     return byteswap_impl( x );
+
+#endif
 }
 
 BOOST_CXX14_CONSTEXPR inline std::uint64_t byteswap( std::uint64_t x ) noexcept
 {
+#if defined(__GNUC__) || defined(__clang__)
+
+    return __builtin_bswap64( x );
+
+#elif defined(_MSC_VER)
+
+    if( !detail::is_constant_evaluated() )
+    {
+        return _byteswap_uint64( x );
+    }
+    else
+    {
+        return byteswap_impl( x );
+    }
+
+#else
+
     return byteswap_impl( x );
+
+#endif
 }
 
 } // namespace detail
