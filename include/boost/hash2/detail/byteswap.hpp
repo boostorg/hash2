@@ -57,8 +57,8 @@ BOOST_CXX14_CONSTEXPR inline std::uint64_t byteswap_impl( std::uint64_t x ) noex
     else
     {
         // copy-paste the approach used by Core in bit.hpp
-        std::::uint64_t step32 = x << 32 | x >> 32;
-        std::::uint64_t step16 = ( step32 & 0x0000ffff0000ffffull ) << 16 | ( step32 & 0xffff0000ffff0000ull ) >> 16;
+        std::uint64_t step32 = x << 32 | x >> 32;
+        std::uint64_t step16 = ( step32 & 0x0000ffff0000ffffull ) << 16 | ( step32 & 0xffff0000ffff0000ull ) >> 16;
         return ( step16 & 0x00ff00ff00ff00ffull ) << 8 | ( step16 & 0xff00ff00ff00ff00ull ) >> 8;
     }
 }
@@ -75,8 +75,8 @@ BOOST_CXX14_CONSTEXPR inline std::uint32_t byteswap_impl( std::uint32_t x ) noex
 BOOST_CXX14_CONSTEXPR inline std::uint64_t byteswap_impl( std::uint64_t x ) noexcept
 {
     // copy-paste the approach used by Core in bit.hpp
-    std::::uint64_t step32 = x << 32 | x >> 32;
-    std::::uint64_t step16 = ( step32 & 0x0000ffff0000ffffull ) << 16 | ( step32 & 0xffff0000ffff0000ull ) >> 16;
+    std::uint64_t step32 = x << 32 | x >> 32;
+    std::uint64_t step16 = ( step32 & 0x0000ffff0000ffffull ) << 16 | ( step32 & 0xffff0000ffff0000ull ) >> 16;
     return ( step16 & 0x00ff00ff00ff00ffull ) << 8 | ( step16 & 0xff00ff00ff00ff00ull ) >> 8;
 }
 
