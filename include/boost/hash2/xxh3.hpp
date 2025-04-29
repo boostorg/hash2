@@ -622,6 +622,9 @@ public:
         if( n_ == 0 )
         {
            r = xxh3_128_digest_empty();
+
+            // perturb state to enable result extension
+            seed_ += P64_5;
         }
         else if( n_ < 4 )
         {
@@ -646,26 +649,32 @@ public:
         else
         {
             r = xxh3_128_digest_long();
+
+            // perturb state to enable result extension
+            acc_[ 0 ] -= P64_1;
+            acc_[ 1 ] += P64_1;
+            acc_[ 2 ] -= P64_2;
+            acc_[ 3 ] += P64_2;
+            acc_[ 4 ] -= P64_3;
+            acc_[ 5 ] += P64_3;
+            acc_[ 6 ] -= P64_4;
+            acc_[ 7 ] += P64_4;
         }
 
-        detail::memset( buffer_, 0, buffer_size );
+        // finalize buffer to clear plainext and enable result extension
 
-        // perturb state to enable result extension
+        {
+            std::uint64_t h1 = detail::read64le( r.data() + 0 );
+            std::uint64_t h2 = detail::read64le( r.data() + 8 );
 
-        // short string state
+            std::uint64_t v1 = detail::read64le( buffer_ + 0 );
+            detail::write64le( buffer_ + 0, v1 + h1 );
 
-        seed_ += P64_5;
+            std::uint64_t v2 = detail::read64le( buffer_ + 8 );
+            detail::write64le( buffer_ + 8, v2 + h2 );
 
-        // long string state
-
-        acc_[ 0 ] -= P64_1;
-        acc_[ 1 ] += P64_1;
-        acc_[ 2 ] -= P64_2;
-        acc_[ 3 ] += P64_2;
-        acc_[ 4 ] -= P64_3;
-        acc_[ 5 ] += P64_3;
-        acc_[ 6 ] -= P64_4;
-        acc_[ 7 ] += P64_4;
+            detail::memset( buffer_ + 16, 0, buffer_size - 16 );
+        }
 
         return r;
     }
