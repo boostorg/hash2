@@ -91,6 +91,84 @@ template<class H> void test()
         BOOST_TEST( h1.result() != h2.result() );
         BOOST_TEST( h1.result() != h2.result() );
     }
+
+    {
+        unsigned char const seq1[ 1 ] = { 0x01 };
+        unsigned char const seq2[ 1 ] = { 0x02 };
+
+        H h1; h1.update( seq1, sizeof( seq1 ) );
+        H h2; h2.update( seq2, sizeof( seq2 ) );
+
+        BOOST_TEST( h1.result() != h2.result() );
+        BOOST_TEST( h1.result() != h2.result() );
+        BOOST_TEST( h1.result() != h2.result() );
+        BOOST_TEST( h1.result() != h2.result() );
+    }
+
+    {
+        unsigned char const seq1[ 4 ] = { 0x01 };
+        unsigned char const seq2[ 4 ] = { 0x02 };
+
+        H h1; h1.update( seq1, sizeof( seq1 ) );
+        H h2; h2.update( seq2, sizeof( seq2 ) );
+
+        BOOST_TEST( h1.result() != h2.result() );
+        BOOST_TEST( h1.result() != h2.result() );
+        BOOST_TEST( h1.result() != h2.result() );
+        BOOST_TEST( h1.result() != h2.result() );
+    }
+
+    {
+        unsigned char const seq1[ 9 ] = { 0x01 };
+        unsigned char const seq2[ 9 ] = { 0x02 };
+
+        H h1; h1.update( seq1, sizeof( seq1 ) );
+        H h2; h2.update( seq2, sizeof( seq2 ) );
+
+        BOOST_TEST( h1.result() != h2.result() );
+        BOOST_TEST( h1.result() != h2.result() );
+        BOOST_TEST( h1.result() != h2.result() );
+        BOOST_TEST( h1.result() != h2.result() );
+    }
+
+    {
+        unsigned char const seq1[ 17 ] = { 0x01 };
+        unsigned char const seq2[ 17 ] = { 0x02 };
+
+        H h1; h1.update( seq1, sizeof( seq1 ) );
+        H h2; h2.update( seq2, sizeof( seq2 ) );
+
+        BOOST_TEST( h1.result() != h2.result() );
+        BOOST_TEST( h1.result() != h2.result() );
+        BOOST_TEST( h1.result() != h2.result() );
+        BOOST_TEST( h1.result() != h2.result() );
+    }
+
+    {
+        unsigned char const seq1[ 129 ] = { 0x01 };
+        unsigned char const seq2[ 129 ] = { 0x02 };
+
+        H h1; h1.update( seq1, sizeof( seq1 ) );
+        H h2; h2.update( seq2, sizeof( seq2 ) );
+
+        BOOST_TEST( h1.result() != h2.result() );
+        BOOST_TEST( h1.result() != h2.result() );
+        BOOST_TEST( h1.result() != h2.result() );
+        BOOST_TEST( h1.result() != h2.result() );
+    }
+
+    {
+        unsigned char const seq1[ 241 ] = { 0x01 };
+        unsigned char const seq2[ 241 ] = { 0x02 };
+
+        H h1; h1.update( seq1, sizeof( seq1 ) );
+        H h2; h2.update( seq2, sizeof( seq2 ) );
+
+        BOOST_TEST( h1.result() != h2.result() );
+        BOOST_TEST( h1.result() != h2.result() );
+        BOOST_TEST( h1.result() != h2.result() );
+        BOOST_TEST( h1.result() != h2.result() );
+    }
 }
 
 int main()
