@@ -85,32 +85,18 @@ private:
     static constexpr std::uint64_t const PRIME_MX1 = 0x165667919E3779F9ULL;
     static constexpr std::uint64_t const PRIME_MX2 = 0x9FB21C651E98DF25ULL;
 
-    BOOST_CXX14_CONSTEXPR void init()
+    BOOST_CXX14_CONSTEXPR void init_secret_from_seed( std::uint64_t seed )
     {
-        acc_[ 0 ] = P32_3;
-        acc_[ 1 ] = P64_1;
-        acc_[ 2 ] = P64_2;
-        acc_[ 3 ] = P64_3;
-        acc_[ 4 ] = P64_4;
-        acc_[ 5 ] = P32_2;
-        acc_[ 6 ] = P64_5;
-        acc_[ 7 ] = P32_1;
+        auto const secret = xxh3_128_constants<>::default_secret;
 
-        stripes_per_block_ = ( secret_len_ - 64 ) / 8;
-
-        if( seed_ != 0 )
+        std::size_t num_rounds = default_secret_len / 16;
+        for( std::size_t i = 0; i < num_rounds; ++i )
         {
-            auto secret = xxh3_128_constants<>::default_secret;
+            auto low  = detail::read64le( secret + 16 * i ) + seed;
+            auto high = detail::read64le( secret + 16 * i + 8 ) - seed;
 
-            std::size_t num_rounds = default_secret_len / 16;
-            for( std::size_t i = 0; i < num_rounds; ++i )
-            {
-                auto low  = detail::read64le( secret + 16 * i ) + seed_;
-                auto high = detail::read64le( secret + 16 * i + 8 ) - seed_;
-
-                detail::write64le( custom_secret_ + 16 * i, low );
-                detail::write64le( custom_secret_ + 16 * i + 8, high );
-            }
+            detail::write64le( secret_ + 16 * i, low );
+            detail::write64le( secret_ + 16 * i + 8, high );
         }
     }
 
@@ -134,12 +120,14 @@ private:
 
     BOOST_CXX14_CONSTEXPR std::uint64_t mix_step( unsigned char const* data, std::size_t secret_offset, std::uint64_t seed )
     {
+        auto const secret = with_secret_? secret_: xxh3_128_constants<>::default_secret;
+
         std::uint64_t data_words[ 2 ] = {};
         std::uint64_t secret_words[ 2 ] = {};
         for( int i = 0; i < 2; ++i )
         {
             data_words[ i ] = detail::read64le( data + 8 * i );
-            secret_words[ i ] = detail::read64le( secret_ + secret_offset + 8 * i );
+            secret_words[ i ] = detail::read64le( secret + secret_offset + 8 * i );
         }
 
         detail::uint128 r = detail::mul128( data_words[ 0 ] ^ ( secret_words[ 0 ] + seed ), data_words[ 1 ] ^ ( secret_words[ 1 ] - seed ) );
@@ -256,10 +244,12 @@ private:
 
     BOOST_CXX14_CONSTEXPR digest<16> xxh3_128_digest_empty()
     {
+        auto const secret = with_secret_? secret_: xxh3_128_constants<>::default_secret;
+
         std::uint64_t secret_words[ 4 ] = {};
         for( int i = 0; i < 4; ++i )
         {
-            secret_words[ i ] = detail::read64le( secret_ + 64 + 8 * i );
+            secret_words[ i ] = detail::read64le( secret + 64 + 8 * i );
         }
 
         digest<16> r;
@@ -270,6 +260,8 @@ private:
 
     BOOST_CXX14_CONSTEXPR digest<16> xxh3_128_digest_1to3()
     {
+        auto const secret = with_secret_? secret_: xxh3_128_constants<>::default_secret;
+
         std::uint32_t v1 = buffer_[ ( n_ - 1 ) ];
         std::uint32_t v2 = static_cast<std::uint32_t>( n_ << 8 );
         std::uint32_t v3 = buffer_[ 0 ] << 16;
@@ -280,7 +272,7 @@ private:
         std::uint32_t secret_words[ 4 ] = {};
         for( int i = 0; i < 4; ++i )
         {
-            secret_words[ i ] = detail::read32le( secret_ + 4 * i );
+            secret_words[ i ] = detail::read32le( secret + 4 * i );
         }
 
         std::uint64_t low  = ( ( secret_words[ 0 ] ^ secret_words[ 1 ] ) + seed_ ) ^ combined;
@@ -295,6 +287,8 @@ private:
 
     BOOST_CXX14_CONSTEXPR digest<16> xxh3_128_digest_4to8()
     {
+        auto const secret = with_secret_? secret_: xxh3_128_constants<>::default_secret;
+
         std::uint32_t input_first = detail::read32le( buffer_ );
         std::uint32_t input_last  = detail::read32le( buffer_ + ( n_ - 4 ) );
         std::uint64_t modified_seed = seed_ ^ ( std::uint64_t{ detail::byteswap( static_cast<std::uint32_t>( seed_ ) ) } << 32 );
@@ -302,7 +296,7 @@ private:
         std::uint64_t secret_words[ 2 ] = {};
         for( int i = 0; i < 2; ++i )
         {
-            secret_words[ i ] = detail::read64le( secret_ + 16 + i * 8 );
+            secret_words[ i ] = detail::read64le( secret + 16 + i * 8 );
         }
 
         std::uint64_t combined = std::uint64_t{ input_first } | ( std::uint64_t{ input_last } << 32 );
@@ -329,13 +323,15 @@ private:
 
     BOOST_CXX14_CONSTEXPR digest<16> xxh3_128_digest_9to16()
     {
+        auto const secret = with_secret_? secret_: xxh3_128_constants<>::default_secret;
+
         std::uint64_t input_first = detail::read64le( buffer_ );
         std::uint64_t input_last = detail::read64le( buffer_ + ( n_ - 8 ) );
 
         std::uint64_t secret_words[ 4 ] = {};
         for( int i = 0; i < 4; ++i )
         {
-            secret_words[ i ] = detail::read64le( secret_ + 32 + ( i * 8 ) );
+            secret_words[ i ] = detail::read64le( secret + 32 + ( i * 8 ) );
         }
 
         std::uint64_t val1 = ( ( secret_words[ 0 ] ^ secret_words[ 1 ] ) - seed_ ) ^ input_first ^ input_last;
@@ -426,16 +422,27 @@ private:
         return r;
     }
 
-    unsigned char buffer_[ buffer_size ] = {};
-    unsigned char custom_secret_[ default_secret_len ] = {};
-    std::uint64_t acc_[ 8 ] = {};
+    BOOST_CXX14_CONSTEXPR static std::uint64_t combine( std::uint64_t v1, std::uint64_t v2 )
+    {
+        return avalanche( v1 + v2 );
+    }
+
+private:
+
+    unsigned char secret_[ default_secret_len ] = {};
     std::uint64_t seed_ = 0;
+    bool with_secret_ = false;
+
+    unsigned char buffer_[ buffer_size ] = {};
+
+    std::uint64_t acc_[ 8 ] = { P32_3, P64_1, P64_2, P64_3, P64_4, P32_2, P64_5, P32_1 };
+
     std::size_t n_ = 0;
     std::size_t m_ = 0;
 
-    unsigned char const* secret_ = xxh3_128_constants<>::default_secret;
-    std::size_t secret_len_ = sizeof( xxh3_128_constants<>::default_secret );
-    std::size_t stripes_per_block_ = 0;
+    static constexpr std::size_t secret_len_ = default_secret_len;
+    static constexpr std::size_t stripes_per_block_ = ( secret_len_ - 64 ) / 8;
+
     std::size_t num_stripes_ = 0; // current number of procssed stripes
 
 public:
@@ -444,86 +451,86 @@ public:
 
     BOOST_CXX14_CONSTEXPR xxh3_128()
     {
-        init();
+        detail::memcpy( secret_, xxh3_128_constants<>::default_secret, default_secret_len );
     }
 
-    BOOST_CXX14_CONSTEXPR explicit xxh3_128( std::uint64_t seed ) : seed_{ seed }
+    BOOST_CXX14_CONSTEXPR explicit xxh3_128( std::uint64_t seed ): seed_( seed )
     {
-        init();
+        init_secret_from_seed( seed );
     }
 
-    xxh3_128( void const* p, std::size_t n ) : xxh3_128( reinterpret_cast<unsigned char const*>( p ), n )
+    xxh3_128( void const* p, std::size_t n ): xxh3_128( static_cast<unsigned char const*>( p ), n )
     {
     }
 
     BOOST_CXX14_CONSTEXPR xxh3_128( unsigned char const* p, std::size_t n )
     {
-        init();
+        detail::memcpy( secret_, xxh3_128_constants<>::default_secret, default_secret_len );
 
         if( n == 0 ) return;
 
-        if( n < min_secret_len )
+        with_secret_ = true;
+
+        std::size_t const n2 = n;
+        std::size_t seed = 0;
+
+        while( n >= default_secret_len )
         {
-            update( p, n );
-            result();
-            return;
-        }
-
-        secret_ = p;
-        secret_len_ = n;
-        stripes_per_block_ = ( secret_len_ - 64 ) / 8;
-    }
-
-    BOOST_CXX14_CONSTEXPR xxh3_128( xxh3_128 const& rhs )
-    {
-        detail::memcpy( buffer_, rhs.buffer_, buffer_size);
-        detail::memcpy( custom_secret_, rhs.custom_secret_, default_secret_len );
-
-        for( int i = 0; i < 8; ++i )
-        {
-            acc_[ i ] = rhs.acc_[ i ];
-        }
-
-        seed_ = rhs.seed_;
-        n_ = rhs.n_;
-        m_ = rhs.m_;
-
-        if( rhs.secret_ == rhs.custom_secret_ )
-        {
-            secret_ = custom_secret_;
-        }
-        else
-        {
-            secret_ = rhs.secret_;
-        }
-    }
-
-    BOOST_CXX14_CONSTEXPR xxh3_128& operator=( xxh3_128 const& rhs )
-    {
-        if( this != &rhs )
-        {
-            detail::memcpy( buffer_, rhs.buffer_, buffer_size);
-            detail::memcpy( custom_secret_, rhs.custom_secret_, default_secret_len );
-
-            for( int i = 0; i < 8; ++i )
+            for( int i = 0; i < default_secret_len / 8; ++i )
             {
-                acc_[ i ] = rhs.acc_[ i ];
+                std::uint64_t v1 = detail::read64le( p + i * 8 );
+                std::uint64_t v2 = detail::read64le( secret_ + i * 8 );
+
+                detail::write64le( secret_ + i * 8, combine( v1, v2 ) );
+
+                seed = combine( seed, v1 );
             }
 
-            seed_ = rhs.seed_;
-            n_ = rhs.n_;
-            m_ = rhs.m_;
+            p += default_secret_len;
+            n -= default_secret_len;
+        }
 
-            if( rhs.secret_ == rhs.custom_secret_ )
+        {
+            int i = 0;
+
+            for( ; i < n / 8; ++i )
             {
-                secret_ = custom_secret_;
+                std::uint64_t v1 = detail::read64le( p + i * 8 );
+                std::uint64_t v2 = detail::read64le( secret_ + i * 8 );
+
+                detail::write64le( secret_ + i * 8, combine( v1, v2 ) );
+
+                seed = combine( seed, v1 );
             }
-            else
+
+            n = n % 8;
+
+            if( n > 0 )
             {
-                secret_ = rhs.secret_;
+                unsigned char w[ 8 ] = {};
+                detail::memcpy( w, p + i * 8, n );
+
+                std::uint64_t v1 = detail::read64le( w );
+                std::uint64_t v2 = detail::read64le( secret_ + i * 8 );
+
+                detail::write64le( secret_ + i * 8, combine( v1, v2 ) );
+
+                seed = combine( seed, v1 );
             }
         }
-        return *this;
+
+        {
+            int const i = 0;
+
+            std::uint64_t v1 = n2;
+            std::uint64_t v2 = detail::read64le( secret_ + i * 8 );
+
+            detail::write64le( secret_ + i * 8, combine( v1, v2 ) );
+
+            seed = combine( seed, v1 );
+        }
+
+        seed_ = seed;
     }
 
     void update( void const* p, std::size_t n )
@@ -536,15 +543,6 @@ public:
         if( n == 0 ) return;
 
         n_ += n;
-
-        // from the spec:
-        //
-        // There is one exception though: when input is large (> 240 bytes) and a seed is given, a secret
-        // is derived from the seed value and the default secret using the following procedure...
-        if( seed_ != 0 && n_ > 240 )
-        {
-            secret_ = custom_secret_;
-        }
 
         if( n <= buffer_size - m_ )
         {
