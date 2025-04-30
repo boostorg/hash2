@@ -553,7 +553,7 @@ public:
         }
         else
         {
-            secret_len_ = std::min( default_secret_len, n );
+            secret_len_ = std::min( +default_secret_len, n );
         }
 
         // incorporate passed secret into secret_
