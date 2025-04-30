@@ -474,7 +474,7 @@ public:
         with_secret_ = true;
 
         std::size_t const n2 = n;
-        std::size_t seed = 0;
+        std::uint64_t seed = 0;
 
         while( n >= default_secret_len )
         {
