@@ -544,22 +544,58 @@ public:
     {
         with_secret_ = true;
 
-        secret_len_ = std::min( default_secret_len, n );
+        if( n < min_secret_len )
+        {
+            // this is a precondition violation for XXH3, but we try to do something reasonable
+            detail::memcpy( secret_, xxh3_128_constants<>::default_secret, default_secret_len );
+            secret_len_ = default_secret_len;
+        }
+        else
+        {
+            secret_len_ = std::min( default_secret_len, n );
+        }
+
+        // incorporate passed secret into secret_
+        // in the case where min_secret_len <= n <= default_secret_len,
+        //  this is a simple copy because the initial secret_ is {}
 
         while( n >= default_secret_len )
         {
-            for( std::size_t i = 0; i < default_secret_len; ++i )
+            for( std::size_t i = 0; i < default_secret_len / 8; ++i )
             {
-                secret_[ i ] ^= p[ i ];
+                std::uint64_t v1 = detail::read64le( p + i * 8 );
+                std::uint64_t v2 = detail::read64le( secret_ + i * 8 );
+
+                detail::write64le( secret_ + i * 8, v1 + v2 );
             }
 
             p += default_secret_len;
             n -= default_secret_len;
         }
 
-        for( std::size_t i = 0; i < n; ++i )
         {
-            secret_[ i ] ^= p[ i ];
+            std::size_t i = 0;
+
+            for( ; i < n / 8; ++i )
+            {
+                std::uint64_t v1 = detail::read64le( p + i * 8 );
+                std::uint64_t v2 = detail::read64le( secret_ + i * 8 );
+
+                detail::write64le( secret_ + i * 8, v1 + v2 );
+            }
+
+            n = n % 8;
+
+            if( n > 0 )
+            {
+                unsigned char w[ 8 ] = {};
+                detail::memcpy( w, p + i * 8, n );
+
+                std::uint64_t v1 = detail::read64le( w );
+                std::uint64_t v2 = detail::read64le( secret_ + i * 8 );
+
+                detail::write64le( secret_ + i * 8, v1 + v2 );
+            }
         }
     }
 

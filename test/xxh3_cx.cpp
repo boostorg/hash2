@@ -223,7 +223,7 @@ int main()
 
     constexpr digest<16> d = {};
 
-    // TEST_NE( hash<xxh3_128>( 0, secret,   1 ), d );
+    TEST_NE( hash<xxh3_128>( 0, secret,   1 ), d );
     TEST_NE( hash<xxh3_128>( 0, secret, 135 ), d );
 
     return boost::report_errors();
