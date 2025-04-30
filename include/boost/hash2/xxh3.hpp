@@ -551,9 +551,13 @@ public:
             detail::memcpy( secret_, xxh3_128_constants<>::default_secret, default_secret_len );
             secret_len_ = default_secret_len;
         }
+        else if( n < default_secret_len )
+        {
+            secret_len_ = n;
+        }
         else
         {
-            secret_len_ = std::min( +default_secret_len, n );
+            secret_len_ = default_secret_len;
         }
 
         // incorporate passed secret into secret_
