@@ -31,6 +31,7 @@
 #include <array>
 #include <type_traits>
 #include <limits>
+#include <vector>
 #include <cstddef>
 #include <cstdint>
 
@@ -148,6 +149,72 @@ template<class H> void test_byte_seed_constructible( bool is_hmac )
 
             BOOST_TEST( h1.result() == h2.result() );
         }
+    }
+
+    {
+        unsigned char const seed1[ 1 ] = { 0x01 };
+        unsigned char const seed2[ 1 ] = { 0x02 };
+
+        H h1( seed1, sizeof( seed1 ) );
+        H h2( seed2, sizeof( seed2 ) );
+
+        BOOST_TEST( h1.result() != h2.result() );
+    }
+
+    {
+        unsigned char const seed1[ 4 ] = { 0x01 };
+        unsigned char const seed2[ 4 ] = { 0x02 };
+
+        H h1( seed1, sizeof( seed1 ) );
+        H h2( seed2, sizeof( seed2 ) );
+
+        BOOST_TEST( h1.result() != h2.result() );
+    }
+
+    {
+        unsigned char const seed1[ 8 ] = { 0x01 };
+        unsigned char const seed2[ 8 ] = { 0x02 };
+
+        H h1( seed1, sizeof( seed1 ) );
+        H h2( seed2, sizeof( seed2 ) );
+
+        BOOST_TEST( h1.result() != h2.result() );
+    }
+
+    {
+        unsigned char const seed1[ 256 ] = { 0x01 };
+        unsigned char const seed2[ 256 ] = { 0x02 };
+
+        H h1( seed1, sizeof( seed1 ) );
+        H h2( seed2, sizeof( seed2 ) );
+
+        BOOST_TEST( h1.result() != h2.result() );
+    }
+
+    {
+        unsigned char seed1[ 256 ] = {};
+        unsigned char seed2[ 256 ] = {};
+
+        seed1[ 255 ] = 0x01;
+        seed2[ 255 ] = 0x02;
+
+        H h1( seed1, sizeof( seed1 ) );
+        H h2( seed2, sizeof( seed2 ) );
+
+        BOOST_TEST( h1.result() != h2.result() );
+    }
+
+    {
+        std::vector<unsigned char> seed1( 256, 0x01 );
+        std::vector<unsigned char> seed2( 256, 0x01 );
+
+        H h1( seed1.data(), seed1.size() );
+        H h2( seed2.data(), seed2.size() );
+
+        seed2.clear();
+        seed2.shrink_to_fit();
+
+        BOOST_TEST( h1.result() == h2.result() );
     }
 
     if( !is_hmac )
