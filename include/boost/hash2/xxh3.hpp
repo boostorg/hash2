@@ -185,8 +185,6 @@ private:
 
     BOOST_CXX14_CONSTEXPR void last_round()
     {
-        std::size_t const stripes_per_block_ = ( secret_len_ - 64 ) / 8;
-
         unsigned char last_stripe[ 64 ] = {};
         unsigned char* last_stripe_ptr = nullptr;
 
@@ -201,6 +199,9 @@ private:
                     stripe[ i ] = detail::read64le( buffer_ + ( 64 * n ) + ( 8 * i ) );
                 }
                 accumulate( stripe, 8 * num_stripes_++ );
+
+                std::size_t const stripes_per_block_ = ( secret_len_ - 64 ) / 8;
+                (void)stripes_per_block_;
 
                 BOOST_ASSERT( num_stripes_ <= stripes_per_block_ );
             }
