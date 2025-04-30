@@ -185,6 +185,8 @@ private:
 
     BOOST_CXX14_CONSTEXPR void last_round()
     {
+        std::size_t const stripes_per_block_ = ( secret_len_ - 64 ) / 8;
+
         unsigned char last_stripe[ 64 ] = {};
         unsigned char* last_stripe_ptr = nullptr;
 
@@ -440,10 +442,9 @@ private:
     std::size_t n_ = 0;
     std::size_t m_ = 0;
 
-    static constexpr std::size_t secret_len_ = default_secret_len;
-    static constexpr std::size_t stripes_per_block_ = ( secret_len_ - 64 ) / 8;
+    std::size_t secret_len_ = default_secret_len;
 
-    std::size_t num_stripes_ = 0; // current number of procssed stripes
+    std::size_t num_stripes_ = 0; // current number of processed stripes
 
 public:
 
@@ -476,7 +477,7 @@ public:
 
         while( n >= default_secret_len )
         {
-            for( int i = 0; i < default_secret_len / 8; ++i )
+            for( std::size_t i = 0; i < default_secret_len / 8; ++i )
             {
                 std::uint64_t v1 = detail::read64le( p + i * 8 );
                 std::uint64_t v2 = detail::read64le( secret_ + i * 8 );
@@ -491,7 +492,7 @@ public:
         }
 
         {
-            int i = 0;
+            std::size_t i = 0;
 
             for( ; i < n / 8; ++i )
             {
@@ -520,7 +521,7 @@ public:
         }
 
         {
-            int const i = 0;
+            std::size_t const i = 0;
 
             std::uint64_t v1 = n2;
             std::uint64_t v2 = detail::read64le( secret_ + i * 8 );
@@ -533,6 +534,35 @@ public:
         seed_ = seed;
     }
 
+    // XXH3-specific constructor (XXH3_withSecretAndSeed), not part of the concept requirements
+
+    xxh3_128( std::uint64_t seed, void const* p, std::size_t n ): xxh3_128( seed, static_cast<unsigned char const*>( p ), n )
+    {
+    }
+
+    BOOST_CXX14_CONSTEXPR xxh3_128( std::uint64_t seed, unsigned char const* p, std::size_t n ): seed_( seed )
+    {
+        with_secret_ = true;
+
+        secret_len_ = std::min( default_secret_len, n );
+
+        while( n >= default_secret_len )
+        {
+            for( std::size_t i = 0; i < default_secret_len; ++i )
+            {
+                secret_[ i ] ^= p[ i ];
+            }
+
+            p += default_secret_len;
+            n -= default_secret_len;
+        }
+
+        for( std::size_t i = 0; i < n; ++i )
+        {
+            secret_[ i ] ^= p[ i ];
+        }
+    }
+
     void update( void const* p, std::size_t n )
     {
         update( static_cast<unsigned char const*>( p ), n );
@@ -541,6 +571,8 @@ public:
     BOOST_CXX14_CONSTEXPR void update( unsigned char const* p, std::size_t n )
     {
         if( n == 0 ) return;
+
+        std::size_t const stripes_per_block_ = ( secret_len_ - 64 ) / 8;
 
         n_ += n;
 
