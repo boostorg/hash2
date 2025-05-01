@@ -95,7 +95,7 @@ template<class H> BOOST_CXX14_CONSTEXPR typename H::result_type hash( std::size_
     h2.update( test_bytes, n );
     if( h2.result() != d )
     {
-        throw 1234;
+        return {};
     }
 
     return d;
