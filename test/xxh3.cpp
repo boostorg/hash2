@@ -50,12 +50,12 @@ template<class H, class S> typename H::result_type hash( std::vector<unsigned ch
 
 template<class H> typename H::result_type hash( std::vector<unsigned char> const& s, std::size_t n, unsigned char const* secret, std::size_t secret_len )
 {
-    H h( 0, secret, secret_len );
+    H h = H::withSecret( secret, secret_len );
 
     h.update( s.data(), n );
     auto d = h.result();
 
-    H h2( 0, secret, secret_len );
+    H h2 = H::withSecret( secret, secret_len );
 
     std::size_t m = n / 3;
 

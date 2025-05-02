@@ -535,11 +535,7 @@ public:
         seed_ = seed;
     }
 
-    // XXH3-specific constructor (XXH3_withSecretAndSeed), not part of the concept requirements
-
-    xxh3_128( std::uint64_t seed, void const* p, std::size_t n ): xxh3_128( seed, static_cast<unsigned char const*>( p ), n )
-    {
-    }
+private: // supporting constructor for the static factory functions
 
     BOOST_CXX14_CONSTEXPR xxh3_128( std::uint64_t seed, unsigned char const* p, std::size_t n ): seed_( seed )
     {
@@ -602,6 +598,40 @@ public:
                 detail::write64le( secret_ + i * 8, v1 + v2 );
             }
         }
+    }
+
+public:
+
+    // XXH3-specific named constructors, matching the reference implementation
+
+    // for completeness only
+    static BOOST_CXX14_CONSTEXPR xxh3_128 withSeed( std::uint64_t seed )
+    {
+        return xxh3_128( seed );
+    }
+
+    static xxh3_128 BOOST_CXX14_CONSTEXPR withSecret( unsigned char const* p, std::size_t n )
+    {
+        return xxh3_128( 0, p, n );
+    }
+
+    static xxh3_128 withSecret( void const* p, std::size_t n )
+    {
+        return withSecret( static_cast<unsigned char const*>( p ), n );
+    }
+
+    static xxh3_128 BOOST_CXX14_CONSTEXPR withSecretAndSeed( unsigned char const* p, std::size_t n, std::uint64_t seed )
+    {
+        xxh3_128 r( seed, p, n );
+
+        r.with_secret_ = false;
+
+        return r;
+    }
+
+    static xxh3_128 withSecretAndSeed( void const* p, std::size_t n, std::uint64_t seed )
+    {
+        return withSecretAndSeed( static_cast<unsigned char const*>( p ), n, seed );
     }
 
     void update( void const* p, std::size_t n )
