@@ -610,7 +610,7 @@ public:
         return xxh3_128( seed );
     }
 
-    static xxh3_128 BOOST_CXX14_CONSTEXPR withSecret( unsigned char const* p, std::size_t n )
+    static BOOST_CXX14_CONSTEXPR xxh3_128 withSecret( unsigned char const* p, std::size_t n )
     {
         return xxh3_128( 0, p, n );
     }
@@ -620,7 +620,7 @@ public:
         return withSecret( static_cast<unsigned char const*>( p ), n );
     }
 
-    static xxh3_128 BOOST_CXX14_CONSTEXPR withSecretAndSeed( unsigned char const* p, std::size_t n, std::uint64_t seed )
+    static BOOST_CXX14_CONSTEXPR xxh3_128 withSecretAndSeed( unsigned char const* p, std::size_t n, std::uint64_t seed )
     {
         xxh3_128 r( seed, p, n );
 
