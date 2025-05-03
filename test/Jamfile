@@ -17,6 +17,7 @@ project
   : requirements
 
     $(werror)
+    <library>/boost/hash2//boost_hash2
   ;
 
 # type traits
