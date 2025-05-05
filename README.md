@@ -38,7 +38,7 @@ struct HashAlgorithm
 };
 ```
 
-See [the documentation](https://boostorg.github.io/hash2/) for more information.
+See [the documentation](https://boost.org/libs/hash2/) for more information.
 
 ## Supported compilers
 
