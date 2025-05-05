@@ -103,7 +103,7 @@ template<class H> BOOST_CXX14_CONSTEXPR typename H::result_type hash( std::size_
 
 template<class H> BOOST_CXX14_CONSTEXPR typename H::result_type hash( std::size_t n, unsigned char const* secret, std::size_t secret_len )
 {
-    H h = H::withSecret( secret, secret_len );
+    H h = H::with_secret( secret, secret_len );
 
     std::size_t m = n / 3;
 

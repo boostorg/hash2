@@ -605,22 +605,22 @@ public:
     // XXH3-specific named constructors, matching the reference implementation
 
     // for completeness only
-    static BOOST_CXX14_CONSTEXPR xxh3_128 withSeed( std::uint64_t seed )
+    static BOOST_CXX14_CONSTEXPR xxh3_128 with_seed( std::uint64_t seed )
     {
         return xxh3_128( seed );
     }
 
-    static BOOST_CXX14_CONSTEXPR xxh3_128 withSecret( unsigned char const* p, std::size_t n )
+    static BOOST_CXX14_CONSTEXPR xxh3_128 with_secret( unsigned char const* p, std::size_t n )
     {
         return xxh3_128( 0, p, n );
     }
 
-    static xxh3_128 withSecret( void const* p, std::size_t n )
+    static xxh3_128 with_secret( void const* p, std::size_t n )
     {
-        return withSecret( static_cast<unsigned char const*>( p ), n );
+        return with_secret( static_cast<unsigned char const*>( p ), n );
     }
 
-    static BOOST_CXX14_CONSTEXPR xxh3_128 withSecretAndSeed( unsigned char const* p, std::size_t n, std::uint64_t seed )
+    static BOOST_CXX14_CONSTEXPR xxh3_128 with_secret_and_seed( unsigned char const* p, std::size_t n, std::uint64_t seed )
     {
         xxh3_128 r( seed, p, n );
 
@@ -629,9 +629,9 @@ public:
         return r;
     }
 
-    static xxh3_128 withSecretAndSeed( void const* p, std::size_t n, std::uint64_t seed )
+    static xxh3_128 with_secret_and_seed( void const* p, std::size_t n, std::uint64_t seed )
     {
-        return withSecretAndSeed( static_cast<unsigned char const*>( p ), n, seed );
+        return with_secret_and_seed( static_cast<unsigned char const*>( p ), n, seed );
     }
 
     void update( void const* p, std::size_t n )
