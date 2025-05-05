@@ -113,6 +113,18 @@ template<class H> BOOST_CXX14_CONSTEXPR typename H::result_type hash_with_secret
     return h.result();
 }
 
+template<class H> BOOST_CXX14_CONSTEXPR typename H::result_type hash_with_secret_and_seed( std::size_t n, unsigned char const* secret, std::size_t secret_len, std::uint64_t seed )
+{
+    H h = H::with_secret_and_seed( secret, secret_len, seed );
+
+    std::size_t m = n / 3;
+
+    h.update( test_bytes, m );
+    h.update( test_bytes + m, n - m );
+
+    return h.result();
+}
+
 int main()
 {
     using namespace boost::hash2;
@@ -225,6 +237,26 @@ int main()
 
     TEST_NE( hash_with_secret<xxh3_128>( 0, secret,   1 ), d );
     TEST_NE( hash_with_secret<xxh3_128>( 0, secret, 135 ), d );
+
+    constexpr std::uint64_t const seed = 0x9e3779b185ebca8dull;
+
+    TEST_EQ( hash_with_secret_and_seed<xxh3_128>(   0, secret, secret_len, seed ), hex_encode( { 0xa986dfc5d7605bfeull, 0x00feaa732a3ce25eull } ) );
+    TEST_EQ( hash_with_secret_and_seed<xxh3_128>(   1, secret, secret_len, seed ), hex_encode( { 0x032be332dd766ef8ull, 0x20e49abcc53b3842ull } ) );
+    TEST_EQ( hash_with_secret_and_seed<xxh3_128>(   3, secret, secret_len, seed ), hex_encode( { 0x634b8990b4976373ull, 0x1c7ecf6a308cf00eull } ) );
+    TEST_EQ( hash_with_secret_and_seed<xxh3_128>(   4, secret, secret_len, seed ), hex_encode( { 0xbfaf51f1e67e0b0full, 0x3d53e5dfd837d927ull } ) );
+    TEST_EQ( hash_with_secret_and_seed<xxh3_128>(   8, secret, secret_len, seed ), hex_encode( { 0x7b29471dc729b5ffull, 0xf50cec145bcd5c5aull } ) );
+    TEST_EQ( hash_with_secret_and_seed<xxh3_128>(   9, secret, secret_len, seed ), hex_encode( { 0xaef5dfc0ac9f9044ull, 0x6b380b43ffa61042ull } ) );
+    TEST_EQ( hash_with_secret_and_seed<xxh3_128>(  16, secret, secret_len, seed ), hex_encode( { 0x0346d13a7a5498c7ull, 0x6ffcb80cd33085c8ull } ) );
+    TEST_EQ( hash_with_secret_and_seed<xxh3_128>(  17, secret, secret_len, seed ), hex_encode( { 0x980a14119985a7dfull, 0xd77681219e464828ull } ) );
+    TEST_EQ( hash_with_secret_and_seed<xxh3_128>( 128, secret, secret_len, seed ), hex_encode( { 0x8394f5c51f1d8246ull, 0xa0f7ccb68ee02addull } ) );
+    TEST_EQ( hash_with_secret_and_seed<xxh3_128>( 129, secret, secret_len, seed ), hex_encode( { 0xd4aae26fcec7dc03ull, 0xad559266067c0bf3ull } ) );
+    TEST_EQ( hash_with_secret_and_seed<xxh3_128>( 240, secret, secret_len, seed ), hex_encode( { 0x604e98db085c1864ull, 0x29d2133d6ea58c5bull } ) );
+    TEST_EQ( hash_with_secret_and_seed<xxh3_128>( 241, secret, secret_len, seed ), hex_encode( { 0x454805371df98a91ull, 0x0ecde988107f17f2ull } ) );
+    TEST_EQ( hash_with_secret_and_seed<xxh3_128>( 255, secret, secret_len, seed ), hex_encode( { 0xe1e3461712968b3eull, 0xf44f7290a7123665ull } ) );
+    TEST_EQ( hash_with_secret_and_seed<xxh3_128>( 256, secret, secret_len, seed ), hex_encode( { 0xd4cba59e2e2cf9f0ull, 0xdc8cd5dc03c0da95ull } ) );
+    TEST_EQ( hash_with_secret_and_seed<xxh3_128>( 257, secret, secret_len, seed ), hex_encode( { 0x1e4b71e703d08492ull, 0x15fda9442e840f61ull } ) );
+    TEST_EQ( hash_with_secret_and_seed<xxh3_128>( 511, secret, secret_len, seed ), hex_encode( { 0x13e7046bc1c1f16aull, 0x86764f81bb226a35ull } ) );
+    TEST_EQ( hash_with_secret_and_seed<xxh3_128>( 512, secret, secret_len, seed ), hex_encode( { 0x7564693dd526e28dull, 0x918c0f2c7656ab6dull } ) );
 
     return boost::report_errors();
 }

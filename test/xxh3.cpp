@@ -79,6 +79,24 @@ template<class H> typename H::result_type hash_with_secret( std::vector<unsigned
     return d;
 }
 
+template<class H> typename H::result_type hash_with_secret_and_seed( std::vector<unsigned char> const& s, std::size_t n, unsigned char const* secret, std::size_t secret_len, std::uint64_t seed )
+{
+    H h = H::with_secret_and_seed( secret, secret_len, seed );
+
+    h.update( s.data(), n );
+    auto d = h.result();
+
+    H h2 = H::with_secret_and_seed( secret, secret_len, seed );
+
+    std::size_t m = n / 3;
+
+    h2.update( s.data(), m );
+    h2.update( s.data() + m, n - m );
+    BOOST_TEST_EQ( to_string( d ), to_string( h2.result() ) );
+
+    return d;
+}
+
 struct xxh3_128_t
 {
     std::uint64_t low;
@@ -244,6 +262,34 @@ static void test_xxh3_128()
 
     BOOST_TEST_NE( to_string( hash_with_secret<xxh3_128>( v, 0, secret,   1 ) ), std::string( "" ));
     BOOST_TEST_NE( to_string( hash_with_secret<xxh3_128>( v, 0, secret, 135 ) ), std::string( "" ));
+
+    // test with seed and custom secret
+
+    std::uint64_t const seed = 0x9e3779b185ebca8dull;
+
+    BOOST_TEST_EQ( to_string( hash_with_secret_and_seed<xxh3_128>( v,    0, secret, secret_len, seed ) ), hex_encode( { 0xa986dfc5d7605bfeull, 0x00feaa732a3ce25eull } ) );
+    BOOST_TEST_EQ( to_string( hash_with_secret_and_seed<xxh3_128>( v,    1, secret, secret_len, seed ) ), hex_encode( { 0x032be332dd766ef8ull, 0x20e49abcc53b3842ull } ) );
+    BOOST_TEST_EQ( to_string( hash_with_secret_and_seed<xxh3_128>( v,    3, secret, secret_len, seed ) ), hex_encode( { 0x634b8990b4976373ull, 0x1c7ecf6a308cf00eull } ) );
+    BOOST_TEST_EQ( to_string( hash_with_secret_and_seed<xxh3_128>( v,    4, secret, secret_len, seed ) ), hex_encode( { 0xbfaf51f1e67e0b0full, 0x3d53e5dfd837d927ull } ) );
+    BOOST_TEST_EQ( to_string( hash_with_secret_and_seed<xxh3_128>( v,    8, secret, secret_len, seed ) ), hex_encode( { 0x7b29471dc729b5ffull, 0xf50cec145bcd5c5aull } ) );
+    BOOST_TEST_EQ( to_string( hash_with_secret_and_seed<xxh3_128>( v,    9, secret, secret_len, seed ) ), hex_encode( { 0xaef5dfc0ac9f9044ull, 0x6b380b43ffa61042ull } ) );
+    BOOST_TEST_EQ( to_string( hash_with_secret_and_seed<xxh3_128>( v,   16, secret, secret_len, seed ) ), hex_encode( { 0x0346d13a7a5498c7ull, 0x6ffcb80cd33085c8ull } ) );
+    BOOST_TEST_EQ( to_string( hash_with_secret_and_seed<xxh3_128>( v,   17, secret, secret_len, seed ) ), hex_encode( { 0x980a14119985a7dfull, 0xd77681219e464828ull } ) );
+    BOOST_TEST_EQ( to_string( hash_with_secret_and_seed<xxh3_128>( v,  128, secret, secret_len, seed ) ), hex_encode( { 0x8394f5c51f1d8246ull, 0xa0f7ccb68ee02addull } ) );
+    BOOST_TEST_EQ( to_string( hash_with_secret_and_seed<xxh3_128>( v,  129, secret, secret_len, seed ) ), hex_encode( { 0xd4aae26fcec7dc03ull, 0xad559266067c0bf3ull } ) );
+    BOOST_TEST_EQ( to_string( hash_with_secret_and_seed<xxh3_128>( v,  240, secret, secret_len, seed ) ), hex_encode( { 0x604e98db085c1864ull, 0x29d2133d6ea58c5bull } ) );
+    BOOST_TEST_EQ( to_string( hash_with_secret_and_seed<xxh3_128>( v,  241, secret, secret_len, seed ) ), hex_encode( { 0x454805371df98a91ull, 0x0ecde988107f17f2ull } ) );
+    BOOST_TEST_EQ( to_string( hash_with_secret_and_seed<xxh3_128>( v,  255, secret, secret_len, seed ) ), hex_encode( { 0xe1e3461712968b3eull, 0xf44f7290a7123665ull } ) );
+    BOOST_TEST_EQ( to_string( hash_with_secret_and_seed<xxh3_128>( v,  256, secret, secret_len, seed ) ), hex_encode( { 0xd4cba59e2e2cf9f0ull, 0xdc8cd5dc03c0da95ull } ) );
+    BOOST_TEST_EQ( to_string( hash_with_secret_and_seed<xxh3_128>( v,  257, secret, secret_len, seed ) ), hex_encode( { 0x1e4b71e703d08492ull, 0x15fda9442e840f61ull } ) );
+    BOOST_TEST_EQ( to_string( hash_with_secret_and_seed<xxh3_128>( v,  511, secret, secret_len, seed ) ), hex_encode( { 0x13e7046bc1c1f16aull, 0x86764f81bb226a35ull } ) );
+    BOOST_TEST_EQ( to_string( hash_with_secret_and_seed<xxh3_128>( v,  512, secret, secret_len, seed ) ), hex_encode( { 0x7564693dd526e28dull, 0x918c0f2c7656ab6dull } ) );
+    BOOST_TEST_EQ( to_string( hash_with_secret_and_seed<xxh3_128>( v, 1023, secret, secret_len, seed ) ), hex_encode( { 0x6df5a1773b876cfbull, 0x21fe7c4fbcebe042ull } ) );
+    BOOST_TEST_EQ( to_string( hash_with_secret_and_seed<xxh3_128>( v, 1024, secret, secret_len, seed ) ), hex_encode( { 0x3538a2d1ea7410d0ull, 0x7663338d0b32666dull } ) );
+    BOOST_TEST_EQ( to_string( hash_with_secret_and_seed<xxh3_128>( v, 1025, secret, secret_len, seed ) ), hex_encode( { 0xe33739f32d405604ull, 0x3644184c7d1e8f29ull } ) );
+    BOOST_TEST_EQ( to_string( hash_with_secret_and_seed<xxh3_128>( v, 2047, secret, secret_len, seed ) ), hex_encode( { 0x209243520dbdb300ull, 0x47aa10ba88a049f3ull } ) );
+    BOOST_TEST_EQ( to_string( hash_with_secret_and_seed<xxh3_128>( v, 2048, secret, secret_len, seed ) ), hex_encode( { 0xd32e975821d6519full, 0xe862d841c07049afull } ) );
+    BOOST_TEST_EQ( to_string( hash_with_secret_and_seed<xxh3_128>( v, 2049, secret, secret_len, seed ) ), hex_encode( { 0xa21be3a04630def3ull, 0x545e67046af902fbull } ) );
 }
 
 int main()
