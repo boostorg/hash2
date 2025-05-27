@@ -11,6 +11,7 @@ https://www.boost.org/LICENSE_1_0.txt
 ## Changes in 1.89.0
 
 * Added Blake2 algorithm (`blake2s_256`, `blake2b_512`).
+* Added XXH3 algorithm (`xxh3_128`).
 
 ## Changes in 1.88.0
 
