@@ -5,7 +5,7 @@ https://www.boost.org/LICENSE_1_0.txt
 ////
 
 # Hash2: An Extensible Hashing Framework
-Peter Dimov
+Peter Dimov; Christian Mazakas
 :toc: left
 :toclevels: 4
 :idprefix:
