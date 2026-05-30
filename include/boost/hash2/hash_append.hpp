@@ -38,6 +38,10 @@
 # include <optional>
 #endif
 
+#if !defined(BOOST_NO_CXX17_HDR_VARIANT)
+# include <variant>
+#endif
+
 namespace boost
 {
 
@@ -356,6 +360,27 @@ template<class Hash, class Flavor, class T>
     if( v )
     {
         hash2::hash_append( h, f, *v );
+    }
+}
+
+#endif
+
+// std::variant
+
+#if !defined(BOOST_NO_CXX17_HDR_VARIANT)
+
+template<class Hash, class Flavor, class... T>
+    BOOST_CXX14_CONSTEXPR
+    void do_hash_append( Hash& h, Flavor const& f, std::variant<T...> const& v )
+{
+    if( v.valueless_by_exception() )
+    {
+        hash2::hash_append( h, f, '\x00' );
+    }
+    else
+    {
+        hash2::hash_append_size( h, f, v.index() );
+        std::visit( [&]( auto const& w ){ hash2::hash_append( h, f, w ); }, v );
     }
 }
 

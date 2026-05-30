@@ -78,6 +78,7 @@ run append_set.cpp ;
 run append_map.cpp ;
 
 run append_optional.cpp ;
+run append_variant.cpp ;
 
 run append_described.cpp ;
 run append_described_2.cpp ;
