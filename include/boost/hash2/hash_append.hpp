@@ -29,9 +29,14 @@
 #include <boost/describe/members.hpp>
 #include <boost/mp11/algorithm.hpp>
 #include <boost/mp11/integer_sequence.hpp>
+#include <boost/config.hpp>
 #include <cstdint>
 #include <type_traits>
 #include <iterator>
+
+#if !defined(BOOST_NO_CXX17_HDR_OPTIONAL)
+# include <optional>
+#endif
 
 namespace boost
 {
@@ -337,6 +342,24 @@ template<class Hash, class Flavor, class T>
     using Seq = mp11::make_index_sequence<std::tuple_size<T>::value>;
     detail::hash_append_tuple( h, f, v, Seq() );
 }
+
+// std::optional
+
+#if !defined(BOOST_NO_CXX17_HDR_OPTIONAL)
+
+template<class Hash, class Flavor, class T>
+    BOOST_CXX14_CONSTEXPR
+    void do_hash_append( Hash& h, Flavor const& f, std::optional<T> const& v )
+{
+    hash2::hash_append( h, f, v.has_value() );
+
+    if( v )
+    {
+        hash2::hash_append( h, f, *v );
+    }
+}
+
+#endif
 
 // described classes
 

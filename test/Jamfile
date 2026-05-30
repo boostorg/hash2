@@ -77,6 +77,8 @@ run append_tuple_like_2.cpp ;
 run append_set.cpp ;
 run append_map.cpp ;
 
+run append_optional.cpp ;
+
 run append_described.cpp ;
 run append_described_2.cpp ;
 run append_described_3.cpp ;
