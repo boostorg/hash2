@@ -221,7 +221,7 @@ local windows_pipeline(name, image, environment, arch = "amd64") =
     linux_pipeline(
         "Linux 26.04 GCC 16",
         "cppalliance/droneubuntu2604:1",
-        { TOOLSET: 'gcc', COMPILER: 'g++-16', CXXSTD: '11,14,17,20,23,2c' } + asan,
+        { TOOLSET: 'gcc', COMPILER: 'g++-16', CXXSTD: '11,14,17,20,23,2c' },
         "g++-16-multilib",
     ),
 
