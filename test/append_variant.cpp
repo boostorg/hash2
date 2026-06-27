@@ -53,24 +53,31 @@ int main()
     using namespace boost::hash2;
 
     {
-        std::variant<char, int, double> v( 'x' );
+        std::variant<std::monostate, char, int, double> v;
 
-        test<fnv1a_32, little_endian_flavor>( v, 1779522199 );
-        test<fnv1a_32, big_endian_flavor>( v, 1779522199 );
+        test<fnv1a_32, little_endian_flavor>( v, 303091727 );
+        test<fnv1a_32, big_endian_flavor>( v, 303091727 );
     }
 
     {
-        std::variant<char, int, double> v( 5 );
+        std::variant<std::monostate, char, int, double> v( 'x' );
 
-        test<fnv1a_32, little_endian_flavor>( v, 1308316945 );
-        test<fnv1a_32, big_endian_flavor>( v, 1379542249 );
+        test<fnv1a_32, little_endian_flavor>( v, 1131038004 );
+        test<fnv1a_32, big_endian_flavor>( v, 1678709390 );
     }
 
     {
-        std::variant<char, int, double> v( 3.14 );
+        std::variant<std::monostate, char, int, double> v( 5 );
 
-        test<fnv1a_32, little_endian_flavor>( v, 2633093848 );
-        test<fnv1a_32, big_endian_flavor>( v, 1046089386 );
+        test<fnv1a_32, little_endian_flavor>( v, 3318150226 );
+        test<fnv1a_32, big_endian_flavor>( v, 160619008 );
+    }
+
+    {
+        std::variant<std::monostate, char, int, double> v( 3.14 );
+
+        test<fnv1a_32, little_endian_flavor>( v, 1622328125 );
+        test<fnv1a_32, big_endian_flavor>( v, 151482689 );
     }
 
     return boost::report_errors();
