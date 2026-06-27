@@ -365,7 +365,7 @@ template<class Hash, class Flavor, class T>
 
 #endif
 
-// std::variant
+// std::variant, std::monostate
 
 #if !defined(BOOST_NO_CXX17_HDR_VARIANT)
 
@@ -382,6 +382,14 @@ template<class Hash, class Flavor, class... T>
         hash2::hash_append_size( h, f, v.index() );
         std::visit( [&]( auto const& w ){ hash2::hash_append( h, f, w ); }, v );
     }
+}
+
+template<class Hash, class Flavor, class T>
+    BOOST_CXX14_CONSTEXPR
+    typename std::enable_if< std::is_same<T, std::monostate>::value, void >::type
+    do_hash_append( Hash& h, Flavor const& f, T const& /*v*/ )
+{
+    hash2::hash_append( h, f, '\x00' );
 }
 
 #endif
