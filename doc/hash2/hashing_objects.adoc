@@ -61,6 +61,7 @@ to `v`.
 * Tuple-like types (`std::pair`, `std::tuple`);
 * `std::optional`;
 * `std::variant`;
+* `std::monostate`;
 * Described classes (using Boost.Describe).
 
 User-defined types that aren't in the above categories can provide
@@ -325,6 +326,10 @@ When `T` is an instance of `std::variant`:
 
 * If `T` is valueless, `hash_append(h, f, '\x00')` is called;
 * Otherwise, `hash_append(h, f, v.index())` is called, followed by a call to `hash_append(h, f, w)`, where `w` is the active alternative of `v`.
+
+## `std::monostate`
+
+When `T` is `std::monostate`, `hash_append(h, f, '\x00')` is called.
 
 ## Described Classes
 

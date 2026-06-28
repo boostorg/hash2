@@ -66,6 +66,7 @@ Effects: ::
 * If `boost::container_hash::is_described_class<T>::value` is `true`, calls `hash_append(h, f, b)` for each base class subobject `b` of `v`, then `hash_append(h, f, m)` for each member subobject `m` of `v`;
 * If `T` is an instance of `std::optional`, calls `hash_append(h, f, v.has_value())`, then, if `v` is engaged, calls `hash_append(h, f, *v)`;
 * If `T` is an instance of `std::variant`, if `v` is not valueless, calls `hash_append_size(h, f, v.index())` and `hash_append(h, f, w)` where `w` is the active alternative of `v`;
+* If `T` is `std::monostate`, calls `hash_append(h, f, '\x00')`;
 * Otherwise, the result is a compile-time error.
 
 Remarks: ::
