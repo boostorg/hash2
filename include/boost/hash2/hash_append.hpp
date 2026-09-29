@@ -405,7 +405,13 @@ template<class Hash, class Flavor, class T>
 
 template<class Hash, class Flavor, class T>
     BOOST_CXX14_CONSTEXPR
-    typename std::enable_if< container_hash::is_described_class<T>::value, void >::type
+    typename std::enable_if<
+        container_hash::is_described_class<T>::value
+#if !defined(BOOST_NO_CXX17_HDR_VARIANT)
+        && !std::is_same<T, std::monostate>::value
+#endif
+        && !detail::has_tag_invoke<T>::value,
+    void>::type
     do_hash_append( Hash& h, Flavor const& f, T const& v )
 {
     static_assert( !std::is_union<T>::value, "Described unions are not supported" );
