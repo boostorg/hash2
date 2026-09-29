@@ -11,6 +11,7 @@
 
 struct A
 {
+    unsigned x: 16; // disables reflection
 };
 
 struct B
