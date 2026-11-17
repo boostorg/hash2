@@ -437,12 +437,12 @@ public:
 using hmac_sha3_224 = hmac<sha3_224>;
 using hmac_sha3_256 = hmac<sha3_256>;
 using hmac_sha3_384 = hmac<sha3_384>;
+using hmac_sha3_512 = hmac<sha3_512>;
 
 using hmac_keccak_224 = hmac<keccak_224>;
 using hmac_keccak_256 = hmac<keccak_256>;
 using hmac_keccak_384 = hmac<keccak_384>;
 using hmac_keccak_512 = hmac<keccak_512>;
-using hmac_sha3_512 = hmac<sha3_512>;
 
 } // namespace hash2
 } // namespace boost
