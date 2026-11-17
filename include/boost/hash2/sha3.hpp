@@ -358,9 +358,90 @@ public:
     }
 };
 
+namespace detail
+{
+
+// Keccak as submitted to the SHA-3 competition: keccak_base with the padding
+// byte 0x01, seeded as the SHA-3 classes are
+template<int D>
+class keccak_seeded: public keccak_base<0x01, 2 * D, D>
+{
+public:
+
+    BOOST_HASH2_SHA3_CONSTEXPR keccak_seeded()
+    {
+    }
+
+    BOOST_HASH2_SHA3_CONSTEXPR explicit keccak_seeded( std::uint64_t seed )
+    {
+        if( seed != 0 )
+        {
+            unsigned char byte = 0;
+
+            for( int i = 0; i < 8; ++i )
+            {
+                byte = static_cast<unsigned char>( seed >> ( 8 * i ) );
+                this->update( &byte, 1 );
+            }
+
+            this->result();
+            this->update( &byte, 0 ); // sets finalized_ to false
+        }
+    }
+
+    BOOST_HASH2_SHA3_CONSTEXPR keccak_seeded( unsigned char const * p, std::size_t n )
+    {
+        if( n != 0 )
+        {
+            this->update( p, n );
+            this->result();
+            this->update( p, 0 ); // sets finalized_ to false
+        }
+    }
+
+    keccak_seeded( void const * p, std::size_t n ): keccak_seeded( static_cast<unsigned char const*>( p ), n )
+    {
+    }
+};
+
+} // namespace detail
+
+class keccak_224: public detail::keccak_seeded<224>
+{
+public:
+
+    using detail::keccak_seeded<224>::keccak_seeded;
+};
+
+class keccak_256: public detail::keccak_seeded<256>
+{
+public:
+
+    using detail::keccak_seeded<256>::keccak_seeded;
+};
+
+class keccak_384: public detail::keccak_seeded<384>
+{
+public:
+
+    using detail::keccak_seeded<384>::keccak_seeded;
+};
+
+class keccak_512: public detail::keccak_seeded<512>
+{
+public:
+
+    using detail::keccak_seeded<512>::keccak_seeded;
+};
+
 using hmac_sha3_224 = hmac<sha3_224>;
 using hmac_sha3_256 = hmac<sha3_256>;
 using hmac_sha3_384 = hmac<sha3_384>;
+
+using hmac_keccak_224 = hmac<keccak_224>;
+using hmac_keccak_256 = hmac<keccak_256>;
+using hmac_keccak_384 = hmac<keccak_384>;
+using hmac_keccak_512 = hmac<keccak_512>;
 using hmac_sha3_512 = hmac<sha3_512>;
 
 } // namespace hash2

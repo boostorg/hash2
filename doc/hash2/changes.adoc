@@ -8,6 +8,10 @@ https://www.boost.org/LICENSE_1_0.txt
 # Revision History
 :idprefix:
 
+## Changes in 1.93.0
+
+* Added Keccak algorithm (`keccak_224`, `keccak_256`, `keccak_384`, `keccak_512`).
+
 ## Changes in 1.92.0
 
 * Added built-in support for `std::optional`

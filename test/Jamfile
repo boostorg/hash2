@@ -166,6 +166,7 @@ run sha3_512_cx.cpp ;
 run shake_128_cx.cpp ;
 run shake_256_cx.cpp ;
 run sha3_cx_2.cpp ;
+run keccak.cpp ;
 
 run ripemd.cpp ;
 run hmac_ripemd.cpp ;

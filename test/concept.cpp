@@ -609,6 +609,10 @@ int main()
     test<boost::hash2::sha3_384>();
     test<boost::hash2::shake_128>();
     test<boost::hash2::shake_256>();
+    test<boost::hash2::keccak_256>();
+    test<boost::hash2::keccak_224>();
+    test<boost::hash2::keccak_512>();
+    test<boost::hash2::keccak_384>();
     test<boost::hash2::ripemd_160>();
     test<boost::hash2::ripemd_128>();
     test<boost::hash2::blake2b_512>();
@@ -626,6 +630,10 @@ int main()
     test<boost::hash2::hmac_sha3_224>( true );
     test<boost::hash2::hmac_sha3_512>( true );
     test<boost::hash2::hmac_sha3_384>( true );
+    test<boost::hash2::hmac_keccak_256>( true );
+    test<boost::hash2::hmac_keccak_224>( true );
+    test<boost::hash2::hmac_keccak_512>( true );
+    test<boost::hash2::hmac_keccak_384>( true );
     test<boost::hash2::hmac_ripemd_160>( true );
     test<boost::hash2::hmac_ripemd_128>( true );
 

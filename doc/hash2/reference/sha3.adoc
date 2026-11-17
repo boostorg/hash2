@@ -23,10 +23,20 @@ class sha3_384;
 class shake_128;
 class shake_256;
 
+class keccak_256;
+class keccak_224;
+class keccak_512;
+class keccak_384;
+
 using hmac_sha3_256 = hmac<sha3_256>;
 using hmac_sha3_224 = hmac<sha3_224>;
 using hmac_sha3_512 = hmac<sha3_512>;
 using hmac_sha3_384 = hmac<sha3_384>;
+
+using hmac_keccak_256 = hmac<keccak_256>;
+using hmac_keccak_224 = hmac<keccak_224>;
+using hmac_keccak_512 = hmac<keccak_512>;
+using hmac_keccak_384 = hmac<keccak_384>;
 
 } // namespace hash2
 } // namespace boost
@@ -41,6 +51,10 @@ which is by truncating the bottom portion of the 1600-bit state.
 The `shake_128` and `shake_256` functions are similar to the fixed-digest functions except they use a different delimiter to denote finalization of the
 digest and extending the output has defined behavior, unlike the default pseudorandom behavior used elsewhere in the library. But they work similarly
 in that truncations of the 1600-bit state are returned as the digest.
+
+The `keccak_256`, `keccak_224`, `keccak_512` and `keccak_384` functions implement Keccak as submitted to the SHA-3 competition, before FIPS 202
+changed its padding; Keccak-256 is the hash function used by Ethereum. They are not interchangeable with `sha3_256`, `sha3_224`, `sha3_512` and
+`sha3_384`, whose digests differ.
 
 ## sha3_256
 
@@ -267,3 +281,60 @@ static constexpr std::size_t block_size = 136; // ( 1600 - 2 * 256 ) / 8 => 136
 Otherwise, all other operations and constants are identical.
 
 The message digest is similarly extended by repeated `result()` calls and any calls to `update()` reset the finalization process.
+
+## keccak_256
+
+```
+class keccak_256
+{
+    using result_type = digest<32>;
+
+    static constexpr std::size_t block_size = 136; // ( 1600 - 2 * 256 ) / 8 => 136
+
+    constexpr keccak_256();
+    constexpr explicit keccak_256( std::uint64_t seed );
+    keccak_256( void const* p, std::size_t n );
+    constexpr keccak_256( unsigned char const* p, std::size_t n );
+
+    void update( void const* p, std::size_t n );
+    constexpr void update( unsigned char const* p, std::size_t n );
+
+    constexpr result_type result();
+};
+```
+
+The Keccak-256 algorithm, as submitted to the SHA-3 competition (https://keccak.team/files/Keccak-reference-3.0.pdf[The Keccak reference, version 3.0]).
+
+It is identical to the SHA3-256 algorithm described above, including its constructors, `update` and `result`, except for the padding:
+`result()` pads the message with the `pad10*1` rule alone (delimiter byte `0x01`), whereas SHA3-256 first appends the domain separation
+bits `01` (delimiter byte `0x06`). The digests of the two algorithms therefore differ.
+
+## keccak_224
+
+The Keccak-224 algorithm is identical to the Keccak-256 algorithm described above.
+
+The only differences are the size of the input block and the size of the message digest, which is:
+```
+using result_type = digest<28>;
+static constexpr std::size_t block_size = 144; // ( 1600 - 2 * 224 ) / 8 => 144
+```
+
+## keccak_512
+
+The Keccak-512 algorithm is identical to the Keccak-256 algorithm described above.
+
+The only differences are the size of the input block and the size of the message digest, which is:
+```
+using result_type = digest<64>;
+static constexpr std::size_t block_size = 72; // ( 1600 - 2 * 512 ) / 8 => 72
+```
+
+## keccak_384
+
+The Keccak-384 algorithm is identical to the Keccak-256 algorithm described above.
+
+The only differences are the size of the input block and the size of the message digest, which is:
+```
+using result_type = digest<48>;
+static constexpr std::size_t block_size = 104; // ( 1600 - 2 * 384 ) / 8 => 104
+```
