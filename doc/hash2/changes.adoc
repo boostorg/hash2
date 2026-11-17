@@ -8,7 +8,7 @@ https://www.boost.org/LICENSE_1_0.txt
 # Revision History
 :idprefix:
 
-## Changes in 1.93.0
+## Changes in 1.94.0
 
 * Added Keccak algorithm (`keccak_224`, `keccak_256`, `keccak_384`, `keccak_512`).
 
