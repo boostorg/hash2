@@ -376,16 +376,13 @@ public:
     {
         if( seed != 0 )
         {
-            unsigned char byte = 0;
+            unsigned char tmp[ 8 ] = {};
 
-            for( int i = 0; i < 8; ++i )
-            {
-                byte = static_cast<unsigned char>( seed >> ( 8 * i ) );
-                this->update( &byte, 1 );
-            }
+            detail::write64le( tmp, seed );
+            this->update( tmp, 8 );
 
             this->result();
-            this->update( &byte, 0 ); // sets finalized_ to false
+            this->update( tmp, 0 ); // sets finalized_ to false
         }
     }
 
