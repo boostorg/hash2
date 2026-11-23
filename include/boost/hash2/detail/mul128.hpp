@@ -71,8 +71,6 @@ BOOST_CXX14_CONSTEXPR inline uint128 mul128( std::uint64_t x, std::uint64_t y ) 
 
 #elif defined(_M_ARM64) || defined(_M_ARM64EC)
 
-BOOST_CXX14_CONSTEXPR inline uint128 mul128_impl( std::uint64_t x, std::uint64_t y ) noexcept
-{
     if( !detail::is_constant_evaluated() )
     {
         uint128 r = { 0, 0 };
